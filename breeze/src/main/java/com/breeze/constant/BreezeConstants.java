@@ -13,4 +13,12 @@ public class BreezeConstants {
     public enum BreezeBookStatus {
 
     }
+
+    public enum BreezeUserSuggestionStatus {
+
+    }
+
+    public enum BreezeUserApprovalStatus {
+
+    }
 }
