@@ -15,6 +15,14 @@ public class LoggerWrapper {
         return new LoggerWrapper(clazz);
     }
 
+    public void debug(Object message) {
+        logger.debug(message);
+    }
+
+    public void debug(String message, Object... params) {
+        logger.debug(message, params);
+    }
+
     public void info(Object message) {
         logger.info(message);
     }
@@ -25,5 +33,9 @@ public class LoggerWrapper {
 
     public void error(Object message) {
         logger.error(message);
+    }
+
+    public void error(String message, Object... params) {
+        logger.error(message, params);
     }
 }
