@@ -2,11 +2,15 @@ package com.breeze.model;
 
 import com.breeze.constant.BreezeConstants;
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.util.Date;
 
 @Entity
 @Table(name = "breeze_user_approval")
+@Getter
+@Setter
 public class BreezeUserApproval extends AbstractModelWithCode {
 
     @Column(name = "user_code")
