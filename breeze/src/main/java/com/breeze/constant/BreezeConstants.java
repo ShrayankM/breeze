@@ -2,8 +2,16 @@ package com.breeze.constant;
 
 public class BreezeConstants {
 
+    public enum ConfigDataType {
+        STRING, LONG, BOOLEAN, DECIMAL, STRING_LIST
+    }
+
     public enum BreezeUserType {
         ADMIN, STANDARD
+    }
+
+    public enum BreezeStatus {
+        ACTIVE, INACTIVE
     }
 
     public enum BreezeBookGenre {
