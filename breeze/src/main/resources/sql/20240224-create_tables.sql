@@ -81,3 +81,15 @@ CREATE TABLE `breeze_user_notifications` (
     PRIMARY KEY (`id`),
     UNIQUE KEY `UK_user_notification_code` (`code`)
 );
+
+CREATE TABLE `breeze_config` (
+  `id` bigint NOT NULL AUTO_INCREMENT,
+  `name` varchar(64)  DEFAULT NULL,
+  `value` varchar(1000)  DEFAULT NULL,
+  `status` varchar(12)  DEFAULT NULL,
+  `created_at` datetime DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `description` varchar(255)  DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `UK_config_name` (`name`)
+);
