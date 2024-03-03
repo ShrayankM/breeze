@@ -6,4 +6,5 @@ public class BreezeUrlConstants {
 
     // * Book approval (addition of new book in db)
     public static final String ADD_BOOK_APPROVAL_REQUEST = URL_PREFIX + "add-book-approval-request";
+    public static final String GET_BOOK_APPROVAL_REQUEST = URL_PREFIX + "get-book-approval-request";
 }
