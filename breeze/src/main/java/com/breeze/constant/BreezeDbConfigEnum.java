@@ -6,7 +6,7 @@ import static com.breeze.constant.BreezeConstants.ConfigDataType.*;
 
 public enum BreezeDbConfigEnum {
 
-    TEST_CONFIG(BOOLEAN);
+    ENTITY_CODE_LENGTH(LONG);
 
     private ConfigDataType dataType;
 

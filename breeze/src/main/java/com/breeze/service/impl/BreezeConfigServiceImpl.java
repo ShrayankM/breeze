@@ -89,4 +89,14 @@ public class BreezeConfigServiceImpl implements BreezeConfigService {
         }
     }
 
+
+    @Override
+    public Long getLongValue(BreezeDbConfigEnum dbConfigEnumName) {
+        return (Long) configHashMap.get(dbConfigEnumName);
+    }
+
+    @Override
+    public <T> T getConfigValueOrDefault(BreezeDbConfigEnum dbConfigEnum, T defaultValue) {
+        return (T) configHashMap.getOrDefault(dbConfigEnum, defaultValue);
+    }
 }

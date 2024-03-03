@@ -1,6 +1,6 @@
 package com.breeze.request;
 
-import com.breeze.constant.BreezeConstants;
+import com.breeze.constant.BreezeConstants.BreezeBookGenre;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
@@ -15,19 +15,28 @@ import java.util.Date;
 public class BookApprovalRequest {
 
     @NotBlank
-    private String bookName;
+    private String userCode;
 
     @NotBlank
-    private String authorName;
+    private BookData bookData;
 
-    @NotBlank
-    private String isbn;
+    @Data
+    @JsonIgnoreProperties(ignoreUnknown = true)
+    @NoArgsConstructor
+    public static class BookData {
 
-    private Long noOfPages;
+        private String bookName;
 
-    private Date yearPublished;
+        private String authorName;
 
-    private BreezeConstants.BreezeBookGenre bookGenre;
+        private String isbn;
 
-    private String description;
+        private Long noOfPages;
+
+        private Date yearPublished;
+
+        private BreezeBookGenre bookGenre;
+
+        private String description;
+    }
 }

@@ -5,11 +5,15 @@ import com.breeze.model.AbstractModel;
 import com.breeze.util.LoggerWrapper;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
+import org.springframework.context.annotation.Primary;
+import org.springframework.stereotype.Repository;
 import org.springframework.util.Assert;
 
 import java.util.ArrayList;
 import java.util.List;
 
+@Repository
+@Primary
 public class GenericDaoImpl implements GenericDao {
 
     private static final LoggerWrapper logger = LoggerWrapper.getLogger(GenericDaoImpl.class);
