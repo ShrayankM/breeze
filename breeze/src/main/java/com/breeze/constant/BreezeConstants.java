@@ -30,4 +30,6 @@ public class BreezeConstants {
     public enum BreezeUserApprovalStatus {
         PENDING, SUBMITTED, UNDER_REVIEW, APPROVED, REJECTED
     }
+
+    public static final String BOOK_APPROVAL_PREFIX = "BAR";
 }

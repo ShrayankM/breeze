@@ -57,14 +57,14 @@ CREATE TABLE `breeze_user_suggestions` (
     UNIQUE KEY `UK_user_suggestion_code` (`code`)
 );
 
-CREATE TABLE `breeze_user_approval_request` (
+CREATE TABLE `breeze_user_approval` (
     `id` bigint NOT NULL AUTO_INCREMENT,
     `code` varchar(30) NOT NULL,
     `user_code` varchar(30)  NOT NULL,
     `data` json NOT NULL,
     `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
     `updated_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    `approval_status` enum('pending','under-review','approved','rejected') NOT NULL,
+    `approval_status` enum('PENDING', 'SUBMITTED', 'UNDER_REVIEW', 'APPROVED', 'REJECTED') NOT NULL,
     `approved_at` datetime DEFAULT NULL,
     `rejected_at` datetime DEFAULT NULL,
     `rejection_reason` varchar(255) DEFAULT NULL,
