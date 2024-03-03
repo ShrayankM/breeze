@@ -1,5 +1,7 @@
 package com.breeze.configuration;
 
+import com.breeze.service.BreezeConfigService;
+import com.breeze.service.impl.BreezeConfigServiceImpl;
 import com.breeze.util.LoggerWrapper;
 import com.zaxxer.hikari.HikariDataSource;
 import jakarta.persistence.EntityManagerFactory;
@@ -99,4 +101,8 @@ public class BreezeConfiguration {
         return transactionManager;
     }
 
+    @Bean
+    public BreezeConfigService breezeConfigService(@Qualifier("entityManager") PlatformTransactionManager transactionManager) {
+        return new BreezeConfigServiceImpl();
+    }
 }

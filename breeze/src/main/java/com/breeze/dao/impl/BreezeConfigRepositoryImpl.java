@@ -6,9 +6,11 @@ import com.breeze.model.BreezeConfig;
 import com.breeze.util.LoggerWrapper;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.Query;
+import org.springframework.stereotype.Component;
 
 import java.util.List;
 
+@Component
 public class BreezeConfigRepositoryImpl extends GenericDaoImpl implements BreezeConfigRepository {
 
     private static final LoggerWrapper logger = LoggerWrapper.getLogger(BreezeConfigRepositoryImpl.class);
