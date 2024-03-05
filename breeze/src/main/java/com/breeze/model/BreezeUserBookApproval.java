@@ -1,6 +1,6 @@
 package com.breeze.model;
 
-import com.breeze.constant.BreezeConstants.BreezeUserApprovalStatus;
+import com.breeze.constant.BreezeConstants.BreezeUserBookApprovalStatus;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -8,10 +8,10 @@ import lombok.Setter;
 import java.util.Date;
 
 @Entity
-@Table(name = "breeze_user_approval")
+@Table(name = "breeze_user_book_approval")
 @Getter
 @Setter
-public class BreezeUserApproval extends AbstractModelWithCode {
+public class BreezeUserBookApproval extends AbstractModelWithCode {
 
     @Column(name = "user_code")
     private String userCode;
@@ -21,7 +21,7 @@ public class BreezeUserApproval extends AbstractModelWithCode {
 
     @Column(name = "approval_status", columnDefinition = "enum")
     @Enumerated(EnumType.STRING)
-    private BreezeUserApprovalStatus approvalStatus;
+    private BreezeUserBookApprovalStatus approvalStatus;
 
     @Column(name = "approved_at")
     private Date approvedAt;

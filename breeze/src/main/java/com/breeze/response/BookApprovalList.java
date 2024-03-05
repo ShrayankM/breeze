@@ -1,29 +1,20 @@
-package com.breeze.request;
+package com.breeze.response;
 
 import com.breeze.constant.BreezeConstants.BreezeBookGenre;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.util.Date;
-
+import java.util.List;
 
 @Data
-@JsonIgnoreProperties(ignoreUnknown = true)
-@NoArgsConstructor
-public class BookApprovalRequest {
+public class BookApprovalList {
 
-    @NotBlank
-    private String userCode;
-
-    @NotBlank
-    private BookData bookData;
+    private List<BookApprovalData> bookApprovalDataList;
 
     @Data
-    @JsonIgnoreProperties(ignoreUnknown = true)
     @NoArgsConstructor
-    public static class BookData {
+    public static class BookApprovalData {
 
         private String bookName;
 

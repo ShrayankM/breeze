@@ -4,8 +4,8 @@ import com.breeze.constant.BreezeConstants;
 import jakarta.persistence.*;
 
 @Entity
-@Table(name = "breeze_user_book_details")
-public class BreezeUserBookDetails extends AbstractModelWithCode  {
+@Table(name = "breeze_user_book")
+public class BreezeUserBook extends AbstractModelWithCode  {
 
     @Column(name = "book_code")
     private String bookCode;

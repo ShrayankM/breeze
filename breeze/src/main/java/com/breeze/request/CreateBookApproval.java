@@ -1,18 +1,27 @@
-package com.breeze.response;
+package com.breeze.request;
 
 import com.breeze.constant.BreezeConstants.BreezeBookGenre;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.util.Date;
-import java.util.List;
+
 
 @Data
-public class BookApprovalResponseList {
+@JsonIgnoreProperties(ignoreUnknown = true)
+@NoArgsConstructor
+public class CreateBookApproval {
 
-    private List<BookApprovalData> bookApprovalDataList;
+    @NotBlank
+    private String userCode;
+
+    @NotBlank
+    private BookApprovalData bookApprovalData;
 
     @Data
+    @JsonIgnoreProperties(ignoreUnknown = true)
     @NoArgsConstructor
     public static class BookApprovalData {
 
@@ -29,7 +38,5 @@ public class BookApprovalResponseList {
         private BreezeBookGenre bookGenre;
 
         private String description;
-
     }
-
 }

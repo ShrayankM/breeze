@@ -2,10 +2,10 @@ package com.breeze.service.impl;
 
 import com.breeze.dao.BookApprovalRepository;
 import com.breeze.dao.GenericDao;
-import com.breeze.model.BreezeUserApproval;
-import com.breeze.request.BookApprovalListRequest;
-import com.breeze.request.BookApprovalRequest;
-import com.breeze.response.BookApprovalResponseList;
+import com.breeze.model.BreezeUserBookApproval;
+import com.breeze.request.FetchBookApprovalList;
+import com.breeze.request.CreateBookApproval;
+import com.breeze.response.BookApprovalList;
 import com.breeze.service.BookApprovalService;
 import com.breeze.util.LoggerWrapper;
 import com.breeze.util.ModelToResponseConverter;
@@ -30,13 +30,13 @@ public class BookApprovalServiceImpl implements BookApprovalService {
 
     @Override
     @Transactional
-    public void addBookApprovalRequest(BookApprovalRequest request) {
+    public void createBookApprovalRequest(CreateBookApproval request) {
         logger.info("Book Approval Request Received for user = {}", request.getUserCode());
 
         // * Validate incoming data has mandatory fields (name, author-name, isbn)
 
         // * Create record to add new incoming book approval request
-        BreezeUserApproval model = RequestToModelConverter.createBookApprovalRequestToModel(request);
+        BreezeUserBookApproval model = RequestToModelConverter.createBookApprovalRequestToModel(request);
 
         // * Insert created record in DB
         genericDao.create(model);
@@ -44,15 +44,15 @@ public class BookApprovalServiceImpl implements BookApprovalService {
     }
 
     @Override
-    public BookApprovalResponseList getBookApprovalRequestList(BookApprovalListRequest request) {
+    public BookApprovalList fetchBookApprovalRequests(FetchBookApprovalList request) {
         logger.info("Fetching list of all {} approval requests", request);
-        BookApprovalResponseList bookApprovalResponseList = new BookApprovalResponseList();
+        BookApprovalList bookApprovalResponseList = new BookApprovalList();
 
         // * Fetch all requests with state sent in request
-        List<BreezeUserApproval> breezeUserApprovalRequestList = bookApprovalRepository.getListOfApprovalRequests(request.getApprovalStatus());
+        List<BreezeUserBookApproval> breezeUserApprovalRequestList = bookApprovalRepository.getListOfApprovalRequests(request.getApprovalStatus());
 
         // * Convert the data from DB to correct response
-        bookApprovalResponseList = ModelToResponseConverter.getApprovalResponseFromModel(breezeUserApprovalRequestList);
+        bookApprovalResponseList = ModelToResponseConverter.getBookApprovalResponseFromModel(breezeUserApprovalRequestList);
 
         // * return the response
         return bookApprovalResponseList;
