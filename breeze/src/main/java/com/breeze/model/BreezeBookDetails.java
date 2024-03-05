@@ -1,7 +1,7 @@
 package com.breeze.model;
 
 
-import com.breeze.constant.BreezeConstants;
+import com.breeze.constant.BreezeConstants.BookGenre;
 import jakarta.persistence.*;
 
 import java.math.BigDecimal;
@@ -30,7 +30,7 @@ public class BreezeBookDetails extends AbstractModelWithCode {
 
     @Column(name = "book_genre", columnDefinition = "enum")
     @Enumerated(EnumType.STRING)
-    private BreezeConstants.BreezeBookGenre bookGenre;
+    private BookGenre bookGenre;
 
     @Column(name = "user_rating")
     private BigDecimal userRating;

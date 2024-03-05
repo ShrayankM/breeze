@@ -5,8 +5,16 @@ import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
 
 @Data
-public class FetchBookApprovalList {
+public class UpdateBookApproval {
+
+    @NotBlank
+    private String code;
+
+    @NotBlank
+    private String userCode;
 
     @NotBlank
     private UserBookApprovalStatus approvalStatus;
+
+    private String rejectionReason;
 }

@@ -6,29 +6,29 @@ public class BreezeConstants {
         STRING, LONG, BOOLEAN, DECIMAL, STRING_LIST
     }
 
-    public enum BreezeUserType {
+    public enum UserType {
         ADMIN, STANDARD
     }
 
-    public enum BreezeStatus {
+    public enum Status {
         ACTIVE, INACTIVE
     }
 
-    public enum BreezeBookGenre {
+    public enum BookGenre {
         FICTION, NON_FICTION, POETRY, DRAMA, ROMANCE, MYSTERY_THRILLER, SCIENCE_FICTION, FANTASY, HORROR, ADVENTURE, CHILDRENS_YOUNG_ADULT,
         HISTORICAL, BIOGRAPHY_AUTOBIOGRAPHY, HUMOR_SATIRE, DYSTOPIAN
     }
 
-    public enum BreezeBookStatus {
+    public enum BookStatus {
         WISHLISTED, BOUGHT, READING, READ, COMPLETED
     }
 
-    public enum BreezeUserSuggestionStatus {
+    public enum UserSuggestionStatus {
         PENDING, SUBMITTED, CLOSED
     }
 
-    public enum BreezeUserBookApprovalStatus {
-        PENDING, SUBMITTED, UNDER_REVIEW, APPROVED, REJECTED
+    public enum UserBookApprovalStatus {
+        SUBMITTED, UNDER_REVIEW, APPROVED, REJECTED
     }
 
     public static final String USER_BOOK_APPROVAL_PREFIX = "UBA";

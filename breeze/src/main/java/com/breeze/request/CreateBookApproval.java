@@ -1,6 +1,6 @@
 package com.breeze.request;
 
-import com.breeze.constant.BreezeConstants.BreezeBookGenre;
+import com.breeze.constant.BreezeConstants.BookGenre;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
@@ -35,7 +35,7 @@ public class CreateBookApproval {
 
         private Date yearPublished;
 
-        private BreezeBookGenre bookGenre;
+        private BookGenre bookGenre;
 
         private String description;
     }

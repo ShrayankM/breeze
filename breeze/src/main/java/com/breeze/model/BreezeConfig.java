@@ -1,6 +1,6 @@
 package com.breeze.model;
 
-import com.breeze.constant.BreezeConstants.BreezeStatus;
+import com.breeze.constant.BreezeConstants.Status;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -19,7 +19,7 @@ public class BreezeConfig extends AbstractModel {
 
     @Column(name = "status", columnDefinition = "enum")
     @Enumerated(EnumType.STRING)
-    private BreezeStatus status;
+    private Status status;
 
     @Column(name = "description")
     private String description;

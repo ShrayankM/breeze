@@ -1,7 +1,7 @@
 package com.breeze.util;
 
 import com.breeze.constant.BreezeConstants;
-import com.breeze.constant.BreezeConstants.BreezeUserBookApprovalStatus;
+import com.breeze.constant.BreezeConstants.UserBookApprovalStatus;
 import com.breeze.constant.BreezeDbConfigEnum;
 import com.breeze.model.BreezeUserBookApproval;
 import com.breeze.request.CreateBookApproval;
@@ -46,7 +46,7 @@ public class RequestToModelConverter {
         } catch (JsonProcessingException e) {
             logger.error("Error when converting object to JSON");
         }
-        model.setApprovalStatus(BreezeUserBookApprovalStatus.PENDING);
+        model.setApprovalStatus(UserBookApprovalStatus.SUBMITTED);
 
         return model;
     }
