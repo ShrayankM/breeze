@@ -1,6 +1,6 @@
 package com.breeze.response;
 
-import com.breeze.constant.BreezeConstants.BreezeBookGenre;
+import com.breeze.constant.BreezeConstants.BookGenre;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -26,7 +26,7 @@ public class BookApprovalList {
 
         private Date yearPublished;
 
-        private BreezeBookGenre bookGenre;
+        private BookGenre bookGenre;
 
         private String description;
     }

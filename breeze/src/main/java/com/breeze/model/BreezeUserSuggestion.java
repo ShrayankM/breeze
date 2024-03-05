@@ -12,7 +12,7 @@ public class BreezeUserSuggestion extends AbstractModelWithCode {
 
     @Column(name = "user_suggestion_status", columnDefinition = "enum")
     @Enumerated(EnumType.STRING)
-    private BreezeConstants.BreezeUserSuggestionStatus userSuggestionStatus;
+    private BreezeConstants.UserSuggestionStatus userSuggestionStatus;
 
     @Column(name = "suggestion")
     private String suggestion;

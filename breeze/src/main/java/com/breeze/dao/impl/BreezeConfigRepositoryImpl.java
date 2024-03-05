@@ -1,6 +1,6 @@
 package com.breeze.dao.impl;
 
-import com.breeze.constant.BreezeConstants.BreezeStatus;
+import com.breeze.constant.BreezeConstants.Status;
 import com.breeze.dao.BreezeConfigRepository;
 import com.breeze.model.BreezeConfig;
 import com.breeze.util.LoggerWrapper;
@@ -16,7 +16,7 @@ public class BreezeConfigRepositoryImpl extends GenericDaoImpl implements Breeze
     private static final LoggerWrapper logger = LoggerWrapper.getLogger(BreezeConfigRepositoryImpl.class);
 
     @Override
-    public List<BreezeConfig> findAllByStatus(BreezeStatus status) {
+    public List<BreezeConfig> findAllByStatus(Status status) {
 
         StringBuilder queryBuilder = new StringBuilder(" ")
                 .append(" SELECT config FROM ")

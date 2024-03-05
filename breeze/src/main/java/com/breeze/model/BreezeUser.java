@@ -34,6 +34,6 @@ public class BreezeUser extends AbstractModelWithCode  {
 
     @Column(name = "user_type", columnDefinition = "enum")
     @Enumerated(EnumType.STRING)
-    private BreezeConstants.BreezeUserType userType;
+    private BreezeConstants.UserType userType;
 
 }

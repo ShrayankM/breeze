@@ -1,6 +1,6 @@
 package com.breeze.model;
 
-import com.breeze.constant.BreezeConstants.BreezeUserBookApprovalStatus;
+import com.breeze.constant.BreezeConstants.UserBookApprovalStatus;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -21,7 +21,7 @@ public class BreezeUserBookApproval extends AbstractModelWithCode {
 
     @Column(name = "approval_status", columnDefinition = "enum")
     @Enumerated(EnumType.STRING)
-    private BreezeUserBookApprovalStatus approvalStatus;
+    private UserBookApprovalStatus approvalStatus;
 
     @Column(name = "approved_at")
     private Date approvedAt;

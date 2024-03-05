@@ -1,6 +1,6 @@
 package com.breeze.service.impl;
 
-import com.breeze.constant.BreezeConstants.BreezeStatus;
+import com.breeze.constant.BreezeConstants.Status;
 import com.breeze.constant.BreezeDbConfigEnum;
 import com.breeze.dao.BreezeConfigRepository;
 import com.breeze.model.BreezeConfig;
@@ -33,7 +33,7 @@ public class BreezeConfigServiceImpl implements BreezeConfigService {
 
         Map<BreezeDbConfigEnum, Object> tempConfigHashMap = new HashMap<>();
 
-        List<BreezeConfig> activeConfigList = breezeConfigRepository.findAllByStatus(BreezeStatus.ACTIVE);
+        List<BreezeConfig> activeConfigList = breezeConfigRepository.findAllByStatus(Status.ACTIVE);
         Map<String, BreezeConfig> activeConfigMap = activeConfigList.stream().collect(Collectors.toMap(BreezeConfig::getName, Function.identity()));
         List<BreezeDbConfigEnum> breezeDbConfigEnumList = List.of(BreezeDbConfigEnum.values());
 

@@ -15,7 +15,7 @@ public class BreezeUserBook extends AbstractModelWithCode  {
 
     @Column(name = "book_status", columnDefinition = "enum")
     @Enumerated(EnumType.STRING)
-    private BreezeConstants.BreezeBookStatus bookStatus;
+    private BreezeConstants.BookStatus bookStatus;
 
     @Column(name = "current_page")
     private Long currentPage;

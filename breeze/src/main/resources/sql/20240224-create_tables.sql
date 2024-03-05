@@ -34,7 +34,7 @@ CREATE TABLE `breeze_book_details` (
 );
 
 
-CREATE TABLE `breeze_user_book_details` (
+CREATE TABLE `breeze_user_book` (
     `id` bigint NOT NULL AUTO_INCREMENT,
     `book_code` varchar(30) NOT NULL,
     `user_code` varchar(30) NOT NULL,
@@ -57,7 +57,7 @@ CREATE TABLE `breeze_user_suggestions` (
     UNIQUE KEY `UK_user_suggestion_code` (`code`)
 );
 
-CREATE TABLE `breeze_user_approval` (
+CREATE TABLE `breeze_user_book_approval` (
     `id` bigint NOT NULL AUTO_INCREMENT,
     `code` varchar(30) NOT NULL,
     `user_code` varchar(30)  NOT NULL,
