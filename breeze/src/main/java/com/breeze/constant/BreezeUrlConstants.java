@@ -2,9 +2,10 @@ package com.breeze.constant;
 
 public class BreezeUrlConstants {
 
+    private BreezeUrlConstants() {  super(); }
+
     public static final String URL_PREFIX = "/v1/breeze/";
 
-    // * Book approval (addition of new book in db)
-    public static final String ADD_BOOK_APPROVAL_REQUEST = URL_PREFIX + "add-book-approval-request";
-    public static final String GET_BOOK_APPROVAL_REQUEST = URL_PREFIX + "get-book-approval-request";
+    public static final String CREATE_BOOK_APPROVAL_REQUEST = URL_PREFIX + "create-book-approval-request";
+    public static final String FETCH_BOOK_APPROVAL_REQUESTS = URL_PREFIX + "fetch-book-approval-requests";
 }

@@ -27,9 +27,9 @@ public class BreezeConstants {
         PENDING, SUBMITTED, CLOSED
     }
 
-    public enum BreezeUserApprovalStatus {
+    public enum BreezeUserBookApprovalStatus {
         PENDING, SUBMITTED, UNDER_REVIEW, APPROVED, REJECTED
     }
 
-    public static final String BOOK_APPROVAL_PREFIX = "BAR";
+    public static final String USER_BOOK_APPROVAL_PREFIX = "UBA";
 }

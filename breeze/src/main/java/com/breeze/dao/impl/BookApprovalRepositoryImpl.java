@@ -1,8 +1,8 @@
 package com.breeze.dao.impl;
 
-import com.breeze.constant.BreezeConstants.BreezeUserApprovalStatus;
+import com.breeze.constant.BreezeConstants.BreezeUserBookApprovalStatus;
 import com.breeze.dao.BookApprovalRepository;
-import com.breeze.model.BreezeUserApproval;
+import com.breeze.model.BreezeUserBookApproval;
 import com.breeze.util.LoggerWrapper;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.Query;
@@ -15,11 +15,11 @@ public class BookApprovalRepositoryImpl extends GenericDaoImpl implements BookAp
 
     private static final LoggerWrapper logger = LoggerWrapper.getLogger(BookApprovalRepositoryImpl.class);
     @Override
-    public List<BreezeUserApproval> getListOfApprovalRequests(BreezeUserApprovalStatus status) {
+    public List<BreezeUserBookApproval> getListOfApprovalRequests(BreezeUserBookApprovalStatus status) {
 
         StringBuilder queryBuilder = new StringBuilder().append(" ")
                 .append(" SELECT approval FROM ")
-                .append(BreezeUserApproval.class.getSimpleName())
+                .append(BreezeUserBookApproval.class.getSimpleName())
                 .append(" approval ")
                 .append(" WHERE approval.approvalStatus = :status ");
 
@@ -30,6 +30,6 @@ public class BookApprovalRepositoryImpl extends GenericDaoImpl implements BookAp
         Query queryObject = entityManager.createQuery(queryBuilder.toString());
         queryObject.setParameter("status", status);
 
-        return (List<BreezeUserApproval>) queryObject.getResultList();
+        return (List<BreezeUserBookApproval>) queryObject.getResultList();
     }
 }

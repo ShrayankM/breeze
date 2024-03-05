@@ -1,8 +1,8 @@
 package com.breeze.util;
 
-import com.breeze.model.BreezeUserApproval;
-import com.breeze.response.BookApprovalResponseList;
-import com.breeze.response.BookApprovalResponseList.BookApprovalData;
+import com.breeze.model.BreezeUserBookApproval;
+import com.breeze.response.BookApprovalList;
+import com.breeze.response.BookApprovalList.BookApprovalData;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,11 +25,11 @@ public class ModelToResponseConverter {
         this.objectMapper = new ObjectMapper();
     }
 
-    public static BookApprovalResponseList getApprovalResponseFromModel(List<BreezeUserApproval> modelList) {
+    public static BookApprovalList getBookApprovalResponseFromModel(List<BreezeUserBookApproval> modelList) {
 
-        BookApprovalResponseList response = new BookApprovalResponseList();
+        BookApprovalList response = new BookApprovalList();
         List<BookApprovalData> bookApprovalDataList = new ArrayList<>();
-        for (BreezeUserApproval model : modelList) {
+        for (BreezeUserBookApproval model : modelList) {
 
             BookApprovalData bookApprovalData = new BookApprovalData();
             try {
