@@ -1,5 +1,9 @@
 package com.breeze.constant;
 
+import java.time.LocalDate;
+import java.time.ZoneId;
+import java.util.Date;
+
 public class BreezeConstants {
 
     public enum ConfigDataType {
@@ -32,4 +36,8 @@ public class BreezeConstants {
     }
 
     public static final String USER_BOOK_APPROVAL_PREFIX = "UBA";
+    public static final Long MIN_PAGES = 0L;
+    public static final Long MAX_PAGES = 10000L;
+    public static final Date YOP_START_DATE =  Date.from(LocalDate.of(1990, 1, 1).atStartOfDay(ZoneId.systemDefault()).toInstant());
+    public static final Date YOP_END_DATE = Date.from(LocalDate.now().atStartOfDay(ZoneId.systemDefault()).toInstant());
 }

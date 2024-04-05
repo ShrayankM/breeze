@@ -1,10 +1,10 @@
 package com.breeze.service;
 
 import com.breeze.request.FetchBookList;
-import com.breeze.response.BookList;
+import com.breeze.response.BookListResponse;
 
 public interface BookService {
 
-    BookList getBooks(FetchBookList request);
+    BookListResponse getBooks(FetchBookList request);
 
 }

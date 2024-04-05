@@ -6,9 +6,11 @@ import lombok.Data;
 import java.util.List;
 
 @Data
-public class BookList {
+public class BookListResponse {
 
     private List<BookDetailsData> bookDetailsList;
+
+    private int count;
 
     @Data
     public static class BookDetailsData {

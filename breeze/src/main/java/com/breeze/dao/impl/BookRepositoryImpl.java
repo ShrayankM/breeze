@@ -1,8 +1,42 @@
 package com.breeze.dao.impl;
 
+import com.breeze.constant.BreezeConstants.BookGenre;
 import com.breeze.dao.BookRepository;
+import com.breeze.model.BreezeBookDetails;
+import com.breeze.util.LoggerWrapper;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.Query;
 import org.springframework.stereotype.Repository;
 
+import java.util.Date;
+import java.util.List;
+
 @Repository
-public class BookRepositoryImpl implements BookRepository {
+public class BookRepositoryImpl extends GenericDaoImpl implements BookRepository {
+
+    private static final LoggerWrapper logger = LoggerWrapper.getLogger(BookRepositoryImpl.class);
+    @Override
+    public List<BreezeBookDetails> getListOfBooks(List<BookGenre> genreList, Long minPages, Long maxPages, Date startDate, Date endDate) {
+
+        StringBuilder queryBuilder = new StringBuilder().append(" ")
+                .append(" SELECT book FROM ")
+                .append(BreezeBookDetails.class.getSimpleName())
+                .append(" book ")
+                .append(" WHERE book.bookGenre IN ( :genreList ) ")
+                .append(" AND ( book.noOfPages >= :minPages AND book.noOfPages =< :maxPages ) ")
+                .append(" AND (book.yearPublished >= :startDate AND book.yearPublished =< :endDate ) ");
+
+        logger.debug("DB query = {}", queryBuilder.toString());
+
+        EntityManager entityManager = getEntityManager();
+
+        Query queryObject = entityManager.createQuery(queryBuilder.toString());
+        queryObject.setParameter("genreList", genreList);
+        queryObject.setParameter("minPages", minPages);
+        queryObject.setParameter("maxPages", maxPages);
+        queryObject.setParameter("startDate", startDate);
+        queryObject.setParameter("endDate", endDate);
+
+        return queryObject.getResultList();
+    }
 }
