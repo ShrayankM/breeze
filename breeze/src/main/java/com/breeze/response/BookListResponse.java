@@ -10,7 +10,7 @@ public class BookListResponse {
 
     private List<BookDetailsData> bookDetailsList;
 
-    private Long count;
+    private int count;
 
     @Data
     public static class BookDetailsData {

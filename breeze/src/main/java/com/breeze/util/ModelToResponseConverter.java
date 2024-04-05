@@ -59,6 +59,7 @@ public class ModelToResponseConverter {
             bookDetailsData.setS3ImageLink(bookDetails.getS3ImageLink());
             response.getBookDetailsList().add(bookDetailsData);
         }
+        response.setCount(response.getBookDetailsList().size());
         return response;
     }
 }

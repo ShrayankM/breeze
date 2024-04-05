@@ -23,8 +23,8 @@ public class BookRepositoryImpl extends GenericDaoImpl implements BookRepository
                 .append(BreezeBookDetails.class.getSimpleName())
                 .append(" book ")
                 .append(" WHERE book.bookGenre IN ( :genreList ) ")
-                .append(" AND ( book.noOfPages > :minPages AND book.noOfPages < :maxPages ) ")
-                .append(" AND (book.yearPublished > :startDate AND book.yearPublished < :endDate ) ");
+                .append(" AND ( book.noOfPages >= :minPages AND book.noOfPages =< :maxPages ) ")
+                .append(" AND (book.yearPublished >= :startDate AND book.yearPublished =< :endDate ) ");
 
         logger.debug("DB query = {}", queryBuilder.toString());
 
