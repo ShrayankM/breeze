@@ -3,9 +3,17 @@ package com.breeze.model;
 
 import com.breeze.constant.BreezeConstants.BookGenre;
 import jakarta.persistence.*;
+import lombok.*;
+import org.hibernate.Hibernate;
 
 import java.math.BigDecimal;
+import java.util.Date;
+import java.util.Objects;
 
+@Getter
+@Setter
+@ToString
+@RequiredArgsConstructor
 @Entity
 @Table(name = "breeze_book_details")
 public class BreezeBookDetails extends AbstractModelWithCode {
@@ -23,10 +31,10 @@ public class BreezeBookDetails extends AbstractModelWithCode {
     private String s3ImageLink;
 
     @Column(name = "year_published")
-    private String yearPublished;
+    private Date yearPublished;
 
     @Column(name = "no_of_pages")
-    private String noOfPages;
+    private Long noOfPages;
 
     @Column(name = "book_genre", columnDefinition = "enum")
     @Enumerated(EnumType.STRING)
@@ -37,4 +45,17 @@ public class BreezeBookDetails extends AbstractModelWithCode {
 
     @Column(name = "description")
     private String description;
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) return false;
+        BreezeBookDetails that = (BreezeBookDetails) o;
+        return getId() != null && Objects.equals(getId(), that.getId());
+    }
+
+    @Override
+    public int hashCode() {
+        return getClass().hashCode();
+    }
 }
