@@ -7,4 +7,6 @@ public interface BookService {
 
     BookListResponse getBooks(FetchBookList request);
 
+    BookListResponse getBooksForUser(FetchBookList request);
+
 }
