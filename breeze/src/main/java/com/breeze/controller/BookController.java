@@ -26,4 +26,11 @@ public class BookController {
         BookListResponse response = bookService.getBooks(request);
         return new ResponseEntity<>(CommonResponseGenerator.okResponse(response), HttpStatus.OK);
     }
+
+    @PostMapping(path = BreezeUrlConstants.GET_BOOKS_FOR_USER, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<CommonResponse<BookListResponse>> getBooksForUser(@RequestBody FetchBookList request) {
+
+        BookListResponse response = bookService.getBooksForUser(request);
+        return new ResponseEntity<>(CommonResponseGenerator.okResponse(response), HttpStatus.OK);
+    }
 }

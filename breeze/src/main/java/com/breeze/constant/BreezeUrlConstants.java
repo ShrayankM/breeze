@@ -11,4 +11,5 @@ public class BreezeUrlConstants {
     public static final String UPDATE_BOOK_APPROVAL_REQUEST = URL_PREFIX + "update-book-approval-request";
 
     public static final String GET_BOOKS = URL_PREFIX + "get-books";
+    public static final String GET_BOOKS_FOR_USER = URL_PREFIX + "get-books-user";
 }
