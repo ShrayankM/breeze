@@ -79,6 +79,67 @@ public class BookServiceImpl implements BookService {
         return bookDetailsResponse;
     }
 
+    @Override
+    public BookListResponse getBooksByName(String bookName) {
+        BookListResponse bookListResponse = new BookListResponse();
+
+        if (MiscUtils.isStringNullOrEmpty(bookName)) {
+            logger.error("Book name cannot be null or empty");
+        }
+
+        List<BreezeBookDetails> bookDetailsList = bookRepository.getBooksByName(bookName);
+        bookListResponse = ModelToResponseConverter.getBookListResponseFromModel(bookDetailsList);
+        return bookListResponse;
+    }
+
+    @Override
+    public BookListResponse getBooksByAuthor(String authorName) {
+        BookListResponse bookListResponse = new BookListResponse();
+
+        if (MiscUtils.isStringNullOrEmpty(authorName)) {
+            logger.error("Author Name cannot be null or empty");
+        }
+
+        List<BreezeBookDetails> bookDetailsList = bookRepository.getBooksByAuthor(authorName);
+        bookListResponse = ModelToResponseConverter.getBookListResponseFromModel(bookDetailsList);
+        return bookListResponse;
+
+    }
+
+    @Override
+    public BookListResponse getBooksByNameForUser(String bookName, String userCode) {
+        BookListResponse bookListResponse = new BookListResponse();
+
+        if (MiscUtils.isStringNullOrEmpty(bookName) || MiscUtils.isStringNullOrEmpty(userCode)) {
+            logger.error("Book Name or User code cannot be null or empty");
+        }
+
+        List<BreezeUserBook> breezeUserBookList = bookRepository.getListOfBookForUserUsingCode(userCode);
+        List<String> bookCodeList = breezeUserBookList.stream().map(BreezeUserBook::getCode).toList();
+
+        List<BreezeBookDetails> breezeBookDetailsList = bookRepository.getListOfBooksUsingCode(bookCodeList);
+        List<BreezeBookDetails> filteredBookDetailsList = breezeBookDetailsList.stream().filter(book -> book.getBookName().contains(bookName)).toList();
+        bookListResponse = ModelToResponseConverter.getBookListResponseFromModel(filteredBookDetailsList);
+        return bookListResponse;
+    }
+
+    @Override
+    public BookListResponse getBooksByAuthorForUser(String authorName, String userCode) {
+        BookListResponse bookListResponse = new BookListResponse();
+
+        if (MiscUtils.isStringNullOrEmpty(authorName) || MiscUtils.isStringNullOrEmpty(userCode)) {
+            logger.error("Author name or User code cannot be null or empty");
+        }
+
+        List<BreezeUserBook> breezeUserBookList = bookRepository.getListOfBookForUserUsingCode(userCode);
+        List<String> bookCodeList = breezeUserBookList.stream().map(BreezeUserBook::getCode).toList();
+
+        List<BreezeBookDetails> breezeBookDetailsList = bookRepository.getListOfBooksUsingCode(bookCodeList);
+        List<BreezeBookDetails> filteredBookDetailsList = breezeBookDetailsList.stream().filter(book -> book.getAuthorName().contains(authorName)).toList();
+        bookListResponse = ModelToResponseConverter.getBookListResponseFromModel(filteredBookDetailsList);
+        return bookListResponse;
+    }
+
     private void setBookListFilters(FetchBookList request) {
 
         // Set default values if null

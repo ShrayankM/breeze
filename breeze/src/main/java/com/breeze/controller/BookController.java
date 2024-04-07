@@ -36,7 +36,35 @@ public class BookController {
     @GetMapping(path = BreezeUrlConstants.GET_BOOK_DETAILS, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<CommonResponse<BookDetailsResponse>> getBooksDetails(@PathVariable String bookCode) {
 
-        BookDetailsResponse response = new BookDetailsResponse();
+        BookDetailsResponse response = bookService.getBookDetails(bookCode);
+        return new ResponseEntity<>(CommonResponseGenerator.okResponse(response), HttpStatus.OK);
+    }
+
+    @GetMapping(path = BreezeUrlConstants.GET_BOOKS_BY_NAME, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<CommonResponse<BookListResponse>> getBooksByName(@PathVariable String bookName) {
+
+        BookListResponse response = bookService.getBooksByName(bookName);
+        return new ResponseEntity<>(CommonResponseGenerator.okResponse(response), HttpStatus.OK);
+    }
+
+    @GetMapping(path = BreezeUrlConstants.GET_BOOKS_BY_AUTHOR, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<CommonResponse<BookListResponse>> getBooksByAuthor(@PathVariable String authorName) {
+
+        BookListResponse response = bookService.getBooksByAuthor(authorName);
+        return new ResponseEntity<>(CommonResponseGenerator.okResponse(response), HttpStatus.OK);
+    }
+
+    @GetMapping(path = BreezeUrlConstants.GET_BOOKS_BY_NAME_FOR_USER, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<CommonResponse<BookListResponse>> getBooksByNameForUser(@PathVariable String bookName, @PathVariable String userCode) {
+
+        BookListResponse response = bookService.getBooksByNameForUser(bookName, userCode);
+        return new ResponseEntity<>(CommonResponseGenerator.okResponse(response), HttpStatus.OK);
+    }
+
+    @GetMapping(path = BreezeUrlConstants.GET_BOOKS_BY_AUTHOR_FOR_USER, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<CommonResponse<BookListResponse>> getBooksByAuthorForUser(@PathVariable String authorName, @PathVariable String userCode) {
+
+        BookListResponse response = bookService.getBooksByAuthorForUser(authorName, userCode);
         return new ResponseEntity<>(CommonResponseGenerator.okResponse(response), HttpStatus.OK);
     }
 }

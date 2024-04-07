@@ -18,4 +18,12 @@ public interface BookRepository {
 
     BreezeBookDetails getBookDetailsUsingCode(String bookCode);
 
+    List<BreezeBookDetails> getBooksByName(String bookName);
+
+    List<BreezeBookDetails> getBooksByAuthor(String authorName);
+
+    List<BreezeUserBook> getListOfBookForUserUsingCode(String userCode);
+
+    List<BreezeBookDetails> getListOfBooksUsingCode(List<String> bookCodeList);
+
 }
