@@ -8,9 +8,11 @@ import com.breeze.model.BreezeUserBook;
 import com.breeze.request.FetchBookList;
 import com.breeze.request.FetchBookList.YearOfPublishing;
 import com.breeze.request.FetchBookList.NoOfPages;
+import com.breeze.response.BookDetailsResponse;
 import com.breeze.response.BookListResponse;
 import com.breeze.service.BookService;
 import com.breeze.util.LoggerWrapper;
+import com.breeze.util.MiscUtils;
 import com.breeze.util.ModelToResponseConverter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -62,6 +64,19 @@ public class BookServiceImpl implements BookService {
                 request.getPages().getMaxPages(), request.getYob().getStartDate(), request.getYob().getEndDate());
         bookListResponse = ModelToResponseConverter.getBookListResponseFromModel(breezeBookDetailsList);
         return bookListResponse;
+    }
+
+    @Override
+    public BookDetailsResponse getBookDetails(String bookCode) {
+        BookDetailsResponse bookDetailsResponse = new BookDetailsResponse();
+
+        if (MiscUtils.isStringNullOrEmpty(bookCode)) {
+            logger.error(" Book code cannot be null or empty");
+        }
+
+        BreezeBookDetails bookDetails = bookRepository.getBookDetailsUsingCode(bookCode);
+        bookDetailsResponse = ModelToResponseConverter.getBookDetailsResponseFromModel(bookDetails);
+        return bookDetailsResponse;
     }
 
     private void setBookListFilters(FetchBookList request) {

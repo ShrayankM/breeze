@@ -1,18 +1,22 @@
 package com.breeze.util;
 
+import com.breeze.constant.BreezeConstants;
 import com.breeze.model.BreezeBookDetails;
 import com.breeze.model.BreezeUserBookApproval;
 import com.breeze.response.BookApprovalList;
 import com.breeze.response.BookApprovalList.BookApprovalData;
+import com.breeze.response.BookDetailsResponse;
 import com.breeze.response.BookListResponse;
-import com.breeze.response.BookListResponse.BookDetailsData;
+import com.breeze.response.BookListResponse.BookData;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 @Component
@@ -50,7 +54,7 @@ public class ModelToResponseConverter {
         BookListResponse response = new BookListResponse();
 
         for (BreezeBookDetails bookDetails : modelList) {
-            BookDetailsData bookDetailsData = new BookDetailsData();
+            BookData bookDetailsData = new BookData();
 
             bookDetailsData.setBookName(bookDetails.getBookName());
             bookDetailsData.setGenre(bookDetails.getBookGenre());
@@ -60,6 +64,22 @@ public class ModelToResponseConverter {
             response.getBookDetailsList().add(bookDetailsData);
         }
         response.setCount(response.getBookDetailsList().size());
+        return response;
+    }
+
+    public static BookDetailsResponse getBookDetailsResponseFromModel(BreezeBookDetails model) {
+        BookDetailsResponse response = new BookDetailsResponse();
+
+        response.setBookName(model.getBookName());
+        response.setIsbn(model.getIsbn());
+        response.setAuthorName(model.getAuthorName());
+        response.setS3ImageLink(model.getS3ImageLink());
+        response.setYearPublished(model.getYearPublished());
+        response.setNoOfPages(model.getNoOfPages());
+        response.setBookGenre(model.getBookGenre());
+        response.setUserRating(model.getUserRating());
+        response.setDescription(model.getDescription());
+
         return response;
     }
 }

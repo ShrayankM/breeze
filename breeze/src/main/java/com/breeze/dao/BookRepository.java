@@ -16,4 +16,6 @@ public interface BookRepository {
 
     List<BreezeBookDetails> getListOfBooksUsingCodeList(List<String> bookCodeList, List<BookGenre> genreList, Long minPages, Long maxPages, Date startDate, Date endDate);
 
+    BreezeBookDetails getBookDetailsUsingCode(String bookCode);
+
 }

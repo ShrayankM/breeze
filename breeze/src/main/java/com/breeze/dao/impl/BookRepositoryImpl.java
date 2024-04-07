@@ -88,4 +88,22 @@ public class BookRepositoryImpl extends GenericDaoImpl implements BookRepository
 
         return queryObject.getResultList();
     }
+
+    @Override
+    public BreezeBookDetails getBookDetailsUsingCode(String bookCode) {
+
+        StringBuilder queryBuilder = new StringBuilder().append(" ")
+                .append(" SELECT book FROM ")
+                .append(BreezeBookDetails.class.getSimpleName())
+                .append(" book ")
+                .append(" WHERE book.code = :bookCode ");
+
+        logger.debug("DB query = {}", queryBuilder.toString());
+
+        EntityManager entityManager = getEntityManager();
+
+        Query queryObject = entityManager.createQuery(queryBuilder.toString());
+        queryObject.setParameter("bookCode", bookCode);
+        return (BreezeBookDetails) queryObject.getSingleResult();
+    }
 }

@@ -8,12 +8,12 @@ import java.util.List;
 @Data
 public class BookListResponse {
 
-    private List<BookDetailsData> bookDetailsList;
+    private List<BookData> bookDetailsList;
 
     private int count;
 
     @Data
-    public static class BookDetailsData {
+    public static class BookData {
 
         private String bookName;
 

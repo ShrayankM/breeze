@@ -10,6 +10,7 @@ public class BreezeUrlConstants {
     public static final String FETCH_BOOK_APPROVAL_REQUESTS = URL_PREFIX + "fetch-book-approval-requests";
     public static final String UPDATE_BOOK_APPROVAL_REQUEST = URL_PREFIX + "update-book-approval-request";
 
-    public static final String GET_BOOKS = URL_PREFIX + "get-books";
-    public static final String GET_BOOKS_FOR_USER = URL_PREFIX + "get-books-user";
+    public static final String GET_BOOKS = URL_PREFIX + "book/get-books";
+    public static final String GET_BOOKS_FOR_USER = URL_PREFIX + "book/get-books-user";
+    public static final String GET_BOOK_DETAILS = URL_PREFIX + "book/{bookCode}/get-book-details";
 }
