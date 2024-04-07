@@ -106,4 +106,73 @@ public class BookRepositoryImpl extends GenericDaoImpl implements BookRepository
         queryObject.setParameter("bookCode", bookCode);
         return (BreezeBookDetails) queryObject.getSingleResult();
     }
+
+    @Override
+    public List<BreezeBookDetails> getBooksByName(String bookName) {
+
+        StringBuilder queryBuilder = new StringBuilder().append(" ")
+                .append(" SELECT book FROM ")
+                .append(BreezeBookDetails.class.getSimpleName())
+                .append(" book ")
+                .append(" WHERE book.bookName LIKE :bookName ");
+
+        logger.debug("DB query = {}", queryBuilder.toString());
+
+        EntityManager entityManager = getEntityManager();
+        Query queryObject = entityManager.createQuery(queryBuilder.toString());
+        queryObject.setParameter("bookName", "%" + bookName + "%");
+        return queryObject.getResultList();
+    }
+
+    @Override
+    public List<BreezeBookDetails> getBooksByAuthor(String authorName) {
+
+        StringBuilder queryBuilder = new StringBuilder().append(" ")
+                .append(" SELECT book FROM ")
+                .append(BreezeBookDetails.class.getSimpleName())
+                .append(" book ")
+                .append(" WHERE book.authorName LIKE :authorName ");
+
+        logger.debug("DB query = {}", queryBuilder.toString());
+
+        EntityManager entityManager = getEntityManager();
+        Query queryObject = entityManager.createQuery(queryBuilder.toString());
+        queryObject.setParameter("authorName", "%" + authorName + "%");
+        return queryObject.getResultList();
+    }
+
+    @Override
+    public List<BreezeUserBook> getListOfBookForUserUsingCode(String userCode) {
+        StringBuilder queryBuilder = new StringBuilder().append(" ")
+                .append(" SELECT book FROM ")
+                .append(BreezeUserBook.class.getSimpleName())
+                .append(" book ")
+                .append(" WHERE book.userCode = :userCode ");
+
+        logger.debug("DB query = {}", queryBuilder.toString());
+
+        EntityManager entityManager = getEntityManager();
+
+        Query queryObject = entityManager.createQuery(queryBuilder.toString());
+        queryObject.setParameter("userCode", userCode);
+        return queryObject.getResultList();
+    }
+
+    @Override
+    public List<BreezeBookDetails> getListOfBooksUsingCode(List<String> bookCodeList) {
+
+        StringBuilder queryBuilder = new StringBuilder().append(" ")
+                .append(" SELECT book FROM ")
+                .append(BreezeBookDetails.class.getSimpleName())
+                .append(" book ")
+                .append(" WHERE book.code IN ( :bookCodeList ) ");
+
+        logger.debug("DB query = {}", queryBuilder.toString());
+
+        EntityManager entityManager = getEntityManager();
+
+        Query queryObject = entityManager.createQuery(queryBuilder.toString());
+        queryObject.setParameter("bookCodeList", bookCodeList);
+        return queryObject.getResultList();
+    }
 }

@@ -12,4 +12,12 @@ public interface BookService {
 
     BookDetailsResponse getBookDetails(String bookCode);
 
+    BookListResponse getBooksByName(String bookName);
+
+    BookListResponse getBooksByAuthor(String authorName);
+
+    BookListResponse getBooksByNameForUser(String bookName, String userCode);
+
+    BookListResponse getBooksByAuthorForUser(String authorName, String userCode);
+
 }
