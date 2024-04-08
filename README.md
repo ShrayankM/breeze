@@ -1,2 +1,2 @@
 # breeze
-Book application built using SpringBoot and React
+Book application built using SpringBoot and React-Native
