@@ -1,6 +1,7 @@
 package com.breeze.service;
 
 import com.breeze.request.FetchBookList;
+import com.breeze.request.UpdateBookRating;
 import com.breeze.response.BookDetailsResponse;
 import com.breeze.response.BookListResponse;
 
@@ -19,5 +20,7 @@ public interface BookService {
     BookListResponse getBooksByNameForUser(String bookName, String userCode);
 
     BookListResponse getBooksByAuthorForUser(String authorName, String userCode);
+
+    void updateBookRatingForUser(UpdateBookRating request);
 
 }

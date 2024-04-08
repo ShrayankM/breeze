@@ -2,7 +2,12 @@ package com.breeze.model;
 
 import com.breeze.constant.BreezeConstants;
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
 
+
+@Getter
+@Setter
 @Entity
 @Table(name = "breeze_user_book")
 public class BreezeUserBook extends AbstractModelWithCode  {
@@ -19,4 +24,7 @@ public class BreezeUserBook extends AbstractModelWithCode  {
 
     @Column(name = "current_page")
     private Long currentPage;
+
+    @Column(name = "user_rating")
+    private Long userRating;
 }

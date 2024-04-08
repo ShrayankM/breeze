@@ -26,7 +26,8 @@ CREATE TABLE `breeze_book_details` (
     `year_published` datetime DEFAULT NULL,
     `no_of_pages` bigint DEFAULT NULL,
     `genre` enum('fiction','biography') NOT NULL,
-    `user_rating` bigint DEFAULT NULL,
+    `user_rating` decimal(3, 2) DEFAULT NULL,
+    `review_count` bigint DEFAULT 0,
     `description` varchar(255) DEFAULT NULL,
     PRIMARY KEY (`id`),
     UNIQUE KEY `UK_book_code` (`code`),
@@ -40,6 +41,7 @@ CREATE TABLE `breeze_user_book` (
     `user_code` varchar(30) NOT NULL,
     `book_status` enum('reading','read') NOT NULL,
     `current_page` bigint DEFAULT NULL,
+    `user_rating` bigint DEFAULT NULL,
     PRIMARY KEY (`id`),
     UNIQUE KEY `UK_book_user_code` (`book_code`, `user_code`)
 );

@@ -3,20 +3,25 @@ package com.breeze.service.impl;
 import com.breeze.constant.BreezeConstants;
 import com.breeze.constant.BreezeConstants.BookGenre;
 import com.breeze.dao.BookRepository;
+import com.breeze.dao.GenericDao;
 import com.breeze.model.BreezeBookDetails;
 import com.breeze.model.BreezeUserBook;
 import com.breeze.request.FetchBookList;
 import com.breeze.request.FetchBookList.YearOfPublishing;
 import com.breeze.request.FetchBookList.NoOfPages;
+import com.breeze.request.UpdateBookRating;
 import com.breeze.response.BookDetailsResponse;
 import com.breeze.response.BookListResponse;
 import com.breeze.service.BookService;
 import com.breeze.util.LoggerWrapper;
 import com.breeze.util.MiscUtils;
 import com.breeze.util.ModelToResponseConverter;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.Arrays;
 import java.util.List;
 
@@ -27,6 +32,9 @@ public class BookServiceImpl implements BookService {
 
     @Autowired
     BookRepository bookRepository;
+
+    @Autowired
+    GenericDao genericDao;
 
     @Override
     public BookListResponse getBooks(FetchBookList request) {
@@ -138,6 +146,37 @@ public class BookServiceImpl implements BookService {
         List<BreezeBookDetails> filteredBookDetailsList = breezeBookDetailsList.stream().filter(book -> book.getAuthorName().contains(authorName)).toList();
         bookListResponse = ModelToResponseConverter.getBookListResponseFromModel(filteredBookDetailsList);
         return bookListResponse;
+    }
+
+    @Override
+    @Transactional
+    public void updateBookRatingForUser(UpdateBookRating request) {
+
+        if (MiscUtils.isStringNullOrEmpty(request.getUserCode()) || MiscUtils.isStringNullOrEmpty(request.getBookCode())) {
+            logger.error("User code or book code cannot be null or empty");
+        }
+
+        if (request.getRating() == null || MiscUtils.isStringNullOrEmpty(request.getRating().toString())) {
+            logger.error("Rating cannot be null or empty");
+        }
+
+        if (request.getRating() < 0 || request.getRating() > 5) {
+            logger.error("Rating should be greater than 0 and less than 5");
+        }
+
+        BreezeUserBook breezeUserBook = bookRepository.getUserBookFromCode(request.getUserCode(), request.getBookCode());
+        breezeUserBook.setUserRating(request.getRating());
+        genericDao.update(breezeUserBook);
+
+        BreezeBookDetails breezeBookDetails = bookRepository.getBookDetailsUsingCode(request.getBookCode());
+
+        Long currentReviewCount = breezeBookDetails.getReviewCount();
+        BigDecimal currentRating = breezeBookDetails.getUserRating();
+        BigDecimal updatedRating = currentRating.add(BigDecimal.valueOf(request.getRating())).divide(BigDecimal.valueOf(currentReviewCount + 1), 2, RoundingMode.HALF_UP);
+
+        breezeBookDetails.setUserRating(updatedRating);
+        breezeBookDetails.setReviewCount(currentReviewCount + 1);
+        genericDao.update(breezeBookDetails);
     }
 
     private void setBookListFilters(FetchBookList request) {

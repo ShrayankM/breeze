@@ -17,4 +17,6 @@ public class BreezeUrlConstants {
     public static final String GET_BOOKS_BY_AUTHOR = URL_PREFIX + "book/{authorName}/get-books";
     public static final String GET_BOOKS_BY_NAME_FOR_USER = URL_PREFIX + "book/{bookName}/user/{userCode}/get-books";
     public static final String GET_BOOKS_BY_AUTHOR_FOR_USER = URL_PREFIX + "book/{authorName}/user/{userCode}/get-books";
+
+    public static final String UPDATE_BOOK_RATING_FOR_USER = URL_PREFIX + "book/update-user-rating";
 }

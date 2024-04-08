@@ -2,6 +2,7 @@ package com.breeze.controller;
 
 import com.breeze.constant.BreezeUrlConstants;
 import com.breeze.request.FetchBookList;
+import com.breeze.request.UpdateBookRating;
 import com.breeze.response.BookDetailsResponse;
 import com.breeze.response.BookListResponse;
 import com.breeze.response.CommonResponse;
@@ -66,5 +67,12 @@ public class BookController {
 
         BookListResponse response = bookService.getBooksByAuthorForUser(authorName, userCode);
         return new ResponseEntity<>(CommonResponseGenerator.okResponse(response), HttpStatus.OK);
+    }
+
+    @PostMapping(path = BreezeUrlConstants.UPDATE_BOOK_RATING_FOR_USER, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<CommonResponse<String>> updateBookRatingForUser(@RequestBody UpdateBookRating request) {
+
+        bookService.updateBookRatingForUser(request);
+        return new ResponseEntity<>(CommonResponseGenerator.okResponse("OK"), HttpStatus.OK);
     }
 }

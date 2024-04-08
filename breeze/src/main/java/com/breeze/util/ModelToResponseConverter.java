@@ -1,6 +1,5 @@
 package com.breeze.util;
 
-import com.breeze.constant.BreezeConstants;
 import com.breeze.model.BreezeBookDetails;
 import com.breeze.model.BreezeUserBookApproval;
 import com.breeze.response.BookApprovalList;
@@ -14,9 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 
-import java.math.BigDecimal;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 @Component
