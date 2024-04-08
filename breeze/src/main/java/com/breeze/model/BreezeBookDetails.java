@@ -43,6 +43,9 @@ public class BreezeBookDetails extends AbstractModelWithCode {
     @Column(name = "user_rating")
     private BigDecimal userRating;
 
+    @Column(name = "review_count")
+    private Long reviewCount;
+
     @Column(name = "description")
     private String description;
 
