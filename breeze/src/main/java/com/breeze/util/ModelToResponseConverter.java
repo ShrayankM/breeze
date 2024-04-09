@@ -49,6 +49,7 @@ public class ModelToResponseConverter {
 
     public static BookListResponse getBookListResponseFromModel(List<BreezeBookDetails> modelList) {
         BookListResponse response = new BookListResponse();
+        List<BookData> bookDetailsList = new ArrayList<>();
 
         for (BreezeBookDetails bookDetails : modelList) {
             BookData bookDetailsData = new BookData();
@@ -58,8 +59,9 @@ public class ModelToResponseConverter {
             bookDetailsData.setIsbn(bookDetails.getIsbn());
             bookDetailsData.setAuthorName(bookDetails.getAuthorName());
             bookDetailsData.setS3ImageLink(bookDetails.getS3ImageLink());
-            response.getBookDetailsList().add(bookDetailsData);
+            bookDetailsList.add(bookDetailsData);
         }
+        response.setBookDetailsList(bookDetailsList);
         response.setCount(response.getBookDetailsList().size());
         return response;
     }
