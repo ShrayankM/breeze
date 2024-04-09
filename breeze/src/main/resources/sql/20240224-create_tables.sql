@@ -15,25 +15,26 @@ CREATE TABLE `breeze_user` (
     UNIQUE KEY `UK_user_email_address` (`email_address`)
 );
 
-
 CREATE TABLE `breeze_book_details` (
-    `id` bigint NOT NULL AUTO_INCREMENT,
-    `code` varchar(30) NOT NULL,
-    `book_name` varchar(64) NOT NULL,
-    `isbn` varchar(30) NOT NULL,
-    `author_name` varchar(64) NOT NULL,
-    `s3_image_link` varchar(255) DEFAULT NULL,
-    `year_published` datetime DEFAULT NULL,
-    `no_of_pages` bigint DEFAULT NULL,
-    `genre` enum('fiction','biography') NOT NULL,
-    `user_rating` decimal(3, 2) DEFAULT NULL,
-    `review_count` bigint DEFAULT 0,
-    `description` varchar(255) DEFAULT NULL,
-    PRIMARY KEY (`id`),
-    UNIQUE KEY `UK_book_code` (`code`),
-    UNIQUE KEY `UK_book_isbn` (`isbn`)
+         `id` bigint NOT NULL AUTO_INCREMENT,
+         `code` varchar(30) NOT NULL,
+         `book_name` varchar(64) NOT NULL,
+         `isbn` varchar(30) NOT NULL,
+         `author_name` varchar(64) NOT NULL,
+         `s3_image_link` varchar(255) DEFAULT NULL,
+         `year_published` datetime DEFAULT NULL,
+         `no_of_pages` bigint DEFAULT NULL,
+         `book_genre` enum('FICTION', 'NON_FICTION', 'POETRY', 'DRAMA', 'ROMANCE', 'MYSTERY_THRILLER', 'SCIENCE_FICTION', 'FANTASY', 'HORROR', 'ADVENTURE', 'CHILDRENS_YOUNG_ADULT',
+                           'HISTORICAL', 'BIOGRAPHY_AUTOBIOGRAPHY', 'HUMOR_SATIRE', 'DYSTOPIAN') NOT NULL,
+        `user_rating` decimal(3, 2) DEFAULT NULL,
+        `review_count` bigint DEFAULT 0,
+        `description` varchar(255) DEFAULT NULL,
+        `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+        `updated_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+        PRIMARY KEY (`id`),
+        UNIQUE KEY `UK_book_code` (`code`),
+        UNIQUE KEY `UK_book_isbn` (`isbn`)
 );
-
 
 CREATE TABLE `breeze_user_book` (
     `id` bigint NOT NULL AUTO_INCREMENT,
