@@ -19,10 +19,13 @@ import com.breeze.util.ModelToResponseConverter;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 @Service
@@ -38,12 +41,18 @@ public class BookServiceImpl implements BookService {
 
     @Override
     public BookListResponse getBooks(FetchBookList request) {
-        BookListResponse bookListResponse;
+        BookListResponse bookListResponse = new BookListResponse();
 
         setBookListFilters(request);
 
         List<BreezeBookDetails> breezeBookDetailsList = bookRepository.getListOfBooks(request.getGenreList(), request.getPages().getMinPages(),
                 request.getPages().getMaxPages(), request.getYob().getStartDate(), request.getYob().getEndDate());
+
+        if (CollectionUtils.isEmpty(breezeBookDetailsList)) {
+            bookListResponse.setBookDetailsList(new ArrayList<>());
+            bookListResponse.setCount(0);
+            return bookListResponse;
+        }
 
         bookListResponse = ModelToResponseConverter.getBookListResponseFromModel(breezeBookDetailsList);
         return bookListResponse;
