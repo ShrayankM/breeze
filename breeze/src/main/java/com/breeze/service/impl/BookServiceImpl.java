@@ -2,8 +2,12 @@ package com.breeze.service.impl;
 
 import com.breeze.constant.BreezeConstants;
 import com.breeze.constant.BreezeConstants.BookGenre;
+import com.breeze.constant.BreezeErrorCodes;
 import com.breeze.dao.BookRepository;
 import com.breeze.dao.GenericDao;
+import com.breeze.exception.BreezeException;
+import com.breeze.exception.ResourceNotFoundException;
+import com.breeze.exception.ValidationException;
 import com.breeze.model.BreezeBookDetails;
 import com.breeze.model.BreezeUserBook;
 import com.breeze.request.FetchBookList;
@@ -20,13 +24,11 @@ import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
+import org.springframework.util.StringUtils;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 @Service
 public class BookServiceImpl implements BookService {
@@ -59,99 +61,186 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
-    public BookListResponse getBooksForUser(FetchBookList request) {
+    public BookListResponse getBooksForUser(FetchBookList request) throws BreezeException {
         BookListResponse bookListResponse = new BookListResponse();
 
-        if (request.getUserCode() == null) {
-            logger.error("User code cannot be null or empty");
-            return bookListResponse;
+        if (Objects.isNull(request.getUserCode()) || !StringUtils.hasText(request.getUserCode())) {
+            logger.error("User code in request is null or empty");
+            throw new ValidationException(BreezeErrorCodes.INVALID_USER_CODE,
+                    BreezeErrorCodes.INVALID_USER_CODE_MSG);
         }
 
-        if (request.getBookStatus() == null) {
-            logger.error("Book status cannot be null or empty");
-            return bookListResponse;
+        if (Objects.isNull(request.getBookStatus())) {
+            logger.error("Book status in request is null");
+            throw new ValidationException(BreezeErrorCodes.INVALID_BOOK_STATUS_IN_REQUEST_CODE,
+                    BreezeErrorCodes.INVALID_BOOK_STATUS_IN_REQUEST_CODE_MSG);
         }
 
         setBookListFilters(request);
 
         List<BreezeUserBook> breezeUserBookList = bookRepository.getListOfBooksForUser(request.getUserCode(), request.getBookStatus());
+
+        if (CollectionUtils.isEmpty(breezeUserBookList)) {
+            logger.info("No books found for user: " + request.getUserCode());
+            bookListResponse.setBookDetailsList(new ArrayList<>());
+            bookListResponse.setCount(0);
+            return bookListResponse;
+        }
         List<String> bookCodeList = breezeUserBookList.stream().map(BreezeUserBook::getCode).toList();
 
         List<BreezeBookDetails> breezeBookDetailsList = bookRepository.getListOfBooksUsingCodeList(bookCodeList, request.getGenreList(), request.getPages().getMinPages(),
                 request.getPages().getMaxPages(), request.getYob().getStartDate(), request.getYob().getEndDate());
+
+        if (CollectionUtils.isEmpty(breezeBookDetailsList)) {
+            logger.info("No books details found for books for user: " + request.getUserCode());
+            bookListResponse.setBookDetailsList(new ArrayList<>());
+            bookListResponse.setCount(0);
+            return bookListResponse;
+        }
         bookListResponse = ModelToResponseConverter.getBookListResponseFromModel(breezeBookDetailsList);
         return bookListResponse;
     }
 
     @Override
-    public BookDetailsResponse getBookDetails(String bookCode) {
+    public BookDetailsResponse getBookDetails(String bookCode) throws BreezeException {
         BookDetailsResponse bookDetailsResponse = new BookDetailsResponse();
 
-        if (MiscUtils.isStringNullOrEmpty(bookCode)) {
-            logger.error(" Book code cannot be null or empty");
+        if (!StringUtils.hasText(bookCode)) {
+            logger.error("Book code in request cannot null or empty");
+            throw new ValidationException(BreezeErrorCodes.INVALID_BOOK_CODE_IN_REQUEST_CODE,
+                    BreezeErrorCodes.INVALID_BOOK_CODE_IN_REQUEST_CODE_MSG);
         }
 
         BreezeBookDetails bookDetails = bookRepository.getBookDetailsUsingCode(bookCode);
+
+        if (Objects.isNull(bookDetails)) {
+            logger.error("Book details not found for book code: " + bookCode);
+            throw new ResourceNotFoundException(BreezeErrorCodes.DATA_NOT_FOUND,
+                    BreezeErrorCodes.DATA_NOT_FOUND_MSG);
+        }
         bookDetailsResponse = ModelToResponseConverter.getBookDetailsResponseFromModel(bookDetails);
         return bookDetailsResponse;
     }
 
     @Override
-    public BookListResponse getBooksByName(String bookName) {
+    public BookListResponse getBooksByName(String bookName) throws BreezeException {
         BookListResponse bookListResponse = new BookListResponse();
 
-        if (MiscUtils.isStringNullOrEmpty(bookName)) {
-            logger.error("Book name cannot be null or empty");
+        if (!StringUtils.hasText(bookName)) {
+            logger.error("Book name in request cannot null or empty");
+            throw new ValidationException(BreezeErrorCodes.INVALID_BOOK_NAME_IN_REQUEST_CODE,
+                    BreezeErrorCodes.INVALID_BOOK_NAME_IN_REQUEST_MSG);
         }
 
         List<BreezeBookDetails> bookDetailsList = bookRepository.getBooksByName(bookName);
+
+        if (CollectionUtils.isEmpty(bookDetailsList)) {
+            logger.info("No books with name: " + bookName + " found in the DB");
+            bookListResponse.setBookDetailsList(new ArrayList<>());
+            bookListResponse.setCount(0);
+            return bookListResponse;
+        }
+
         bookListResponse = ModelToResponseConverter.getBookListResponseFromModel(bookDetailsList);
         return bookListResponse;
     }
 
     @Override
-    public BookListResponse getBooksByAuthor(String authorName) {
+    public BookListResponse getBooksByAuthor(String authorName) throws BreezeException {
         BookListResponse bookListResponse = new BookListResponse();
 
-        if (MiscUtils.isStringNullOrEmpty(authorName)) {
-            logger.error("Author Name cannot be null or empty");
+        if (!StringUtils.hasText(authorName)) {
+            logger.error("Author Name in request cannot null or empty");
+            throw new ValidationException(BreezeErrorCodes.INVALID_AUTHOR_NAME_IN_REQUEST_CODE,
+                    BreezeErrorCodes.INVALID_AUTHOR_NAME_IN_REQUEST_MSG);
         }
 
         List<BreezeBookDetails> bookDetailsList = bookRepository.getBooksByAuthor(authorName);
+
+        if (CollectionUtils.isEmpty(bookDetailsList)) {
+            logger.info("No books with author name: " + authorName + " found in the DB");
+            bookListResponse.setBookDetailsList(new ArrayList<>());
+            bookListResponse.setCount(0);
+            return bookListResponse;
+        }
+
         bookListResponse = ModelToResponseConverter.getBookListResponseFromModel(bookDetailsList);
         return bookListResponse;
-
     }
 
     @Override
-    public BookListResponse getBooksByNameForUser(String bookName, String userCode) {
+    public BookListResponse getBooksByNameForUser(String bookName, String userCode) throws BreezeException {
         BookListResponse bookListResponse = new BookListResponse();
 
-        if (MiscUtils.isStringNullOrEmpty(bookName) || MiscUtils.isStringNullOrEmpty(userCode)) {
-            logger.error("Book Name or User code cannot be null or empty");
+        if (!StringUtils.hasText(bookName)) {
+            logger.error("Book name in request cannot null or empty");
+            throw new ValidationException(BreezeErrorCodes.INVALID_BOOK_NAME_IN_REQUEST_CODE,
+                    BreezeErrorCodes.INVALID_BOOK_NAME_IN_REQUEST_MSG);
+        }
+
+        if (!StringUtils.hasText(userCode)) {
+            logger.error("User code in request cannot null or empty");
+            throw new ValidationException(BreezeErrorCodes.INVALID_USER_CODE_IN_REQUEST_CODE,
+                    BreezeErrorCodes.INVALID_USER_CODE_IN_REQUEST_MSG);
         }
 
         List<BreezeUserBook> breezeUserBookList = bookRepository.getListOfBookForUserUsingCode(userCode);
+        if (CollectionUtils.isEmpty(breezeUserBookList)) {
+            logger.info("No books found for user with code: " + userCode);
+            bookListResponse.setBookDetailsList(new ArrayList<>());
+            bookListResponse.setCount(0);
+            return bookListResponse;
+        }
+
         List<String> bookCodeList = breezeUserBookList.stream().map(BreezeUserBook::getCode).toList();
 
         List<BreezeBookDetails> breezeBookDetailsList = bookRepository.getListOfBooksUsingCode(bookCodeList);
+        if (CollectionUtils.isEmpty(breezeBookDetailsList)) {
+            logger.info("No books details found for books for user: " + userCode);
+            bookListResponse.setBookDetailsList(new ArrayList<>());
+            bookListResponse.setCount(0);
+            return bookListResponse;
+        }
+
         List<BreezeBookDetails> filteredBookDetailsList = breezeBookDetailsList.stream().filter(book -> book.getBookName().contains(bookName)).toList();
         bookListResponse = ModelToResponseConverter.getBookListResponseFromModel(filteredBookDetailsList);
         return bookListResponse;
     }
 
     @Override
-    public BookListResponse getBooksByAuthorForUser(String authorName, String userCode) {
+    public BookListResponse getBooksByAuthorForUser(String authorName, String userCode) throws BreezeException {
         BookListResponse bookListResponse = new BookListResponse();
 
-        if (MiscUtils.isStringNullOrEmpty(authorName) || MiscUtils.isStringNullOrEmpty(userCode)) {
-            logger.error("Author name or User code cannot be null or empty");
+        if (!StringUtils.hasText(authorName)) {
+            logger.error("Author name in request cannot null or empty");
+            throw new ValidationException(BreezeErrorCodes.INVALID_AUTHOR_NAME_IN_REQUEST_CODE,
+                    BreezeErrorCodes.INVALID_AUTHOR_NAME_IN_REQUEST_MSG);
+        }
+
+        if (!StringUtils.hasText(userCode)) {
+            logger.error("User code in request cannot null or empty");
+            throw new ValidationException(BreezeErrorCodes.INVALID_USER_CODE_IN_REQUEST_CODE,
+                    BreezeErrorCodes.INVALID_USER_CODE_IN_REQUEST_MSG);
         }
 
         List<BreezeUserBook> breezeUserBookList = bookRepository.getListOfBookForUserUsingCode(userCode);
+        if (CollectionUtils.isEmpty(breezeUserBookList)) {
+            logger.info("No books found for user with code: " + userCode);
+            bookListResponse.setBookDetailsList(new ArrayList<>());
+            bookListResponse.setCount(0);
+            return bookListResponse;
+        }
+
         List<String> bookCodeList = breezeUserBookList.stream().map(BreezeUserBook::getCode).toList();
 
         List<BreezeBookDetails> breezeBookDetailsList = bookRepository.getListOfBooksUsingCode(bookCodeList);
+        if (CollectionUtils.isEmpty(breezeBookDetailsList)) {
+            logger.info("No books details found for books for user: " + userCode);
+            bookListResponse.setBookDetailsList(new ArrayList<>());
+            bookListResponse.setCount(0);
+            return bookListResponse;
+        }
+
         List<BreezeBookDetails> filteredBookDetailsList = breezeBookDetailsList.stream().filter(book -> book.getAuthorName().contains(authorName)).toList();
         bookListResponse = ModelToResponseConverter.getBookListResponseFromModel(filteredBookDetailsList);
         return bookListResponse;
@@ -159,25 +248,43 @@ public class BookServiceImpl implements BookService {
 
     @Override
     @Transactional
-    public void updateBookRatingForUser(UpdateBookRating request) {
+    public void updateBookRatingForUser(UpdateBookRating request) throws BreezeException {
 
-        if (MiscUtils.isStringNullOrEmpty(request.getUserCode()) || MiscUtils.isStringNullOrEmpty(request.getBookCode())) {
-            logger.error("User code or book code cannot be null or empty");
+        if (!StringUtils.hasText(request.getUserCode())) {
+            logger.error("User code in request cannot be null or empty");
+            throw new ValidationException(BreezeErrorCodes.INVALID_USER_CODE,
+                    BreezeErrorCodes.INVALID_USER_CODE_MSG);
         }
 
-        if (request.getRating() == null || MiscUtils.isStringNullOrEmpty(request.getRating().toString())) {
-            logger.error("Rating cannot be null or empty");
+        if (!StringUtils.hasText(request.getBookCode())) {
+            logger.error("Book code in request cannot be null or empty");
+            throw new ValidationException(BreezeErrorCodes.INVALID_BOOK_CODE_IN_REQUEST_CODE,
+                    BreezeErrorCodes.INVALID_BOOK_CODE_IN_REQUEST_CODE_MSG);
         }
 
-        if (request.getRating() < 0 || request.getRating() > 5) {
-            logger.error("Rating should be greater than 0 and less than 5");
+        if (Objects.isNull(request.getRating()) || !StringUtils.hasText(request.getRating().toString())) {
+            logger.error("Rating sent in request cannot be null or empty");
+            throw new ValidationException(BreezeErrorCodes.INVALID_RATING_IN_REQUEST_CODE,
+                    BreezeErrorCodes.INVALID_RATING_IN_REQUEST_MSG);
         }
+
 
         BreezeUserBook breezeUserBook = bookRepository.getUserBookFromCode(request.getUserCode(), request.getBookCode());
+        if (Objects.isNull(breezeUserBook)) {
+            logger.error("No record found in DB for user: " + request.getUserCode() + " and book: " + request.getBookCode());
+            throw new ResourceNotFoundException(BreezeErrorCodes.DATA_NOT_FOUND,
+                    BreezeErrorCodes.DATA_NOT_FOUND_MSG);
+        }
+
         breezeUserBook.setUserRating(request.getRating());
         genericDao.update(breezeUserBook);
 
         BreezeBookDetails breezeBookDetails = bookRepository.getBookDetailsUsingCode(request.getBookCode());
+        if (Objects.isNull(breezeBookDetails)) {
+            logger.error("No record found in DB for book: " + request.getBookCode());
+            throw new ResourceNotFoundException(BreezeErrorCodes.DATA_NOT_FOUND,
+                    BreezeErrorCodes.DATA_NOT_FOUND_MSG);
+        }
 
         Long currentReviewCount = breezeBookDetails.getReviewCount();
         BigDecimal currentRating = breezeBookDetails.getUserRating();

@@ -21,4 +21,9 @@ public class CommonResponse<T> {
         this.message = message;
         this.data = data;
     }
+
+    public CommonResponse(int code, String message) {
+        this.code = code;
+        this.message = message;
+    }
 }
