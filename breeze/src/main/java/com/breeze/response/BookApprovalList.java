@@ -10,6 +10,8 @@ import java.util.List;
 @Data
 public class BookApprovalList {
 
+    private Long count;
+
     private List<BookApprovalData> bookApprovalDataList;
 
     @Data

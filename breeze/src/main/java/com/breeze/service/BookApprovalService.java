@@ -1,5 +1,7 @@
 package com.breeze.service;
 
+import com.breeze.exception.BreezeException;
+import com.breeze.model.BreezeUserBookApproval;
 import com.breeze.request.FetchBookApprovalList;
 import com.breeze.request.CreateBookApproval;
 import com.breeze.request.UpdateBookApproval;
@@ -13,5 +15,5 @@ public interface BookApprovalService {
 
     BookApprovalList fetchBookApprovalRequests(FetchBookApprovalList request);
 
-    void updateBookApprovalRequest(UpdateBookApproval request);
+    BreezeUserBookApproval updateBookApprovalRequest(UpdateBookApproval request) throws BreezeException;
 }

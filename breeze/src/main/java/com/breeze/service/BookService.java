@@ -1,5 +1,6 @@
 package com.breeze.service;
 
+import com.breeze.exception.BreezeException;
 import com.breeze.request.FetchBookList;
 import com.breeze.request.UpdateBookRating;
 import com.breeze.response.BookDetailsResponse;
@@ -9,18 +10,18 @@ public interface BookService {
 
     BookListResponse getBooks(FetchBookList request);
 
-    BookListResponse getBooksForUser(FetchBookList request);
+    BookListResponse getBooksForUser(FetchBookList request) throws BreezeException;
 
-    BookDetailsResponse getBookDetails(String bookCode);
+    BookDetailsResponse getBookDetails(String bookCode) throws BreezeException;
 
-    BookListResponse getBooksByName(String bookName);
+    BookListResponse getBooksByName(String bookName) throws BreezeException;
 
-    BookListResponse getBooksByAuthor(String authorName);
+    BookListResponse getBooksByAuthor(String authorName) throws BreezeException;
 
-    BookListResponse getBooksByNameForUser(String bookName, String userCode);
+    BookListResponse getBooksByNameForUser(String bookName, String userCode) throws BreezeException;
 
-    BookListResponse getBooksByAuthorForUser(String authorName, String userCode);
+    BookListResponse getBooksByAuthorForUser(String authorName, String userCode) throws BreezeException;
 
-    void updateBookRatingForUser(UpdateBookRating request);
+    void updateBookRatingForUser(UpdateBookRating request) throws BreezeException;
 
 }

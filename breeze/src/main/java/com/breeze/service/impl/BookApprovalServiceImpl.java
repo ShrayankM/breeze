@@ -1,8 +1,12 @@
 package com.breeze.service.impl;
 
 import com.breeze.constant.BreezeConstants.UserBookApprovalStatus;
+import com.breeze.constant.BreezeErrorCodes;
 import com.breeze.dao.BookApprovalRepository;
 import com.breeze.dao.GenericDao;
+import com.breeze.exception.BreezeException;
+import com.breeze.exception.ResourceNotFoundException;
+import com.breeze.exception.ValidationException;
 import com.breeze.model.BreezeUserBookApproval;
 import com.breeze.request.FetchBookApprovalList;
 import com.breeze.request.CreateBookApproval;
@@ -16,9 +20,13 @@ import com.breeze.util.RequestToModelConverter;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
+import org.springframework.util.StringUtils;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 
 
 @Service
@@ -49,23 +57,38 @@ public class BookApprovalServiceImpl implements BookApprovalService {
 
         BookApprovalList bookApprovalResponseList;
         List<BreezeUserBookApproval> breezeUserApprovalRequestList = bookApprovalRepository.getListOfApprovalRequests(request.getApprovalStatus());
-        bookApprovalResponseList = ModelToResponseConverter.getBookApprovalResponseFromModel(breezeUserApprovalRequestList);
 
+        if (CollectionUtils.isEmpty(breezeUserApprovalRequestList)) {
+            logger.info("No request found for approval status = {}", request.getApprovalStatus());
+            bookApprovalResponseList = new BookApprovalList();
+            bookApprovalResponseList.setBookApprovalDataList(new ArrayList<>());
+            bookApprovalResponseList.setCount(0L);
+            return bookApprovalResponseList;
+        }
+
+        bookApprovalResponseList = ModelToResponseConverter.getBookApprovalResponseFromModel(breezeUserApprovalRequestList);
         return bookApprovalResponseList;
     }
 
     @Override
     @Transactional
-    public void updateBookApprovalRequest(UpdateBookApproval request) {
+    public BreezeUserBookApproval updateBookApprovalRequest(UpdateBookApproval request) throws BreezeException {
         logger.info("Updating the book approval status for request = {}", request);
 
         BreezeUserBookApproval breezeUserBookApproval = bookApprovalRepository.getApprovalRequestFromCode(request.getCode());
+        if (Objects.isNull(breezeUserBookApproval)) {
+            logger.error("No approval request found for code = {}", request.getCode());
+            throw new ResourceNotFoundException(BreezeErrorCodes.DATA_NOT_FOUND,
+                    BreezeErrorCodes.DATA_NOT_FOUND_MSG);
+        }
+
         UserBookApprovalStatus oldStatus = breezeUserBookApproval.getApprovalStatus();
         UserBookApprovalStatus newStatus = request.getApprovalStatus();
 
-        if (UserBookApprovalStatus.REJECTED.equals(newStatus) && MiscUtils.isStringNullOrEmpty(request.getRejectionReason())) {
-            logger.error("No rejection reason present in request for status update REJECTED");
-            return;
+        if (UserBookApprovalStatus.REJECTED.equals(newStatus) && !StringUtils.hasText(request.getRejectionReason())) {
+            logger.error("No rejection cannot be null or empty to reject request");
+            throw new ValidationException(BreezeErrorCodes.REJECTION_REASON_CANNOT_BE_NULL_OR_EMPTY_CODE,
+                    BreezeErrorCodes.REJECTION_REASON_CANNOT_BE_NULL_OR_EMPTY_MSG);
         }
 
         if (isNewStatusValid(oldStatus, newStatus)) {
@@ -79,8 +102,10 @@ public class BookApprovalServiceImpl implements BookApprovalService {
             }
             bookApprovalRepository.update(breezeUserBookApproval);
             logger.info("Approval request status updated successfully");
+            return breezeUserBookApproval;
         } else {
             logger.error("Approval request status cannot be updated from = {} to {}", oldStatus, newStatus);
+            throw new ResourceNotFoundException(BreezeErrorCodes.DATA_NOT_FOUND,BreezeErrorCodes.DATA_NOT_FOUND_MSG);
         }
     }
 
