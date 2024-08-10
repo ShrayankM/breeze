@@ -13,7 +13,7 @@ public interface BookApprovalService {
 
     void createBookApprovalRequest(CreateBookApproval request);
 
-    BookApprovalList fetchBookApprovalRequests(FetchBookApprovalList request);
+    BookApprovalList fetchBookApprovalRequestList(FetchBookApprovalList request);
 
     BreezeUserBookApproval updateBookApprovalRequest(UpdateBookApproval request) throws BreezeException;
 }
