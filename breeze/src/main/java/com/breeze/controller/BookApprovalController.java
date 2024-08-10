@@ -2,7 +2,6 @@ package com.breeze.controller;
 
 import com.breeze.constant.BreezeUrlConstants;
 import com.breeze.exception.BreezeException;
-import com.breeze.exception.ValidationException;
 import com.breeze.model.BreezeUserBookApproval;
 import com.breeze.request.FetchBookApprovalList;
 import com.breeze.request.CreateBookApproval;
@@ -33,11 +32,11 @@ public class BookApprovalController {
     }
 
     @PostMapping(
-            path = BreezeUrlConstants.FETCH_BOOK_APPROVAL_REQUESTS,
+            path = BreezeUrlConstants.FETCH_APPROVAL_REQUEST_LIST,
             consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE
     )
-    public ResponseEntity<CommonResponse<BookApprovalList>> fetchBookApprovalRequests(@RequestBody FetchBookApprovalList request) {
-        BookApprovalList response = bookApprovalService.fetchBookApprovalRequests(request);
+    public ResponseEntity<CommonResponse<BookApprovalList>> fetchBookApprovalRequestList(@RequestBody FetchBookApprovalList request) {
+        BookApprovalList response = bookApprovalService.fetchBookApprovalRequestList(request);
         return new ResponseEntity<>(CommonResponseGenerator.okResponse(response), HttpStatus.OK);
     }
 

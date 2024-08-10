@@ -45,6 +45,8 @@ public class BookApprovalServiceImpl implements BookApprovalService {
     public void createBookApprovalRequest(CreateBookApproval request) {
         logger.info("Book Approval Request Received for user = {}", request.getUserCode());
 
+        // TODO add validations before creating book request
+
         BreezeUserBookApproval model = RequestToModelConverter.createBookApprovalRequestToModel(request);
         genericDao.create(model);
 
@@ -52,7 +54,7 @@ public class BookApprovalServiceImpl implements BookApprovalService {
     }
 
     @Override
-    public BookApprovalList fetchBookApprovalRequests(FetchBookApprovalList request) {
+    public BookApprovalList fetchBookApprovalRequestList(FetchBookApprovalList request) {
         logger.info("Fetching list of all {} approval requests", request);
 
         BookApprovalList bookApprovalResponseList;
