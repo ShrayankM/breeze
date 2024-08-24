@@ -14,10 +14,14 @@ public class BreezeConstants {
         ADMIN, STANDARD
     }
 
+
+    // TODO add one more status type DELETED
     public enum Status {
         ACTIVE, INACTIVE
     }
 
+
+    // TODO reduce type of enums (keep max 4 - 6)
     public enum BookGenre {
         FICTION, NON_FICTION, POETRY, DRAMA, ROMANCE, MYSTERY_THRILLER, SCIENCE_FICTION, FANTASY, HORROR, ADVENTURE, CHILDRENS_YOUNG_ADULT,
         HISTORICAL, BIOGRAPHY_AUTOBIOGRAPHY, HUMOR_SATIRE, DYSTOPIAN
