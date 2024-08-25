@@ -3,6 +3,9 @@ package com.breeze.util;
 import com.breeze.constant.BreezeConstants;
 import com.breeze.constant.BreezeConstants.UserBookApprovalStatus;
 import com.breeze.constant.BreezeDbConfigEnum;
+import com.breeze.constant.BreezeErrorCodes;
+import com.breeze.exception.BreezeException;
+import com.breeze.model.BreezeBookDetails;
 import com.breeze.model.BreezeUserBookApproval;
 import com.breeze.request.CreateBookApproval;
 import com.breeze.service.BreezeConfigService;
@@ -44,9 +47,30 @@ public class RequestToModelConverter {
         try {
             model.setData(objectMapper.writeValueAsString(bookApprovalRequest.getBookApprovalData()));
         } catch (JsonProcessingException e) {
-            logger.error("Error when converting object to JSON");
+            logger.error("Error when converting object to JSON string message = {}", e.getMessage());
         }
         model.setApprovalStatus(UserBookApprovalStatus.SUBMITTED);
+
+        return model;
+    }
+
+    public static BreezeBookDetails getBookDetailsFromApprovalRequest(BreezeUserBookApproval bookApprovalRequest) throws BreezeException {
+        BreezeBookDetails model = new BreezeBookDetails();
+
+        try {
+            model = objectMapper.readValue(bookApprovalRequest.getData(), BreezeBookDetails.class);
+        } catch (JsonProcessingException e) {
+            logger.error("Exception while parsing json string to object message = {}", e.getMessage());
+            return null;
+        }
+
+        // * set all the attributes for the model to persist
+        model.setCode(
+                MiscUtils.generateCodeForEntity(
+                        BreezeConstants.BOOK_DETAILS_PREFIX,
+                        breezeConfigService.getConfigValueOrDefault(BreezeDbConfigEnum.ENTITY_CODE_LENGTH, 12)
+                )
+        );
 
         return model;
     }
