@@ -20,6 +20,7 @@ import com.breeze.service.BookService;
 import com.breeze.util.LoggerWrapper;
 import com.breeze.util.MiscUtils;
 import com.breeze.util.ModelToResponseConverter;
+import com.breeze.util.RequestValidator;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -41,9 +42,15 @@ public class BookServiceImpl implements BookService {
     @Autowired
     GenericDao genericDao;
 
+    @Autowired
+    RequestValidator requestValidator;
+
     @Override
     public BookListResponse getBooks(FetchBookList request) {
         BookListResponse bookListResponse = new BookListResponse();
+
+        // validate incoming request
+        requestValidator.validate(request);
 
         setBookListFilters(request);
 

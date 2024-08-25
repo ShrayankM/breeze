@@ -7,16 +7,14 @@ import com.breeze.dao.GenericDao;
 import com.breeze.exception.BreezeException;
 import com.breeze.exception.ResourceNotFoundException;
 import com.breeze.exception.ValidationException;
+import com.breeze.model.BreezeBookDetails;
 import com.breeze.model.BreezeUserBookApproval;
 import com.breeze.request.FetchBookApprovalList;
 import com.breeze.request.CreateBookApproval;
 import com.breeze.request.UpdateBookApproval;
 import com.breeze.response.BookApprovalList;
 import com.breeze.service.BookApprovalService;
-import com.breeze.util.LoggerWrapper;
-import com.breeze.util.MiscUtils;
-import com.breeze.util.ModelToResponseConverter;
-import com.breeze.util.RequestToModelConverter;
+import com.breeze.util.*;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -27,6 +25,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
+import java.util.logging.Logger;
 
 
 @Service
@@ -40,12 +39,15 @@ public class BookApprovalServiceImpl implements BookApprovalService {
     @Autowired
     BookApprovalRepository bookApprovalRepository;
 
+    @Autowired
+    RequestValidator validator;
+
     @Override
-    @Transactional
     public void createBookApprovalRequest(CreateBookApproval request) {
         logger.info("Book Approval Request Received for user = {}", request.getUserCode());
 
         // TODO add validations before creating book request
+        validator.validate(request);
 
         BreezeUserBookApproval model = RequestToModelConverter.createBookApprovalRequestToModel(request);
         genericDao.create(model);
@@ -98,11 +100,23 @@ public class BookApprovalServiceImpl implements BookApprovalService {
 
             if (UserBookApprovalStatus.APPROVED.equals(newStatus)) {
                 breezeUserBookApproval.setApprovedAt(new Date());
+
+                // TODO create new book record as request is approved
+                BreezeBookDetails breezeBookDetails = RequestToModelConverter.getBookDetailsFromApprovalRequest(breezeUserBookApproval);
+                if (Objects.isNull(breezeBookDetails)) {
+                    logger.error("Breeze Book details is null or empty");
+                    throw new ResourceNotFoundException(BreezeErrorCodes.INVALID_BOOK_DETAILS_OBJECT_CODE,
+                            BreezeErrorCodes.INVALID_BOOK_DETAILS_OBJECT_MSG);
+                }
+
+                // create new book details record after approval, update book approval request
+                bookApprovalRepository.update(breezeUserBookApproval);
+                genericDao.create(breezeBookDetails);
             } else if (UserBookApprovalStatus.REJECTED.equals(newStatus)) {
                 breezeUserBookApproval.setRejectedAt(new Date());
                 breezeUserBookApproval.setRejectionReason(request.getRejectionReason());
+                bookApprovalRepository.update(breezeUserBookApproval);
             }
-            bookApprovalRepository.update(breezeUserBookApproval);
             logger.info("Approval request status updated successfully");
             return breezeUserBookApproval;
         } else {

@@ -12,7 +12,7 @@ import java.util.List;
 @Data
 public class FetchBookList {
 
-    @NotBlank
+    @NotBlank(message = "User-code cannot be null or empty in request")
     private String userCode;
 
     private BookStatus bookStatus;
