@@ -41,6 +41,7 @@ public class ModelToResponseConverter {
             } catch (JsonProcessingException e) {
                 logger.error("Error occurred when converting JSON string to object", e);
             }
+            bookApprovalData.setCode(model.getCode());
             bookApprovalDataList.add(bookApprovalData);
         }
         response.setBookApprovalDataList(bookApprovalDataList);
@@ -54,6 +55,7 @@ public class ModelToResponseConverter {
         for (BreezeBookDetails bookDetails : modelList) {
             BookData bookDetailsData = new BookData();
 
+            bookDetailsData.setCode(bookDetails.getCode());
             bookDetailsData.setBookName(bookDetails.getBookName());
             bookDetailsData.setGenre(bookDetails.getBookGenre());
             bookDetailsData.setIsbn(bookDetails.getIsbn());

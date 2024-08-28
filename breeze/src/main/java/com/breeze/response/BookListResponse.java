@@ -15,6 +15,8 @@ public class BookListResponse {
     @Data
     public static class BookData {
 
+        private String code;
+
         private String bookName;
 
         private String isbn;

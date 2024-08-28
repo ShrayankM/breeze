@@ -18,6 +18,8 @@ public class BookApprovalList {
     @NoArgsConstructor
     public static class BookApprovalData {
 
+        private String code;
+
         private String bookName;
 
         private String authorName;
