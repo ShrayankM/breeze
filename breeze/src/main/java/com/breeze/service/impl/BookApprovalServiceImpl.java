@@ -43,6 +43,7 @@ public class BookApprovalServiceImpl implements BookApprovalService {
     RequestValidator validator;
 
     @Override
+    @Transactional
     public void createBookApprovalRequest(CreateBookApproval request) {
         logger.info("Book Approval Request Received for user = {}", request.getUserCode());
 

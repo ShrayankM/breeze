@@ -11,10 +11,10 @@ import java.util.Set;
 @Component
 public class RequestValidator {
 
-    private final Validator validator;
+    private Validator validator;
 
     public RequestValidator(Validator validator) {
-        if (validator != null) {
+        if (validator == null) {
             ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
             this.validator = factory.getValidator();
         } else {

@@ -3,6 +3,7 @@ package com.breeze.request;
 import com.breeze.constant.BreezeConstants.BookGenre;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -17,7 +18,7 @@ public class CreateBookApproval {
     @NotBlank(message = "User-code cannot be blank or empty in approval request")
     private String userCode;
 
-    @NotBlank(message = "Data cannot be blank or empty in approval request")
+    @NotNull(message = "Data cannot be null in approval request")
     private BookApprovalData bookApprovalData;
 
     @Data
