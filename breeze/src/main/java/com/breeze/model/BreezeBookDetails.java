@@ -18,6 +18,7 @@ import java.util.Objects;
 @Table(name = "breeze_book_details")
 public class BreezeBookDetails extends AbstractModelWithCode {
 
+    // update size from 64 to 255 for book-name
     @Column(name = "book_name")
     private String bookName;
 

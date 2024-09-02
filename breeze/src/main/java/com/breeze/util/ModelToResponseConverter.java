@@ -45,6 +45,7 @@ public class ModelToResponseConverter {
             bookApprovalDataList.add(bookApprovalData);
         }
         response.setBookApprovalDataList(bookApprovalDataList);
+        response.setCount(bookApprovalDataList.size());
         return response;
     }
 
