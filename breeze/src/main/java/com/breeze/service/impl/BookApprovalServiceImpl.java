@@ -67,7 +67,7 @@ public class BookApprovalServiceImpl implements BookApprovalService {
             logger.info("No request found for approval status = {}", request.getApprovalStatus());
             bookApprovalResponseList = new BookApprovalList();
             bookApprovalResponseList.setBookApprovalDataList(new ArrayList<>());
-            bookApprovalResponseList.setCount(0L);
+            bookApprovalResponseList.setCount(0);
             return bookApprovalResponseList;
         }
 
