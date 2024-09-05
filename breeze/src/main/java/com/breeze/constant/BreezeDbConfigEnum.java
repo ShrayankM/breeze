@@ -6,7 +6,12 @@ import static com.breeze.constant.BreezeConstants.ConfigDataType.*;
 
 public enum BreezeDbConfigEnum {
 
-    ENTITY_CODE_LENGTH(LONG);
+    ENTITY_CODE_LENGTH(LONG),
+
+    // Google book api configs
+    GOOGLE_BOOKS_API_URL(STRING),
+    GOOGLE_BOOKS_API_HEADER_KEY(STRING),
+    GOOGLE_BOOKS_API_HEADER_VALUE(STRING);
 
     private ConfigDataType dataType;
 

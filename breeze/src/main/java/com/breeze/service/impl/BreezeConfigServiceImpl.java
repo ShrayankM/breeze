@@ -96,6 +96,11 @@ public class BreezeConfigServiceImpl implements BreezeConfigService {
     }
 
     @Override
+    public String getStringValue(BreezeDbConfigEnum dbConfigEnumName) {
+        return (String) configHashMap.get(dbConfigEnumName);
+    }
+
+    @Override
     public <T> T getConfigValueOrDefault(BreezeDbConfigEnum dbConfigEnum, T defaultValue) {
         return (T) configHashMap.getOrDefault(dbConfigEnum, defaultValue);
     }
