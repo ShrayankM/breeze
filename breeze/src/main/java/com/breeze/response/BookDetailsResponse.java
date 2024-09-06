@@ -9,19 +9,21 @@ import java.util.Date;
 @Data
 public class BookDetailsResponse {
 
-    private String bookName;
+    private String name;
 
-    private String isbn;
+    private String isbnSmall;
 
-    private String authorName;
+    private String isbnLarge;
 
-    private String s3ImageLink;
+    private String author;
 
-    private Date yearPublished;
+    private String thumbnail;
 
-    private Long noOfPages;
+    private Date publishedDate;
 
-    private BreezeConstants.BookGenre bookGenre;
+    private Long pages;
+
+    private String category;
 
     private BigDecimal userRating;
 

@@ -1,6 +1,5 @@
 package com.breeze.response;
 
-import com.breeze.constant.BreezeConstants.BookGenre;
 import lombok.Data;
 
 import java.util.List;
@@ -17,14 +16,16 @@ public class BookListResponse {
 
         private String code;
 
-        private String bookName;
+        private String name;
 
-        private String isbn;
+        private String isbnSmall;
 
-        private String authorName;
+        private String isbnLarge;
 
-        private BookGenre genre;
+        private String author;
 
-        private String s3ImageLink;
+        private String category;
+
+        private String thumbnail;
     }
 }

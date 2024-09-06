@@ -18,14 +18,15 @@ CREATE TABLE `breeze_user` (
 CREATE TABLE `breeze_book_details` (
          `id` bigint NOT NULL AUTO_INCREMENT,
          `code` varchar(30) NOT NULL,
-         `book_name` varchar(64) NOT NULL,
-         `isbn` varchar(30) NOT NULL,
-         `author_name` varchar(64) NOT NULL,
-         `s3_image_link` varchar(255) DEFAULT NULL,
-         `year_published` datetime DEFAULT NULL,
-         `no_of_pages` bigint DEFAULT NULL,
-         `book_genre` enum('FICTION', 'NON_FICTION', 'POETRY', 'DRAMA', 'ROMANCE', 'MYSTERY_THRILLER', 'SCIENCE_FICTION', 'FANTASY', 'HORROR', 'ADVENTURE', 'CHILDRENS_YOUNG_ADULT',
-                           'HISTORICAL', 'BIOGRAPHY_AUTOBIOGRAPHY', 'HUMOR_SATIRE', 'DYSTOPIAN') NOT NULL,
+         `name` varchar(255) NOT NULL,
+         `isbn_10` varchar(30) NOT NULL,
+         `isbn_13` varchar(30) NOT NULL,
+         `author` varchar(64) NOT NULL,
+         `small_thumbnail` varchar(255) DEFAULT NULL,
+         `thumbnail` varchar(255) DEFAULT NULL,
+         `published_date` datetime DEFAULT NULL,
+         `pages` bigint DEFAULT NULL,
+         `category`  VARCHAR(30) NOT NULL,
         `user_rating` decimal(3, 2) DEFAULT NULL,
         `review_count` bigint DEFAULT 0,
         `description` varchar(255) DEFAULT NULL,
@@ -33,7 +34,8 @@ CREATE TABLE `breeze_book_details` (
         `updated_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
         PRIMARY KEY (`id`),
         UNIQUE KEY `UK_book_code` (`code`),
-        UNIQUE KEY `UK_book_isbn` (`isbn`)
+        UNIQUE KEY `UK_book_isbn_small` (`isbn_10`),
+        UNIQUE KEY `UK_book_isbn_large` (`isbn_13`)
 );
 
 CREATE TABLE `breeze_user_book` (

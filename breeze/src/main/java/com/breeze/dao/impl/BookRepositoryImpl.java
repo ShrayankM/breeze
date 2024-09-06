@@ -195,4 +195,28 @@ public class BookRepositoryImpl extends GenericDaoImpl implements BookRepository
         queryObject.setParameter("bookCode", bookCode);
         return (BreezeUserBook) queryObject.getSingleResult();
     }
+
+    @Override
+    public List<BreezeBookDetails> getListOfBooksUsingIsbn(List<String> isbnList, Boolean isIsbn10) {
+
+        StringBuilder queryBuilder = new StringBuilder().append(" ")
+                .append(" SELECT book FROM ")
+                .append(BreezeBookDetails.class.getSimpleName())
+                .append(" book ");
+
+        if(isIsbn10) {
+            queryBuilder.append(" WHERE book.isbn10 IN ( :isbnList ) ");
+        } else {
+            queryBuilder.append(" WHERE book.isbn13 IN ( :isbnList ) ");
+        }
+
+        logger.debug("DB query = {}", queryBuilder.toString());
+
+        EntityManager entityManager = getEntityManager();
+
+        Query queryObject = entityManager.createQuery(queryBuilder.toString());
+        queryObject.setParameter("isbnList", isbnList);
+
+        return queryObject.getResultList();
+    }
 }

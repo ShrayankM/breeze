@@ -57,11 +57,12 @@ public class ModelToResponseConverter {
             BookData bookDetailsData = new BookData();
 
             bookDetailsData.setCode(bookDetails.getCode());
-            bookDetailsData.setBookName(bookDetails.getBookName());
-            bookDetailsData.setGenre(bookDetails.getBookGenre());
-            bookDetailsData.setIsbn(bookDetails.getIsbn());
-            bookDetailsData.setAuthorName(bookDetails.getAuthorName());
-            bookDetailsData.setS3ImageLink(bookDetails.getS3ImageLink());
+            bookDetailsData.setName(bookDetails.getName());
+            bookDetailsData.setCategory(bookDetails.getCategory());
+            bookDetailsData.setIsbnSmall(bookDetails.getIsbn10());
+            bookDetailsData.setIsbnLarge(bookDetails.getIsbn13());
+            bookDetailsData.setAuthor(bookDetails.getAuthor());
+            bookDetailsData.setThumbnail(bookDetails.getThumbnail());
             bookDetailsList.add(bookDetailsData);
         }
         response.setBookDetailsList(bookDetailsList);
@@ -72,13 +73,14 @@ public class ModelToResponseConverter {
     public static BookDetailsResponse getBookDetailsResponseFromModel(BreezeBookDetails model) {
         BookDetailsResponse response = new BookDetailsResponse();
 
-        response.setBookName(model.getBookName());
-        response.setIsbn(model.getIsbn());
-        response.setAuthorName(model.getAuthorName());
-        response.setS3ImageLink(model.getS3ImageLink());
-        response.setYearPublished(model.getYearPublished());
-        response.setNoOfPages(model.getNoOfPages());
-        response.setBookGenre(model.getBookGenre());
+        response.setName(model.getName());
+        response.setIsbnSmall(model.getIsbn10());
+        response.setIsbnLarge(model.getIsbn13());
+        response.setAuthor(model.getAuthor());
+        response.setThumbnail(model.getThumbnail());
+        response.setPublishedDate(model.getPublishedDate());
+        response.setPages(model.getPages());
+        response.setCategory(model.getCategory());
         response.setUserRating(model.getUserRating());
         response.setDescription(model.getDescription());
 

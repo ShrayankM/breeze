@@ -20,4 +20,9 @@ public class BreezeUrlConstants {
     public static final String GET_BOOKS_BY_AUTHOR_FOR_USER = URL_PREFIX + "book/{authorName}/user/{userCode}/get-books";
 
     public static final String UPDATE_BOOK_RATING_FOR_USER = URL_PREFIX + "book/update-user-rating";
+
+    // GOOGLE integration apis
+    public static final String CREATE_BOOK_RECORDS = URL_PREFIX + "google/create-book-records";
+    public static final String GET_BOOK_FROM_GOOGLE_USING_ISBN = URL_PREFIX + "google/{isbn}/get-book";
+
 }
