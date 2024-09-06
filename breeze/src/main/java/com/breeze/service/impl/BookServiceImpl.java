@@ -18,7 +18,6 @@ import com.breeze.response.BookDetailsResponse;
 import com.breeze.response.BookListResponse;
 import com.breeze.service.BookService;
 import com.breeze.util.LoggerWrapper;
-import com.breeze.util.MiscUtils;
 import com.breeze.util.ModelToResponseConverter;
 import com.breeze.util.RequestValidator;
 import jakarta.transaction.Transactional;
@@ -209,7 +208,7 @@ public class BookServiceImpl implements BookService {
             return bookListResponse;
         }
 
-        List<BreezeBookDetails> filteredBookDetailsList = breezeBookDetailsList.stream().filter(book -> book.getBookName().contains(bookName)).toList();
+        List<BreezeBookDetails> filteredBookDetailsList = breezeBookDetailsList.stream().filter(book -> book.getName().contains(bookName)).toList();
         bookListResponse = ModelToResponseConverter.getBookListResponseFromModel(filteredBookDetailsList);
         return bookListResponse;
     }
@@ -248,7 +247,7 @@ public class BookServiceImpl implements BookService {
             return bookListResponse;
         }
 
-        List<BreezeBookDetails> filteredBookDetailsList = breezeBookDetailsList.stream().filter(book -> book.getAuthorName().contains(authorName)).toList();
+        List<BreezeBookDetails> filteredBookDetailsList = breezeBookDetailsList.stream().filter(book -> book.getAuthor().contains(authorName)).toList();
         bookListResponse = ModelToResponseConverter.getBookListResponseFromModel(filteredBookDetailsList);
         return bookListResponse;
     }

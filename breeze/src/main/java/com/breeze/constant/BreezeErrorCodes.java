@@ -31,6 +31,12 @@ public class BreezeErrorCodes {
     public static final int INVALID_BOOK_DETAILS_OBJECT_CODE = 1009;
     public static final String INVALID_BOOK_DETAILS_OBJECT_MSG = "Book details object is either null or empty";
 
+    public static final int INVALID_REQUEST_TO_CREATE_BOOKS_CODE = 1010;
+    public static final String INVALID_REQUEST_TO_CREATE_BOOKS_MSG = "Request sent to create-book records is null";
+
+    public static final int INVALID_ISBN_LIST_IN_REQUEST_CODE = 1011;
+    public static final String INVALID_ISBN_LIST_IN_REQUEST_MSG = "Isbn-list in request to create-book records is empty";
+
 
     // Data not found error codes
     public static final int DATA_NOT_FOUND = 2001;

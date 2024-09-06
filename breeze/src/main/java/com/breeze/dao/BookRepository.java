@@ -28,4 +28,6 @@ public interface BookRepository {
 
     BreezeUserBook getUserBookFromCode(String userCode, String bookCode);
 
+    List<BreezeBookDetails> getListOfBooksUsingIsbn(List<String> isbnList, Boolean isIsbn10);
+
 }
