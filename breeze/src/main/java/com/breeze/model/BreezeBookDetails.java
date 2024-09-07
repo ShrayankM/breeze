@@ -17,6 +17,9 @@ import java.util.Objects;
 @Table(name = "breeze_book_details")
 public class BreezeBookDetails extends AbstractModelWithCode {
 
+    @Column(name = "google_id")
+    private String googleId;
+
     @Column(name = "name")
     private String name;
 
