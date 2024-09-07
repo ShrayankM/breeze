@@ -1,13 +1,8 @@
 package com.breeze.util;
 
 import com.breeze.model.BreezeBookDetails;
-import com.breeze.model.BreezeUserBookApproval;
-import com.breeze.response.BookApprovalList;
-import com.breeze.response.BookApprovalList.BookApprovalData;
+import com.breeze.response.BookDataResponse;
 import com.breeze.response.BookDetailsResponse;
-import com.breeze.response.BookListResponse;
-import com.breeze.response.BookListResponse.BookData;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
@@ -29,32 +24,11 @@ public class ModelToResponseConverter {
         this.objectMapper = new ObjectMapper();
     }
 
-    public static BookApprovalList getBookApprovalResponseFromModel(List<BreezeUserBookApproval> modelList) {
-
-        BookApprovalList response = new BookApprovalList();
-        List<BookApprovalData> bookApprovalDataList = new ArrayList<>();
-        for (BreezeUserBookApproval model : modelList) {
-
-            BookApprovalData bookApprovalData = new BookApprovalData();
-            try {
-                bookApprovalData = objectMapper.readValue(model.getData(), BookApprovalData.class);
-            } catch (JsonProcessingException e) {
-                logger.error("Error occurred when converting JSON string to object", e);
-            }
-            bookApprovalData.setCode(model.getCode());
-            bookApprovalDataList.add(bookApprovalData);
-        }
-        response.setBookApprovalDataList(bookApprovalDataList);
-        response.setCount(bookApprovalDataList.size());
-        return response;
-    }
-
-    public static BookListResponse getBookListResponseFromModel(List<BreezeBookDetails> modelList) {
-        BookListResponse response = new BookListResponse();
-        List<BookData> bookDetailsList = new ArrayList<>();
+    public static List<BookDataResponse> getBookListResponseFromModel(List<BreezeBookDetails> modelList) {
+        List<BookDataResponse> bookDetailsList = new ArrayList<>();
 
         for (BreezeBookDetails bookDetails : modelList) {
-            BookData bookDetailsData = new BookData();
+            BookDataResponse bookDetailsData = new BookDataResponse();
 
             bookDetailsData.setCode(bookDetails.getCode());
             bookDetailsData.setName(bookDetails.getName());
@@ -65,9 +39,7 @@ public class ModelToResponseConverter {
             bookDetailsData.setThumbnail(bookDetails.getThumbnail());
             bookDetailsList.add(bookDetailsData);
         }
-        response.setBookDetailsList(bookDetailsList);
-        response.setCount(response.getBookDetailsList().size());
-        return response;
+        return bookDetailsList;
     }
 
     public static BookDetailsResponse getBookDetailsResponseFromModel(BreezeBookDetails model) {

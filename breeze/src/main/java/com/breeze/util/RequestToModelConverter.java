@@ -2,15 +2,10 @@ package com.breeze.util;
 
 import com.breeze.constant.BreezeConstants;
 import com.breeze.constant.BreezeConstants.IsbnType;
-import com.breeze.constant.BreezeConstants.UserBookApprovalStatus;
 import com.breeze.constant.BreezeDbConfigEnum;
-import com.breeze.exception.BreezeException;
 import com.breeze.model.BreezeBookDetails;
-import com.breeze.model.BreezeUserBookApproval;
-import com.breeze.request.CreateBookApproval;
 import com.breeze.response.GoogleBookResponse;
 import com.breeze.service.BreezeConfigService;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.NoArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,48 +34,6 @@ public class RequestToModelConverter {
     private RequestToModelConverter(BreezeConfigService breezeConfigService) {
         RequestToModelConverter.breezeConfigService = breezeConfigService;
         RequestToModelConverter.objectMapper = new ObjectMapper();
-    }
-
-    public static BreezeUserBookApproval createBookApprovalRequestToModel(CreateBookApproval bookApprovalRequest) {
-        BreezeUserBookApproval model = new BreezeUserBookApproval();
-
-        // * set all the attributes for the model to persist
-        model.setCode(
-                MiscUtils.generateCodeForEntity(
-                        BreezeConstants.USER_BOOK_APPROVAL_PREFIX,
-                        breezeConfigService.getConfigValueOrDefault(BreezeDbConfigEnum.ENTITY_CODE_LENGTH, 12)
-                )
-        );
-        model.setUserCode(bookApprovalRequest.getUserCode());
-        try {
-            model.setData(objectMapper.writeValueAsString(bookApprovalRequest.getBookApprovalData()));
-        } catch (JsonProcessingException e) {
-            logger.error("Error when converting object to JSON string message = {}", e.getMessage());
-        }
-        model.setApprovalStatus(UserBookApprovalStatus.SUBMITTED);
-
-        return model;
-    }
-
-    public static BreezeBookDetails getBookDetailsFromApprovalRequest(BreezeUserBookApproval bookApprovalRequest) throws BreezeException {
-        BreezeBookDetails model = new BreezeBookDetails();
-
-        try {
-            model = objectMapper.readValue(bookApprovalRequest.getData(), BreezeBookDetails.class);
-        } catch (JsonProcessingException e) {
-            logger.error("Exception while parsing json string to object message = {}", e.getMessage());
-            return null;
-        }
-
-        // * set all the attributes for the model to persist
-        model.setCode(
-                MiscUtils.generateCodeForEntity(
-                        BreezeConstants.BOOK_DETAILS_PREFIX,
-                        breezeConfigService.getConfigValueOrDefault(BreezeDbConfigEnum.ENTITY_CODE_LENGTH, 12)
-                )
-        );
-
-        return model;
     }
 
     public static BreezeBookDetails getBookDetailsFromGoogleBookResponse(GoogleBookResponse googleBookResponse) {

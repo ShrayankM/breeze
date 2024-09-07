@@ -40,12 +40,16 @@ CREATE TABLE `breeze_book_details` (
 
 CREATE TABLE `breeze_user_book` (
     `id` bigint NOT NULL AUTO_INCREMENT,
+    `code` varchar(30) NOT NULL,
     `book_code` varchar(30) NOT NULL,
     `user_code` varchar(30) NOT NULL,
     `book_status` enum('reading','read') NOT NULL,
     `current_page` bigint DEFAULT NULL,
     `user_rating` bigint DEFAULT NULL,
+    `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    `updated_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     PRIMARY KEY (`id`),
+    UNIQUE KEY `UK_book_code` (`code`),
     UNIQUE KEY `UK_book_user_code` (`book_code`, `user_code`)
 );
 
@@ -60,21 +64,6 @@ CREATE TABLE `breeze_user_suggestions` (
     `suggestion` varchar(255) NOT NULL,
     PRIMARY KEY (`id`),
     UNIQUE KEY `UK_user_suggestion_code` (`code`)
-);
-
-CREATE TABLE `breeze_user_book_approval` (
-    `id` bigint NOT NULL AUTO_INCREMENT,
-    `code` varchar(30) NOT NULL,
-    `user_code` varchar(30)  NOT NULL,
-    `data` json NOT NULL,
-    `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    `updated_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    `approval_status` enum('PENDING', 'SUBMITTED', 'UNDER_REVIEW', 'APPROVED', 'REJECTED') NOT NULL,
-    `approved_at` datetime DEFAULT NULL,
-    `rejected_at` datetime DEFAULT NULL,
-    `rejection_reason` varchar(255) DEFAULT NULL,
-    PRIMARY KEY (`id`),
-    UNIQUE KEY `UK_user_approval_request_code` (`code`)
 );
 
 CREATE TABLE `breeze_user_notifications` (

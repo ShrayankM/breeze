@@ -7,7 +7,8 @@ import com.breeze.exception.BreezeException;
 import com.breeze.exception.ValidationException;
 import com.breeze.model.BreezeBookDetails;
 import com.breeze.request.CreateBookRecords;
-import com.breeze.response.BookListResponse;
+import com.breeze.response.BookDataResponse;
+import com.breeze.response.GetListResponse;
 import com.breeze.response.GoogleBookResponse;
 import com.breeze.service.GoogleBookService;
 import com.breeze.service.GoogleRestApiService;
@@ -46,9 +47,10 @@ public class GoogleBookServiceImpl implements GoogleBookService {
     }
 
     @Override
-    public BookListResponse createBookRecords(CreateBookRecords request) throws BreezeException {
+    public GetListResponse<BookDataResponse> createBookRecords(CreateBookRecords request) throws BreezeException {
 
         requestValidator.validate(request);
+        GetListResponse<BookDataResponse> bookDataResponseList = new GetListResponse<>();
 
         if (Objects.isNull(request)) {
             logger.error("Request to create-book records is null");
@@ -91,6 +93,9 @@ public class GoogleBookServiceImpl implements GoogleBookService {
         }
 
         genericDao.createAll(createList);
-        return ModelToResponseConverter.getBookListResponseFromModel(createList);
+        List<BookDataResponse> responseList = ModelToResponseConverter.getBookListResponseFromModel(createList);
+        bookDataResponseList.setList(responseList);
+        bookDataResponseList.setTotalCount(responseList.size());
+        return bookDataResponseList;
     }
 }

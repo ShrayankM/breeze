@@ -1,6 +1,5 @@
 package com.breeze.response;
 
-import com.breeze.constant.BreezeConstants;
 import lombok.Data;
 
 import java.math.BigDecimal;
