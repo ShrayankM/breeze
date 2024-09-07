@@ -1,13 +1,12 @@
 package com.breeze.request;
 
 import com.breeze.constant.BreezeConstants;
-import com.breeze.constant.BreezeConstants.BookGenre;
 import com.breeze.constant.BreezeConstants.BookStatus;
+import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
 
 import java.util.Date;
-import java.util.List;
 
 @Data
 public class FetchBookList {
@@ -17,11 +16,15 @@ public class FetchBookList {
 
     private BookStatus bookStatus;
 
-    private List<BookGenre> genreList;
-
     private YearOfPublishing yob;
 
     private NoOfPages pages;
+
+    @Min(value = 0)
+    private int offset;
+
+    @Min(value = 0)
+    private int limit;
 
     @Data
     public static class NoOfPages {

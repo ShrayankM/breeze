@@ -3,8 +3,9 @@ package com.breeze.controller;
 import com.breeze.constant.BreezeUrlConstants;
 import com.breeze.exception.BreezeException;
 import com.breeze.request.CreateBookRecords;
-import com.breeze.response.BookListResponse;
+import com.breeze.response.BookDataResponse;
 import com.breeze.response.CommonResponse;
+import com.breeze.response.GetListResponse;
 import com.breeze.response.GoogleBookResponse;
 import com.breeze.service.GoogleBookService;
 import com.breeze.util.CommonResponseGenerator;
@@ -24,8 +25,8 @@ public class GoogleBookController {
             path = BreezeUrlConstants.CREATE_BOOK_RECORDS,
             consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE
     )
-    public ResponseEntity<CommonResponse<BookListResponse>> createBookRecords(@RequestBody CreateBookRecords request) throws BreezeException {
-        BookListResponse response = googleBookService.createBookRecords(request);
+    public ResponseEntity<CommonResponse<GetListResponse<BookDataResponse>>> createBookRecords(@RequestBody CreateBookRecords request) throws BreezeException {
+        GetListResponse<BookDataResponse> response = googleBookService.createBookRecords(request);
         return new ResponseEntity<>(CommonResponseGenerator.okResponse(response), HttpStatus.OK);
     }
 

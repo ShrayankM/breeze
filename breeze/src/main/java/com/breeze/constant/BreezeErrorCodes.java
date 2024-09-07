@@ -25,12 +25,6 @@ public class BreezeErrorCodes {
     public static final int INVALID_RATING_IN_REQUEST_CODE = 1007;
     public static final String INVALID_RATING_IN_REQUEST_MSG = "Rating in request is either null or empty";
 
-    public static final int REJECTION_REASON_CANNOT_BE_NULL_OR_EMPTY_CODE = 1008;
-    public static final String REJECTION_REASON_CANNOT_BE_NULL_OR_EMPTY_MSG = "Rejection reason cannot be null or empty for status update REJECTED";
-
-    public static final int INVALID_BOOK_DETAILS_OBJECT_CODE = 1009;
-    public static final String INVALID_BOOK_DETAILS_OBJECT_MSG = "Book details object is either null or empty";
-
     public static final int INVALID_REQUEST_TO_CREATE_BOOKS_CODE = 1010;
     public static final String INVALID_REQUEST_TO_CREATE_BOOKS_MSG = "Request sent to create-book records is null";
 
@@ -41,7 +35,4 @@ public class BreezeErrorCodes {
     // Data not found error codes
     public static final int DATA_NOT_FOUND = 2001;
     public static final String DATA_NOT_FOUND_MSG = "Data not found in DB";
-
-    public static final int JSON_STRING_TO_OBJECT_ERROR_CODE = 2002;
-    public static final String JSON_STRING_TO_OBJECT_ERROR_MSG = "Error while converting JSON string to object";
 }
