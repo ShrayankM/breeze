@@ -43,11 +43,12 @@ public class RequestToModelConverter {
         model.setCode(
                 MiscUtils.generateCodeForEntity(
                         BreezeConstants.BOOK_DETAILS_PREFIX,
-                        breezeConfigService.getConfigValueOrDefault(BreezeDbConfigEnum.ENTITY_CODE_LENGTH, 12)
+                        breezeConfigService.getLongValue(BreezeDbConfigEnum.ENTITY_CODE_LENGTH).intValue()
                 )
         );
 
         GoogleBookResponse.Item item = googleBookResponse.getItems().get(0);
+        model.setGoogleId(item.getId());
         model.setName(item.getVolumeInfo().getTitle());
         model.setAuthor(item.getVolumeInfo().getAuthors().get(0));
 

@@ -18,6 +18,7 @@ CREATE TABLE `breeze_user` (
 CREATE TABLE `breeze_book_details` (
          `id` bigint NOT NULL AUTO_INCREMENT,
          `code` varchar(30) NOT NULL,
+         `google_id` varchar(30) NOT NULL,
          `name` varchar(255) NOT NULL,
          `isbn_10` varchar(30) NOT NULL,
          `isbn_13` varchar(30) NOT NULL,
