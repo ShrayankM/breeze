@@ -23,6 +23,9 @@ public class BreezeBookDetails extends AbstractModelWithCode {
     @Column(name = "name")
     private String name;
 
+    @Column(name = "subtitle")
+    private String subtitle;
+
     @Column(name = "isbn_10")
     private String isbn10;
 

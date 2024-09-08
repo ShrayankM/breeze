@@ -10,7 +10,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 @Component
@@ -37,6 +39,7 @@ public class ModelToResponseConverter {
 
             bookDetailsData.setCode(bookDetails.getCode());
             bookDetailsData.setName(bookDetails.getName());
+            bookDetailsData.setSubtitle(bookDetails.getSubtitle());
             bookDetailsData.setCategory(bookDetails.getCategory());
             bookDetailsData.setIsbnSmall(bookDetails.getIsbn10());
             bookDetailsData.setIsbnLarge(bookDetails.getIsbn13());
@@ -58,6 +61,7 @@ public class ModelToResponseConverter {
         BookDetailsResponse response = new BookDetailsResponse();
 
         response.setName(model.getName());
+        response.setSubtitle(model.getSubtitle());
         response.setIsbnSmall(model.getIsbn10());
         response.setIsbnLarge(model.getIsbn13());
         response.setAuthor(model.getAuthor());
@@ -69,7 +73,11 @@ public class ModelToResponseConverter {
                 breezeConfigService.getStringValue(BreezeDbConfigEnum.GOOGLE_BOOK_IMAGE_LARGE_URL);
         response.setThumbnail(thumbnailUrl);
 
-        response.setPublishedDate(model.getPublishedDate());
+        // formatting date
+        Date publishedDate = model.getPublishedDate();
+        SimpleDateFormat dateFormat = new SimpleDateFormat("dd MMM yyyy");
+
+        response.setPublishedDate(dateFormat.format(publishedDate));
         response.setPages(model.getPages());
         response.setCategory(model.getCategory());
         response.setUserRating(model.getUserRating());

@@ -50,6 +50,7 @@ public class RequestToModelConverter {
         GoogleBookResponse.Item item = googleBookResponse.getItems().get(0);
         model.setGoogleId(item.getId());
         model.setName(item.getVolumeInfo().getTitle());
+        model.setSubtitle(item.getVolumeInfo().getSubtitle());
         model.setAuthor(item.getVolumeInfo().getAuthors().get(0));
 
         // * set Isbn
@@ -73,11 +74,11 @@ public class RequestToModelConverter {
         model.setThumbnail(item.getVolumeInfo().getImageLinks().getThumbnail());
         model.setSmallThumbnail(item.getVolumeInfo().getImageLinks().getSmallThumbnail());
 
-        if (item.getVolumeInfo().getDescription().length() > 255) {
-            model.setDescription(item.getVolumeInfo().getDescription().substring(0, 255));
-        } else {
-            model.setDescription(item.getVolumeInfo().getDescription());
-        }
+//        if (item.getVolumeInfo().getDescription().length() > 255) {
+//            model.setDescription(item.getVolumeInfo().getDescription().substring(0, 255));
+//        } else {
+        model.setDescription(item.getVolumeInfo().getDescription());
+//        }
         return model;
     }
 }
