@@ -10,6 +10,8 @@ public class BookDetailsResponse {
 
     private String name;
 
+    private String subtitle;
+
     private String isbnSmall;
 
     private String isbnLarge;
@@ -18,7 +20,7 @@ public class BookDetailsResponse {
 
     private String thumbnail;
 
-    private Date publishedDate;
+    private String publishedDate;
 
     private Long pages;
 

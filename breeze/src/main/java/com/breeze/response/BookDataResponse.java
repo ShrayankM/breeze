@@ -9,6 +9,8 @@ public class BookDataResponse {
 
     private String name;
 
+    private String subtitle;
+
     private String isbnSmall;
 
     private String isbnLarge;
