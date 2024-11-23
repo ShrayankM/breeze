@@ -2,10 +2,15 @@ package com.breeze.util;
 
 import com.breeze.constant.BreezeDbConfigEnum;
 import com.breeze.model.BreezeBookDetails;
+import com.breeze.model.BreezeUser;
+import com.breeze.model.BreezeUserBook;
 import com.breeze.response.BookDataResponse;
 import com.breeze.response.BookDetailsResponse;
+import com.breeze.response.UserBookResponse;
+import com.breeze.response.UserResponse;
 import com.breeze.service.BreezeConfigService;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.NoArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
@@ -16,6 +21,7 @@ import java.util.Date;
 import java.util.List;
 
 @Component
+@NoArgsConstructor
 public class ModelToResponseConverter {
 
     private static final LoggerWrapper logger = LoggerWrapper.getLogger(ModelToResponseConverter.class);
@@ -83,6 +89,30 @@ public class ModelToResponseConverter {
         response.setUserRating(model.getUserRating());
         response.setDescription(model.getDescription());
 
+        return response;
+    }
+
+    public static UserBookResponse getUserBookFromModel(BreezeUserBook model) {
+        UserBookResponse response = new UserBookResponse();
+
+        response.setBookCode(model.getBookCode());
+        response.setUserCode(model.getUserCode());
+        response.setBookStatus(model.getBookStatus());
+        response.setCurrentPage(model.getCurrentPage());
+        response.setUserRating(model.getUserRating());
+        response.setIsDeleted(model.getIsDeleted());
+        response.setWishlist(model.getWishlist());
+        return response;
+    }
+
+    public static UserResponse getUserFromModel(BreezeUser model) {
+        UserResponse response = new UserResponse();
+
+        response.setCode(model.getCode());
+        response.setUserName(model.getUserName());
+        response.setName(model.getName());
+        response.setEmailAddress(model.getEmailAddress());
+        response.setPhoneNumber(model.getPhoneNumber());
         return response;
     }
 }

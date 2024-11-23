@@ -4,6 +4,10 @@ import com.breeze.constant.BreezeConstants;
 import com.breeze.constant.BreezeConstants.IsbnType;
 import com.breeze.constant.BreezeDbConfigEnum;
 import com.breeze.model.BreezeBookDetails;
+import com.breeze.model.BreezeUser;
+import com.breeze.model.BreezeUserBook;
+import com.breeze.request.CreateUpdateUserBookRequest;
+import com.breeze.request.CreateUpdateUserRequest;
 import com.breeze.response.GoogleBookResponse;
 import com.breeze.service.BreezeConfigService;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -79,6 +83,51 @@ public class RequestToModelConverter {
 //        } else {
         model.setDescription(item.getVolumeInfo().getDescription());
 //        }
+        return model;
+    }
+
+    public static BreezeUserBook getUserBookFromRequest(CreateUpdateUserBookRequest request) {
+        BreezeUserBook model = new BreezeUserBook();
+
+        // * set all the attributes for the model to persist
+        model.setCode(
+                MiscUtils.generateCodeForEntity(
+                        BreezeConstants.USER_BOOK_PREFIX,
+                        breezeConfigService.getLongValue(BreezeDbConfigEnum.ENTITY_CODE_LENGTH).intValue()
+                )
+        );
+        model.setBookCode(request.getBookCode());
+        model.setUserCode(request.getUserCode());
+        model.setBookStatus(BreezeConstants.BookStatus.ADDED);
+        model.setIsDeleted(false);
+        model.setWishlist(false);
+        model.setUserRating(0L);
+        model.setCurrentPage(0L);
+
+        return model;
+    }
+
+    public static BreezeUser getBreezeUserFromRequest(CreateUpdateUserRequest request) {
+        BreezeUser model = new BreezeUser();
+
+        // * set all the attributes for the model to persist
+        model.setCode(
+                MiscUtils.generateCodeForEntity(
+                        BreezeConstants.USER_PREFIX,
+                        breezeConfigService.getLongValue(BreezeDbConfigEnum.ENTITY_CODE_LENGTH).intValue()
+                )
+        );
+
+        model.setName(request.getName());
+        model.setUserName(request.getUserName());
+        model.setEmailAddress(request.getEmailAddress());
+        model.setPassword(request.getPassword());
+
+        if (request.getIsAdminUser() == null || Boolean.FALSE.equals(request.getIsAdminUser())) {
+            model.setUserType(BreezeConstants.UserType.STANDARD);
+        } else {
+            model.setUserType(BreezeConstants.UserType.ADMIN);
+        }
         return model;
     }
 }

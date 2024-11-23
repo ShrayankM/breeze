@@ -314,6 +314,11 @@ public class BookServiceImpl implements BookService {
         genericDao.update(breezeBookDetails);
     }
 
+    @Override
+    public BreezeBookDetails getBookByCode(String bookCode) {
+        return bookRepository.getBookDetailsUsingCode(bookCode);
+    }
+
     private void setBookListFilters(FetchBookList request) {
         if (request.getPages() == null) {
             request.setPages(new NoOfPages(BreezeConstants.MIN_PAGES, BreezeConstants.MAX_PAGES));
