@@ -75,8 +75,8 @@ public class BookRepositoryImpl extends GenericDaoImpl implements BookRepository
                 .append(BreezeBookDetails.class.getSimpleName())
                 .append(" book ")
                 .append(" WHERE book.code IN ( :bookCodeList ) ")
-                .append(" AND ( book.pages >= :minPages AND book.pages =< :maxPages ) ")
-                .append(" AND (book.publishedDate >= :startDate AND book.publishedDate =< :endDate ) ");
+                .append(" AND ( book.pages >= :minPages AND book.pages <= :maxPages ) ")
+                .append(" AND ( book.publishedDate >= :startDate AND book.publishedDate <= :endDate ) ");
 
         logger.debug("DB query = {}", queryBuilder.toString());
 
@@ -196,7 +196,9 @@ public class BookRepositoryImpl extends GenericDaoImpl implements BookRepository
         Query queryObject = entityManager.createQuery(queryBuilder.toString());
         queryObject.setParameter("userCode", userCode);
         queryObject.setParameter("bookCode", bookCode);
-        return (BreezeUserBook) queryObject.getSingleResult();
+
+        List<BreezeUserBook> resultList = queryObject.getResultList();
+        return resultList.isEmpty() ? null : resultList.get(0);
     }
 
     @Override

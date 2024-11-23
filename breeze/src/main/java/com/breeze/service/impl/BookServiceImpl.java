@@ -93,7 +93,7 @@ public class BookServiceImpl implements BookService {
             bookDataResponseList.setTotalCount(0);
             return bookDataResponseList;
         }
-        List<String> bookCodeList = breezeUserBookList.stream().map(BreezeUserBook::getCode).toList();
+        List<String> bookCodeList = breezeUserBookList.stream().map(BreezeUserBook::getBookCode).toList();
 
         List<BreezeBookDetails> breezeBookDetailsList = bookRepository.getListOfBooksUsingCodeList(bookCodeList, request.getPages().getMinPages(),
                 request.getPages().getMaxPages(), request.getYob().getStartDate(), request.getYob().getEndDate());
@@ -312,6 +312,11 @@ public class BookServiceImpl implements BookService {
         breezeBookDetails.setUserRating(updatedRating);
         breezeBookDetails.setReviewCount(currentReviewCount + 1);
         genericDao.update(breezeBookDetails);
+    }
+
+    @Override
+    public BreezeBookDetails getBookByCode(String bookCode) {
+        return bookRepository.getBookDetailsUsingCode(bookCode);
     }
 
     private void setBookListFilters(FetchBookList request) {

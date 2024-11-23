@@ -23,7 +23,7 @@ public class BreezeConstants {
     }
 
     public enum BookStatus {
-        WISHLISTED, BOUGHT, READING, READ, COMPLETED
+        ADDED, READING, COMPLETED
     }
 
     public enum UserSuggestionStatus {
@@ -35,6 +35,8 @@ public class BreezeConstants {
     }
 
     public static final String BOOK_DETAILS_PREFIX = "BKD";
+    public static final String USER_BOOK_PREFIX = "UBK";
+    public static final String USER_PREFIX = "UER";
     public static final Long MIN_PAGES = 0L;
     public static final Long MAX_PAGES = 10000L;
     public static final Date YOP_START_DATE =  Date.from(LocalDate.of(1900, 1, 1).atStartOfDay(ZoneId.systemDefault()).toInstant());
