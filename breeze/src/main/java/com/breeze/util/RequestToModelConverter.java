@@ -122,6 +122,9 @@ public class RequestToModelConverter {
         model.setUserName(request.getUserName());
         model.setEmailAddress(request.getEmailAddress());
         model.setPassword(request.getPassword());
+        model.setPhoneNumber(request.getPhoneNumber());
+        model.setIsEmailVerified(false);
+        model.setIsPhoneVerified(false);
 
         if (request.getIsAdminUser() == null || Boolean.FALSE.equals(request.getIsAdminUser())) {
             model.setUserType(BreezeConstants.UserType.STANDARD);

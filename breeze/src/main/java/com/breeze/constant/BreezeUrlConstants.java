@@ -17,6 +17,7 @@ public class BreezeUrlConstants {
 
     // User-book apis
     public static final String ADD_BOOK_FOR_USER = URL_PREFIX + "book/add-book";
+//    public static final String GET_BOOKS_FOR_USER = URL_PREFIX + "book/{userCode}/get-books";
 
     // GOOGLE integration apis
     public static final String CREATE_BOOK_RECORDS = URL_PREFIX + "google/create-book-records";
