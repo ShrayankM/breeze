@@ -110,39 +110,39 @@ public class BookRepositoryImpl extends GenericDaoImpl implements BookRepository
         return (BreezeBookDetails) queryObject.getSingleResult();
     }
 
-    @Override
-    public List<BreezeBookDetails> getBooksByName(String bookName) {
+//    @Override
+//    public List<BreezeBookDetails> getBooksByName(String bookName) {
+//
+//        StringBuilder queryBuilder = new StringBuilder().append(" ")
+//                .append(" SELECT book FROM ")
+//                .append(BreezeBookDetails.class.getSimpleName())
+//                .append(" book ")
+//                .append(" WHERE book.name LIKE :bookName ");
+//
+//        logger.debug("DB query = {}", queryBuilder.toString());
+//
+//        EntityManager entityManager = getEntityManager();
+//        Query queryObject = entityManager.createQuery(queryBuilder.toString());
+//        queryObject.setParameter("bookName", "%" + bookName + "%");
+//        return queryObject.getResultList();
+//    }
 
-        StringBuilder queryBuilder = new StringBuilder().append(" ")
-                .append(" SELECT book FROM ")
-                .append(BreezeBookDetails.class.getSimpleName())
-                .append(" book ")
-                .append(" WHERE book.name LIKE :bookName ");
-
-        logger.debug("DB query = {}", queryBuilder.toString());
-
-        EntityManager entityManager = getEntityManager();
-        Query queryObject = entityManager.createQuery(queryBuilder.toString());
-        queryObject.setParameter("bookName", "%" + bookName + "%");
-        return queryObject.getResultList();
-    }
-
-    @Override
-    public List<BreezeBookDetails> getBooksByAuthor(String authorName) {
-
-        StringBuilder queryBuilder = new StringBuilder().append(" ")
-                .append(" SELECT book FROM ")
-                .append(BreezeBookDetails.class.getSimpleName())
-                .append(" book ")
-                .append(" WHERE book.author LIKE :authorName ");
-
-        logger.debug("DB query = {}", queryBuilder.toString());
-
-        EntityManager entityManager = getEntityManager();
-        Query queryObject = entityManager.createQuery(queryBuilder.toString());
-        queryObject.setParameter("authorName", "%" + authorName + "%");
-        return queryObject.getResultList();
-    }
+//    @Override
+//    public List<BreezeBookDetails> getBooksByAuthor(String authorName) {
+//
+//        StringBuilder queryBuilder = new StringBuilder().append(" ")
+//                .append(" SELECT book FROM ")
+//                .append(BreezeBookDetails.class.getSimpleName())
+//                .append(" book ")
+//                .append(" WHERE book.author LIKE :authorName ");
+//
+//        logger.debug("DB query = {}", queryBuilder.toString());
+//
+//        EntityManager entityManager = getEntityManager();
+//        Query queryObject = entityManager.createQuery(queryBuilder.toString());
+//        queryObject.setParameter("authorName", "%" + authorName + "%");
+//        return queryObject.getResultList();
+//    }
 
     @Override
     public List<BreezeUserBook> getListOfBookForUserUsingCode(String userCode) {
@@ -161,14 +161,32 @@ public class BookRepositoryImpl extends GenericDaoImpl implements BookRepository
         return queryObject.getResultList();
     }
 
-    @Override
-    public List<BreezeBookDetails> getListOfBooksUsingCode(List<String> bookCodeList) {
+//    @Override
+//    public List<BreezeBookDetails> getListOfBooksUsingCode(List<String> bookCodeList) {
+//
+//        StringBuilder queryBuilder = new StringBuilder().append(" ")
+//                .append(" SELECT book FROM ")
+//                .append(BreezeBookDetails.class.getSimpleName())
+//                .append(" book ")
+//                .append(" WHERE book.code IN ( :bookCodeList ) ");
+//
+//        logger.debug("DB query = {}", queryBuilder.toString());
+//
+//        EntityManager entityManager = getEntityManager();
+//
+//        Query queryObject = entityManager.createQuery(queryBuilder.toString());
+//        queryObject.setParameter("bookCodeList", bookCodeList);
+//        return queryObject.getResultList();
+//    }
 
+    @Override
+    public List<BreezeBookDetails> getListOfBooksUsingCodeAndNameOrAuthor(List<String> bookCodeList, String searchQuery) {
         StringBuilder queryBuilder = new StringBuilder().append(" ")
                 .append(" SELECT book FROM ")
                 .append(BreezeBookDetails.class.getSimpleName())
                 .append(" book ")
-                .append(" WHERE book.code IN ( :bookCodeList ) ");
+                .append(" WHERE book.code IN ( :bookCodeList ) ")
+                .append(" AND ( book.name LIKE :searchQuery OR book.author LIKE :searchQuery ) ");
 
         logger.debug("DB query = {}", queryBuilder.toString());
 
@@ -176,6 +194,7 @@ public class BookRepositoryImpl extends GenericDaoImpl implements BookRepository
 
         Query queryObject = entityManager.createQuery(queryBuilder.toString());
         queryObject.setParameter("bookCodeList", bookCodeList);
+        queryObject.setParameter("searchQuery", "%" + searchQuery + "%");
         return queryObject.getResultList();
     }
 
@@ -222,6 +241,22 @@ public class BookRepositoryImpl extends GenericDaoImpl implements BookRepository
         Query queryObject = entityManager.createQuery(queryBuilder.toString());
         queryObject.setParameter("isbnList", isbnList);
 
+        return queryObject.getResultList();
+    }
+
+    @Override
+    public List<BreezeBookDetails> getBooksByNameAndAuthor(String searchQuery) {
+        StringBuilder queryBuilder = new StringBuilder().append(" ")
+                .append(" SELECT book FROM ")
+                .append(BreezeBookDetails.class.getSimpleName())
+                .append(" book ")
+                .append(" WHERE book.name LIKE :searchQuery OR book.author LIKE :searchQuery ");
+
+        logger.debug("DB query = {}", queryBuilder.toString());
+
+        EntityManager entityManager = getEntityManager();
+        Query queryObject = entityManager.createQuery(queryBuilder.toString());
+        queryObject.setParameter("searchQuery", "%" + searchQuery + "%");
         return queryObject.getResultList();
     }
 }

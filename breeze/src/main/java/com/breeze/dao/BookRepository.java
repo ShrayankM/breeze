@@ -18,13 +18,17 @@ public interface BookRepository {
 
     BreezeBookDetails getBookDetailsUsingCode(String bookCode);
 
-    List<BreezeBookDetails> getBooksByName(String bookName);
+//    List<BreezeBookDetails> getBooksByName(String bookName);
 
-    List<BreezeBookDetails> getBooksByAuthor(String authorName);
+    List<BreezeBookDetails> getBooksByNameAndAuthor(String searchQuery);
+
+//    List<BreezeBookDetails> getBooksByAuthor(String authorName);
 
     List<BreezeUserBook> getListOfBookForUserUsingCode(String userCode);
 
-    List<BreezeBookDetails> getListOfBooksUsingCode(List<String> bookCodeList);
+//    List<BreezeBookDetails> getListOfBooksUsingCode(List<String> bookCodeList);
+
+    List<BreezeBookDetails> getListOfBooksUsingCodeAndNameOrAuthor(List<String> bookCodeList, String searchQuery);
 
     BreezeUserBook getUserBookFromCode(String userCode, String bookCode);
 

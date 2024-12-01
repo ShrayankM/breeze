@@ -13,11 +13,14 @@ public class BreezeErrorCodes {
     public static final int INVALID_BOOK_CODE_IN_REQUEST_CODE = 1003;
     public static final String INVALID_BOOK_CODE_IN_REQUEST_CODE_MSG = "Book code in request is either null or empty";
 
-    public static final int INVALID_BOOK_NAME_IN_REQUEST_CODE = 1004;
-    public static final String INVALID_BOOK_NAME_IN_REQUEST_MSG = "Book name in request is either null or empty";
+//    public static final int INVALID_BOOK_NAME_IN_REQUEST_CODE = 1004;
+//    public static final String INVALID_BOOK_NAME_IN_REQUEST_MSG = "Book name in request is either null or empty";
 
-    public static final int INVALID_AUTHOR_NAME_IN_REQUEST_CODE = 1005;
-    public static final String INVALID_AUTHOR_NAME_IN_REQUEST_MSG = "Author name in request is either null or empty";
+    public static final int INVALID_SEARCH_QUERY_IN_REQUEST_CODE = 1004;
+    public static final String INVALID_SEARCH_QUERY_IN_REQUEST_MSG = "Search query in request is either null or empty";
+
+//    public static final int INVALID_AUTHOR_NAME_IN_REQUEST_CODE = 1005;
+//    public static final String INVALID_AUTHOR_NAME_IN_REQUEST_MSG = "Author name in request is either null or empty";
 
     public static final int INVALID_USER_CODE_IN_REQUEST_CODE = 1006;
     public static final String INVALID_USER_CODE_IN_REQUEST_MSG = "User code in request is either null or empty";
