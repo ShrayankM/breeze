@@ -57,16 +57,10 @@ public class UserBookServiceImpl implements UserBookService {
             // add new record to DB
             validateNewUserBookRequest(request);
             breezeUserBook = RequestToModelConverter.getUserBookFromRequest(request);
+            response.setMessage("Book Added to User Library Successfully");
             genericDao.create(breezeUserBook);
         } else {
-            // update existing record to DB
-            // add validations before updating record in DB
-            breezeUserBook.setBookStatus(request.getBookStatus());
-            breezeUserBook.setCurrentPage(request.getCurrentPage());
-            breezeUserBook.setUserRating(request.getUserRating());
-            breezeUserBook.setWishlist(request.getWishlist());
-            breezeUserBook.setIsDeleted(request.getIsDeleted());
-            genericDao.update(breezeUserBook);
+            response.setMessage("Book Already Exists in User Library");
         }
 
         response = ModelToResponseConverter.getUserBookFromModel(breezeUserBook);
