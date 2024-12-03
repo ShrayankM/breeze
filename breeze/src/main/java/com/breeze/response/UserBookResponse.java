@@ -21,4 +21,6 @@ public class UserBookResponse {
     private Boolean wishlist;
 
     private BookDetailsResponse bookDetailsResponse;
+
+    private String message;
 }

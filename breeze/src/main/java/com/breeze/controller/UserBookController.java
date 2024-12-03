@@ -3,10 +3,7 @@ package com.breeze.controller;
 import com.breeze.constant.BreezeUrlConstants;
 import com.breeze.exception.BreezeException;
 import com.breeze.request.CreateUpdateUserBookRequest;
-import com.breeze.request.FetchBookList;
-import com.breeze.response.BookDataResponse;
 import com.breeze.response.CommonResponse;
-import com.breeze.response.GetListResponse;
 import com.breeze.response.UserBookResponse;
 import com.breeze.service.UserBookService;
 import com.breeze.util.CommonResponseGenerator;
@@ -32,6 +29,17 @@ public class UserBookController {
             @RequestBody CreateUpdateUserBookRequest request) throws BreezeException {
 
         UserBookResponse response = userBookService.addBookForUser(request);
+        return new ResponseEntity<>(CommonResponseGenerator.okResponse(response), HttpStatus.OK);
+    }
+
+    @PostMapping(
+            path = BreezeUrlConstants.UPDATE_BOOK_FOR_USER,
+            consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE
+    )
+    public ResponseEntity<CommonResponse<UserBookResponse>> updateBookForUser(
+            @RequestBody CreateUpdateUserBookRequest request) throws BreezeException {
+
+        UserBookResponse response = userBookService.updateBookForUser(request);
         return new ResponseEntity<>(CommonResponseGenerator.okResponse(response), HttpStatus.OK);
     }
 
