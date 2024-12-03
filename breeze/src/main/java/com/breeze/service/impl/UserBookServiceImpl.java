@@ -6,6 +6,7 @@ import com.breeze.dao.GenericDao;
 import com.breeze.dao.UserRepository;
 import com.breeze.exception.BreezeException;
 import com.breeze.exception.ResourceNotFoundException;
+import com.breeze.exception.ValidationException;
 import com.breeze.model.BreezeBookDetails;
 import com.breeze.model.BreezeUser;
 import com.breeze.model.BreezeUserBook;
@@ -61,6 +62,44 @@ public class UserBookServiceImpl implements UserBookService {
             genericDao.create(breezeUserBook);
         } else {
             response.setMessage("Book Already Exists in User Library");
+        }
+
+        response = ModelToResponseConverter.getUserBookFromModel(breezeUserBook);
+        BookDetailsResponse bookDetailsResponse = bookService.getBookDetails(breezeUserBook.getBookCode());
+        response.setBookDetailsResponse(bookDetailsResponse);
+        return response;
+    }
+
+    @Override
+    public UserBookResponse updateBookForUser(CreateUpdateUserBookRequest request) throws BreezeException {
+        UserBookResponse response;
+        requestValidator.validate(request);
+
+        // check if record exists for this user for this book
+        BreezeUserBook breezeUserBook = bookRepository.getUserBookFromCode(request.getUserCode(), request.getBookCode());
+        if (!Objects.isNull(breezeUserBook)) {
+            if (request.getBookStatus() != null) {
+                breezeUserBook.setBookStatus(request.getBookStatus());
+            }
+
+            if (request.getCurrentPage() != null) {
+                breezeUserBook.setCurrentPage(request.getCurrentPage());
+            }
+
+            if (request.getUserRating() != null) {
+                breezeUserBook.setUserRating(request.getUserRating());
+            }
+
+            if (request.getWishlist() != null) {
+                breezeUserBook.setWishlist(request.getWishlist());
+            }
+
+            if (request.getIsDeleted() != null) {
+                breezeUserBook.setIsDeleted(request.getIsDeleted());
+            }
+            genericDao.update(breezeUserBook);
+        } else {
+            throw new ValidationException(BreezeErrorCodes.DATA_NOT_FOUND, BreezeErrorCodes.DATA_NOT_FOUND_MSG);
         }
 
         response = ModelToResponseConverter.getUserBookFromModel(breezeUserBook);
