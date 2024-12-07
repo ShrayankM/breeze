@@ -9,6 +9,7 @@ import com.breeze.util.LoggerWrapper;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.Query;
 import org.springframework.stereotype.Repository;
+import org.springframework.util.CollectionUtils;
 
 import java.util.Date;
 import java.util.List;
@@ -48,14 +49,17 @@ public class BookRepositoryImpl extends GenericDaoImpl implements BookRepository
     }
 
     @Override
-    public List<BreezeUserBook> getListOfBooksForUser(String userCode, BreezeConstants.BookStatus bookStatus) {
+    public List<BreezeUserBook> getListOfBooksForUser(String userCode, List<BreezeConstants.BookStatus> bookStatusList) {
 
         StringBuilder queryBuilder = new StringBuilder().append(" ")
                 .append(" SELECT book FROM ")
                 .append(BreezeUserBook.class.getSimpleName())
                 .append(" book ")
-                .append(" WHERE book.userCode = :userCode ")
-                .append(" AND book.bookStatus = :bookStatus ");
+                .append(" WHERE book.userCode = :userCode ");
+
+        if (!CollectionUtils.isEmpty(bookStatusList)) {
+            queryBuilder.append(" AND book.bookStatus IN ( :bookStatusList ) ");
+        }
 
         logger.debug("DB query = {}", queryBuilder.toString());
 
@@ -63,7 +67,7 @@ public class BookRepositoryImpl extends GenericDaoImpl implements BookRepository
 
         Query queryObject = entityManager.createQuery(queryBuilder.toString());
         queryObject.setParameter("userCode", userCode);
-        queryObject.setParameter("bookStatus", bookStatus);
+        queryObject.setParameter("bookStatusList", bookStatusList);
         return queryObject.getResultList();
     }
 
