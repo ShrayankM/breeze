@@ -1,5 +1,6 @@
 package com.breeze.response;
 
+import com.breeze.constant.BreezeConstants;
 import lombok.Data;
 
 @Data
@@ -20,4 +21,6 @@ public class BookDataResponse {
     private String category;
 
     private String thumbnail;
+
+    private BreezeConstants.BookStatus bookStatus;
 }

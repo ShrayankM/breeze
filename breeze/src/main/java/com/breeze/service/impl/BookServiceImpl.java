@@ -29,6 +29,8 @@ import org.springframework.util.StringUtils;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.*;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 @Service
 public class BookServiceImpl implements BookService {
@@ -77,15 +79,11 @@ public class BookServiceImpl implements BookService {
                     BreezeErrorCodes.INVALID_USER_CODE_MSG);
         }
 
-        if (Objects.isNull(request.getBookStatus())) {
-            logger.error("Book status in request is null");
-            throw new ValidationException(BreezeErrorCodes.INVALID_BOOK_STATUS_IN_REQUEST_CODE,
-                    BreezeErrorCodes.INVALID_BOOK_STATUS_IN_REQUEST_CODE_MSG);
-        }
-
         setBookListFilters(request);
 
-        List<BreezeUserBook> breezeUserBookList = bookRepository.getListOfBooksForUser(request.getUserCode(), request.getBookStatus());
+        List<BreezeUserBook> breezeUserBookList = bookRepository.getListOfBooksForUser(request.getUserCode(),
+                request.getBookStatusList());
+        Map<String, BreezeUserBook> userBookMap = breezeUserBookList.stream().collect(Collectors.toMap(BreezeUserBook::getBookCode, x -> x));
 
         if (CollectionUtils.isEmpty(breezeUserBookList)) {
             logger.info("No books found for user: " + request.getUserCode());
@@ -93,8 +91,8 @@ public class BookServiceImpl implements BookService {
             bookDataResponseList.setTotalCount(0);
             return bookDataResponseList;
         }
-        List<String> bookCodeList = breezeUserBookList.stream().map(BreezeUserBook::getBookCode).toList();
 
+        List<String> bookCodeList = breezeUserBookList.stream().map(BreezeUserBook::getBookCode).toList();
         List<BreezeBookDetails> breezeBookDetailsList = bookRepository.getListOfBooksUsingCodeList(bookCodeList, request.getPages().getMinPages(),
                 request.getPages().getMaxPages(), request.getYob().getStartDate(), request.getYob().getEndDate());
 
@@ -106,6 +104,13 @@ public class BookServiceImpl implements BookService {
         }
 
         List<BookDataResponse> responseList = ModelToResponseConverter.getBookListResponseFromModel(breezeBookDetailsList);
+
+        for (BookDataResponse bookDataResponse : responseList) {
+            BreezeUserBook userBook = userBookMap.get(bookDataResponse.getCode());
+            if (Objects.nonNull(userBook)) {
+                bookDataResponse.setBookStatus(userBook.getBookStatus());
+            }
+        }
         bookDataResponseList.setList(responseList);
         bookDataResponseList.setTotalCount(responseList.size());
         return bookDataResponseList;
@@ -268,6 +273,7 @@ public class BookServiceImpl implements BookService {
         }
 
         List<BreezeUserBook> breezeUserBookList = bookRepository.getListOfBookForUserUsingCode(userCode);
+        Map<String, BreezeUserBook> userBookMap = breezeUserBookList.stream().collect(Collectors.toMap(BreezeUserBook::getBookCode, Function.identity()));
         if (CollectionUtils.isEmpty(breezeUserBookList)) {
             logger.info("No books found for user with code: " + userCode);
             bookDataResponseList.setList(new ArrayList<>());
@@ -285,8 +291,11 @@ public class BookServiceImpl implements BookService {
             return bookDataResponseList;
         }
 
-//        List<BreezeBookDetails> filteredBookDetailsList = breezeBookDetailsList.stream().filter(book -> book.getAuthor().contains(authorName)).toList();
         List<BookDataResponse> responseList = ModelToResponseConverter.getBookListResponseFromModel(breezeBookDetailsList);
+        for (BookDataResponse bookDataResponse : responseList) {
+            BreezeUserBook breezeUserBook = userBookMap.get(bookDataResponse.getCode());
+            bookDataResponse.setBookStatus(breezeUserBook.getBookStatus());
+        }
         bookDataResponseList.setList(responseList);
         bookDataResponseList.setTotalCount(responseList.size());
         return bookDataResponseList;

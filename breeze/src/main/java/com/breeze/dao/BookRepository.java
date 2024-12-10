@@ -12,7 +12,7 @@ public interface BookRepository {
 
     List<BreezeBookDetails> getListOfBooks(FetchBookList request);
 
-    List<BreezeUserBook> getListOfBooksForUser(String userCode, BookStatus bookStatus);
+    List<BreezeUserBook> getListOfBooksForUser(String userCode, List<BookStatus> bookStatusList);
 
     List<BreezeBookDetails> getListOfBooksUsingCodeList(List<String> bookCodeList, Long minPages, Long maxPages, Date startDate, Date endDate);
 

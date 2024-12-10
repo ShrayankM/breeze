@@ -7,6 +7,7 @@ import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
 
 import java.util.Date;
+import java.util.List;
 
 @Data
 public class FetchBookList {
@@ -14,7 +15,7 @@ public class FetchBookList {
     @NotBlank(message = "User-code cannot be null or empty in request")
     private String userCode;
 
-    private BookStatus bookStatus;
+    private List<BookStatus> bookStatusList;
 
     private YearOfPublishing yob;
 
