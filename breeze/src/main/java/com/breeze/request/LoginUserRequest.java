@@ -6,16 +6,11 @@ import lombok.Data;
 
 @Data
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class CreateUpdateUserRequest {
-
-    @NotBlank
-    private String userName;
+public class LoginUserRequest {
 
     @NotBlank
     private String emailAddress;
 
     @NotBlank
     private String password;
-
-    private Boolean isAdminUser;
 }

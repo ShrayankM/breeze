@@ -14,14 +14,14 @@ public class BreezeUser extends AbstractModelWithCode  {
     @Column(name = "user_name")
     private String userName;
 
-    @Column(name = "name")
-    private String name;
+//    @Column(name = "name")
+//    private String name;
 
     @Column(name = "email_address")
     private String emailAddress;
 
-    @Column(name = "phone_number")
-    private String phoneNumber;
+//    @Column(name = "phone_number")
+//    private String phoneNumber;
 
     @Column(name = "password")
     private String password;

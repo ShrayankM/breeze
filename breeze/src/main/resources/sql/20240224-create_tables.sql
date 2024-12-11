@@ -1,10 +1,8 @@
 CREATE TABLE `breeze_user` (
     `id` bigint NOT NULL AUTO_INCREMENT,
-    `name` varchar(64)  NOT NULL,
     `user_name` varchar(64) NOT NULL,
     `code` varchar(30)  NOT NULL,
     `email_address` varchar(255) NOT NULL,
-    `phone_number` varchar(20) NOT NULL,
     `password` varchar(255) NOT NULL,
     `is_email_verified` tinyint(1) DEFAULT '0',
     `is_phone_verified` tinyint(1) DEFAULT '0',
