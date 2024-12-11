@@ -110,9 +110,9 @@ public class ModelToResponseConverter {
 
         response.setCode(model.getCode());
         response.setUserName(model.getUserName());
-        response.setName(model.getName());
+//        response.setName(model.getName());
         response.setEmailAddress(model.getEmailAddress());
-        response.setPhoneNumber(model.getPhoneNumber());
+//        response.setPhoneNumber(model.getPhoneNumber());
         return response;
     }
 }
