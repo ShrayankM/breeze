@@ -22,7 +22,7 @@ public class UserRepositoryImpl  extends GenericDaoImpl implements UserRepositor
                 .append(" SELECT user FROM ")
                 .append(BreezeUser.class.getSimpleName())
                 .append(" user ")
-                .append(" WHERE user.code = :userCode ");
+                .append(" WHERE user.userId = :userCode ");
 
         logger.debug("DB query = {}", queryBuilder.toString());
 

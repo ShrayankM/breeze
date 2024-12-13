@@ -15,7 +15,7 @@ public class CreateUpdateUserRequest {
     private String emailAddress;
 
     @NotBlank
-    private String password;
+    private String userId;
 
     private Boolean isAdminUser;
 }

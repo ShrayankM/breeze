@@ -3,7 +3,7 @@ CREATE TABLE `breeze_user` (
     `user_name` varchar(64) NOT NULL,
     `code` varchar(30)  NOT NULL,
     `email_address` varchar(255) NOT NULL,
-    `password` varchar(255) NOT NULL,
+    `user_id` varchar(255) NOT NULL,
     `is_email_verified` tinyint(1) DEFAULT '0',
     `is_phone_verified` tinyint(1) DEFAULT '0',
     `user_type` enum('ADMIN','STANDARD')  NOT NULL,
@@ -11,6 +11,7 @@ CREATE TABLE `breeze_user` (
     `updated_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     PRIMARY KEY (`id`),
     UNIQUE KEY `UK_user_code` (`code`),
+    UNIQUE KEY `UK_user_id` (`user_id`)
     UNIQUE KEY `UK_user_email_address` (`email_address`)
 );
 

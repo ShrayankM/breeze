@@ -121,7 +121,8 @@ public class RequestToModelConverter {
 //        model.setName(request.getName());
         model.setUserName(request.getUserName());
         model.setEmailAddress(request.getEmailAddress());
-        model.setPassword(request.getPassword());
+        model.setUserId(request.getUserId());
+//        model.setPassword(request.getPassword());
 //        model.setPhoneNumber(request.getPhoneNumber());
         model.setIsEmailVerified(false);
         model.setIsPhoneVerified(false);
