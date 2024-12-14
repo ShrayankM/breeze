@@ -98,7 +98,8 @@ public class RequestToModelConverter {
         );
         model.setBookCode(request.getBookCode());
         model.setUserCode(request.getUserCode());
-        model.setBookStatus(BreezeConstants.BookStatus.ADDED);
+//        model.setBookStatus(BreezeConstants.BookStatus.LIBRARY);
+        model.setBookStatus(request.getBookStatus());
         model.setIsDeleted(false);
         model.setWishlist(false);
         model.setUserRating(0L);
