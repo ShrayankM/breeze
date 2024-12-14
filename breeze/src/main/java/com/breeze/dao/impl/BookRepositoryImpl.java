@@ -50,12 +50,12 @@ public class BookRepositoryImpl extends GenericDaoImpl implements BookRepository
 
     @Override
     public List<BreezeUserBook> getListOfBooksForUser(String userCode, List<BreezeConstants.BookStatus> bookStatusList) {
-
         StringBuilder queryBuilder = new StringBuilder().append(" ")
                 .append(" SELECT book FROM ")
                 .append(BreezeUserBook.class.getSimpleName())
                 .append(" book ")
-                .append(" WHERE book.userCode = :userCode ");
+                .append(" WHERE book.userCode = :userCode ")
+                .append(" AND book.isDeleted = false ");
 
         if (!CollectionUtils.isEmpty(bookStatusList)) {
             queryBuilder.append(" AND book.bookStatus IN ( :bookStatusList ) ");
@@ -67,7 +67,10 @@ public class BookRepositoryImpl extends GenericDaoImpl implements BookRepository
 
         Query queryObject = entityManager.createQuery(queryBuilder.toString());
         queryObject.setParameter("userCode", userCode);
-        queryObject.setParameter("bookStatusList", bookStatusList);
+
+        if (!CollectionUtils.isEmpty(bookStatusList)) {
+            queryObject.setParameter("bookStatusList", bookStatusList);
+        }
         return queryObject.getResultList();
     }
 
@@ -210,7 +213,8 @@ public class BookRepositoryImpl extends GenericDaoImpl implements BookRepository
                 .append(BreezeUserBook.class.getSimpleName())
                 .append(" book ")
                 .append(" WHERE book.userCode = :userCode ")
-                .append(" AND book.bookCode = :bookCode ");
+                .append(" AND book.bookCode = :bookCode ")
+                .append(" AND book.isDeleted = false ");
 
         logger.debug("DB query = {}", queryBuilder.toString());
 
