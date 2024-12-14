@@ -9,10 +9,7 @@ CREATE TABLE `breeze_user` (
     `user_type` enum('ADMIN','STANDARD')  NOT NULL,
     `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
     `updated_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    PRIMARY KEY (`id`),
-    UNIQUE KEY `UK_user_code` (`code`),
-    UNIQUE KEY `UK_user_id` (`user_id`)
-    UNIQUE KEY `UK_user_email_address` (`email_address`)
+    PRIMARY KEY (`id`)
 );
 
 CREATE TABLE `breeze_book_details` (
@@ -33,10 +30,7 @@ CREATE TABLE `breeze_book_details` (
         `description` varchar(255) DEFAULT NULL,
         `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
         `updated_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-        PRIMARY KEY (`id`),
-        UNIQUE KEY `UK_book_code` (`code`),
-        UNIQUE KEY `UK_book_isbn_small` (`isbn_10`),
-        UNIQUE KEY `UK_book_isbn_large` (`isbn_13`)
+        PRIMARY KEY (`id`)
 );
 
 CREATE TABLE `breeze_user_book` (
@@ -51,9 +45,7 @@ CREATE TABLE `breeze_user_book` (
     `user_rating` bigint DEFAULT NULL,
     `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
     `updated_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    PRIMARY KEY (`id`),
-    UNIQUE KEY `UK_book_code` (`code`),
-    UNIQUE KEY `UK_book_user_code` (`book_code`, `user_code`)
+    PRIMARY KEY (`id`)
 );
 
 
@@ -65,8 +57,7 @@ CREATE TABLE `breeze_user_suggestions` (
     `updated_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     `status` enum('pending','closed') NOT NULL,
     `suggestion` varchar(255) NOT NULL,
-    PRIMARY KEY (`id`),
-    UNIQUE KEY `UK_user_suggestion_code` (`code`)
+    PRIMARY KEY (`id`)
 );
 
 CREATE TABLE `breeze_user_notifications` (
@@ -75,8 +66,7 @@ CREATE TABLE `breeze_user_notifications` (
     `data` json NOT NULL,
     `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
     `updated_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    PRIMARY KEY (`id`),
-    UNIQUE KEY `UK_user_notification_code` (`code`)
+    PRIMARY KEY (`id`)
 );
 
 CREATE TABLE `breeze_config` (
@@ -87,6 +77,5 @@ CREATE TABLE `breeze_config` (
   `created_at` datetime DEFAULT CURRENT_TIMESTAMP,
   `updated_at` datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   `description` varchar(255)  DEFAULT NULL,
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `UK_config_name` (`name`)
+  PRIMARY KEY (`id`)
 );

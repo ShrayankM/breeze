@@ -16,6 +16,7 @@ public class BreezeUrlConstants {
     // user-apis
     public static final String CREATE_USER = URL_PREFIX + "user/create-user";
     public static final String LOGIN_USER = URL_PREFIX + "user/login-user";
+    public static final String FETCH_USER_PROFILE = URL_PREFIX + "user/{userCode}/fetch-user-profile";
 
     // User-book apis
     public static final String ADD_BOOK_FOR_USER = URL_PREFIX + "book/add-book";

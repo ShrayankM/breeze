@@ -11,4 +11,6 @@ public interface UserService {
     UserResponse createUser(CreateUpdateUserRequest request) throws BreezeException;
 
     UserResponse loginUser(LoginUserRequest request) throws BreezeException;
+
+    UserResponse fetchUserProfile(String userCode) throws BreezeException;
 }
