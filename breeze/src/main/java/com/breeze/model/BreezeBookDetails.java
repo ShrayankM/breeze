@@ -59,6 +59,9 @@ public class BreezeBookDetails extends AbstractModelWithCode {
     @Column(name = "description")
     private String description;
 
+    @Column(name = "language")
+    private String language;
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

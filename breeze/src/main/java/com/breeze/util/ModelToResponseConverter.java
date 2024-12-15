@@ -50,6 +50,7 @@ public class ModelToResponseConverter {
             bookDetailsData.setIsbnSmall(bookDetails.getIsbn10());
             bookDetailsData.setIsbnLarge(bookDetails.getIsbn13());
             bookDetailsData.setAuthor(bookDetails.getAuthor());
+            bookDetailsData.setLanguage(bookDetails.getLanguage());
 //            bookDetailsData.setThumbnail(bookDetails.getThumbnail());
 
             // creating thumbnail url (small) for list response
@@ -86,8 +87,9 @@ public class ModelToResponseConverter {
         response.setPublishedDate(dateFormat.format(publishedDate));
         response.setPages(model.getPages());
         response.setCategory(model.getCategory());
-        response.setUserRating(model.getUserRating());
+        response.setGlobalRating(model.getUserRating());
         response.setDescription(model.getDescription());
+        response.setLanguage(model.getLanguage());
 
         return response;
     }

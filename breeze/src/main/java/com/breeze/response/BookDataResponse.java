@@ -1,9 +1,11 @@
 package com.breeze.response;
 
 import com.breeze.constant.BreezeConstants;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Data;
 
 @Data
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class BookDataResponse {
 
     private String code;
@@ -21,6 +23,8 @@ public class BookDataResponse {
     private String category;
 
     private String thumbnail;
+
+    private String language;
 
     private BreezeConstants.BookStatus bookStatus;
 }
