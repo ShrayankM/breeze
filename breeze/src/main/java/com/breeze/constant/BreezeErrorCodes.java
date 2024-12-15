@@ -34,6 +34,15 @@ public class BreezeErrorCodes {
     public static final int INVALID_ISBN_LIST_IN_REQUEST_CODE = 1011;
     public static final String INVALID_ISBN_LIST_IN_REQUEST_MSG = "Isbn-list in request to create-book records is empty";
 
+    public static final int USER_WITH_EMAIL_ALREADY_EXISTS_CODE = 1012;
+    public static final String USER_WITH_EMAIL_ALREADY_EXISTS_MSG = "User with email already exists";
+
+    public static final int USER_NOT_FOUND_ERROR_CODE = 1013;
+    public static final String USER_NOT_FOUND_ERROR_MSG = "User not found";
+
+    public static final int INVALID_PASSWORD_FOR_USER_ERROR_CODE = 1014;
+    public static final String INVALID_PASSWORD_FOR_USER_ERROR_MSG = "Invalid password for user";
+
 
     // Data not found error codes
     public static final int DATA_NOT_FOUND = 2001;

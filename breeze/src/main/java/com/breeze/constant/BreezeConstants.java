@@ -23,7 +23,7 @@ public class BreezeConstants {
     }
 
     public enum BookStatus {
-        ADDED, READING, COMPLETED
+        WISHLIST, LIBRARY, ADDED, READING, COMPLETED
     }
 
     public enum UserSuggestionStatus {

@@ -18,13 +18,13 @@ public class UserResponse {
 
     private String emailAddress;
 
-    private String phoneNumber;
+    private Long readingBookCount;
 
-    private String password;
+    private Long completedBookCount;
 
-    private Boolean isEmailVerified;
+    private Long wishlistedBookCount;
 
-    private Boolean isPhoneVerified;
+    private Long totalBooksInLibrary;
 
     @Enumerated(EnumType.STRING)
     private BreezeConstants.UserType userType;

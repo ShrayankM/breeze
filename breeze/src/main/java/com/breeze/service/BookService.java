@@ -19,6 +19,8 @@ public interface BookService {
 
     BookDetailsResponse getBookDetails(String bookCode) throws BreezeException;
 
+    BookDetailsResponse getBookDetailsForUser(String bookCode, String userCode) throws BreezeException;
+
 //    GetListResponse<BookDataResponse> getBooksByName(String bookName) throws BreezeException;
 
 //    GetListResponse<BookDataResponse> getBooksByAuthor(String authorName) throws BreezeException;
@@ -26,6 +28,8 @@ public interface BookService {
 //    GetListResponse<BookDataResponse> getBooksByNameForUser(String bookName, String userCode) throws BreezeException;
 
     GetListResponse<BookDataResponse> searchBooksByNameAndAuthorForUser(String searchQuery, String userCode) throws BreezeException;
+
+    GetListResponse<BookDataResponse> searchWishlistedBooksByNameAndAuthorForUser(String searchQuery, String userCode) throws BreezeException;
 
 //    GetListResponse<BookDataResponse> getBooksByAuthorForUser(String authorName, String userCode) throws BreezeException;
 

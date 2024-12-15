@@ -77,12 +77,10 @@ public class RequestToModelConverter {
         model.setCategory(item.getVolumeInfo().getCategories().get(0));
         model.setThumbnail(item.getVolumeInfo().getImageLinks().getThumbnail());
         model.setSmallThumbnail(item.getVolumeInfo().getImageLinks().getSmallThumbnail());
-
-//        if (item.getVolumeInfo().getDescription().length() > 255) {
-//            model.setDescription(item.getVolumeInfo().getDescription().substring(0, 255));
-//        } else {
         model.setDescription(item.getVolumeInfo().getDescription());
-//        }
+        if (item.getVolumeInfo().getLanguage() != null) {
+            model.setLanguage(item.getVolumeInfo().getLanguage().toUpperCase());
+        }
         return model;
     }
 
@@ -98,7 +96,8 @@ public class RequestToModelConverter {
         );
         model.setBookCode(request.getBookCode());
         model.setUserCode(request.getUserCode());
-        model.setBookStatus(BreezeConstants.BookStatus.ADDED);
+//        model.setBookStatus(BreezeConstants.BookStatus.LIBRARY);
+        model.setBookStatus(request.getBookStatus());
         model.setIsDeleted(false);
         model.setWishlist(false);
         model.setUserRating(0L);
@@ -118,11 +117,12 @@ public class RequestToModelConverter {
                 )
         );
 
-        model.setName(request.getName());
+//        model.setName(request.getName());
         model.setUserName(request.getUserName());
         model.setEmailAddress(request.getEmailAddress());
-        model.setPassword(request.getPassword());
-        model.setPhoneNumber(request.getPhoneNumber());
+        model.setUserId(request.getUserId());
+//        model.setPassword(request.getPassword());
+//        model.setPhoneNumber(request.getPhoneNumber());
         model.setIsEmailVerified(false);
         model.setIsPhoneVerified(false);
 
