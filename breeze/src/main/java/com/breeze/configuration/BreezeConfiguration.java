@@ -5,6 +5,7 @@ import com.breeze.service.impl.BreezeConfigServiceImpl;
 import com.breeze.util.LoggerWrapper;
 import com.zaxxer.hikari.HikariDataSource;
 import jakarta.persistence.EntityManagerFactory;
+import jakarta.validation.Validator;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -13,6 +14,9 @@ import org.springframework.orm.jpa.JpaTransactionManager;
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
 import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
+import org.springframework.web.servlet.config.annotation.CorsRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import javax.sql.DataSource;
 import java.sql.Connection;
@@ -20,7 +24,7 @@ import java.sql.SQLException;
 import java.util.Properties;
 
 @Configuration
-public class BreezeConfiguration {
+public class BreezeConfiguration implements WebMvcConfigurer {
 
     private static final LoggerWrapper LOGGER = LoggerWrapper.getLogger(BreezeConfiguration.class);
 
@@ -104,5 +108,14 @@ public class BreezeConfiguration {
     @Bean
     public BreezeConfigService breezeConfigService(@Qualifier("entityManager") PlatformTransactionManager transactionManager) {
         return new BreezeConfigServiceImpl();
+    }
+
+    @Override
+    public void addCorsMappings(CorsRegistry registry) {
+        registry.addMapping("/**")
+                .allowedOrigins("https://shvgxjk-anonymous-8081.exp.direct", "http://localhost:*")
+                .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
+                .allowedHeaders("*")
+                .allowCredentials(true);
     }
 }

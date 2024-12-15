@@ -27,4 +27,10 @@ public class BreezeUserBook extends AbstractModelWithCode  {
 
     @Column(name = "user_rating")
     private Long userRating;
+
+    @Column(name = "is_deleted")
+    private Boolean isDeleted;
+
+    @Column(name = "wishlist")
+    private Boolean wishlist;
 }

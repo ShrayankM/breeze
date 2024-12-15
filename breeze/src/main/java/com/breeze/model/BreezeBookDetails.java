@@ -1,7 +1,6 @@
 package com.breeze.model;
 
 
-import com.breeze.constant.BreezeConstants.BookGenre;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.Hibernate;
@@ -18,27 +17,38 @@ import java.util.Objects;
 @Table(name = "breeze_book_details")
 public class BreezeBookDetails extends AbstractModelWithCode {
 
-    @Column(name = "book_name")
-    private String bookName;
+    @Column(name = "google_id")
+    private String googleId;
 
-    @Column(name = "isbn")
-    private String isbn;
+    @Column(name = "name")
+    private String name;
 
-    @Column(name = "author_name")
-    private String authorName;
+    @Column(name = "subtitle")
+    private String subtitle;
 
-    @Column(name = "s3_image_link")
-    private String s3ImageLink;
+    @Column(name = "isbn_10")
+    private String isbn10;
 
-    @Column(name = "year_published")
-    private Date yearPublished;
+    @Column(name = "isbn_13")
+    private String isbn13;
 
-    @Column(name = "no_of_pages")
-    private Long noOfPages;
+    @Column(name = "author")
+    private String author;
 
-    @Column(name = "book_genre", columnDefinition = "enum")
-    @Enumerated(EnumType.STRING)
-    private BookGenre bookGenre;
+    @Column(name = "thumbnail")
+    private String thumbnail;
+
+    @Column(name = "small_thumbnail")
+    private String smallThumbnail;
+
+    @Column(name = "published_date")
+    private Date publishedDate;
+
+    @Column(name = "pages")
+    private Long pages;
+
+    @Column(name = "category")
+    private String category;
 
     @Column(name = "user_rating")
     private BigDecimal userRating;

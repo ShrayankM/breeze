@@ -1,26 +1,36 @@
 package com.breeze.service;
 
+import com.breeze.exception.BreezeException;
+import com.breeze.model.BreezeBookDetails;
 import com.breeze.request.FetchBookList;
 import com.breeze.request.UpdateBookRating;
+import com.breeze.response.BookDataResponse;
 import com.breeze.response.BookDetailsResponse;
-import com.breeze.response.BookListResponse;
+import com.breeze.response.GetListResponse;
 
 public interface BookService {
 
-    BookListResponse getBooks(FetchBookList request);
+    GetListResponse<BookDataResponse> getBooks(FetchBookList request);
 
-    BookListResponse getBooksForUser(FetchBookList request);
+    GetListResponse<BookDataResponse> getBooksForUser(FetchBookList request) throws BreezeException;
 
-    BookDetailsResponse getBookDetails(String bookCode);
+    GetListResponse<BookDataResponse> searchBooksByNameAndAuthor(String searchQuery) throws BreezeException;
 
-    BookListResponse getBooksByName(String bookName);
 
-    BookListResponse getBooksByAuthor(String authorName);
+    BookDetailsResponse getBookDetails(String bookCode) throws BreezeException;
 
-    BookListResponse getBooksByNameForUser(String bookName, String userCode);
+//    GetListResponse<BookDataResponse> getBooksByName(String bookName) throws BreezeException;
 
-    BookListResponse getBooksByAuthorForUser(String authorName, String userCode);
+//    GetListResponse<BookDataResponse> getBooksByAuthor(String authorName) throws BreezeException;
 
-    void updateBookRatingForUser(UpdateBookRating request);
+//    GetListResponse<BookDataResponse> getBooksByNameForUser(String bookName, String userCode) throws BreezeException;
+
+    GetListResponse<BookDataResponse> searchBooksByNameAndAuthorForUser(String searchQuery, String userCode) throws BreezeException;
+
+//    GetListResponse<BookDataResponse> getBooksByAuthorForUser(String authorName, String userCode) throws BreezeException;
+
+    void updateBookRatingForUser(UpdateBookRating request) throws BreezeException;
+
+    BreezeBookDetails getBookByCode(String bookCode);
 
 }

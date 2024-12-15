@@ -1,27 +1,29 @@
 package com.breeze.response;
 
-import com.breeze.constant.BreezeConstants;
 import lombok.Data;
 
 import java.math.BigDecimal;
-import java.util.Date;
 
 @Data
 public class BookDetailsResponse {
 
-    private String bookName;
+    private String name;
 
-    private String isbn;
+    private String subtitle;
 
-    private String authorName;
+    private String isbnSmall;
 
-    private String s3ImageLink;
+    private String isbnLarge;
 
-    private Date yearPublished;
+    private String author;
 
-    private Long noOfPages;
+    private String thumbnail;
 
-    private BreezeConstants.BookGenre bookGenre;
+    private String publishedDate;
+
+    private Long pages;
+
+    private String category;
 
     private BigDecimal userRating;
 

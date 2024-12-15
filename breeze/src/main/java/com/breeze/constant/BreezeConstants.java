@@ -18,13 +18,12 @@ public class BreezeConstants {
         ACTIVE, INACTIVE
     }
 
-    public enum BookGenre {
-        FICTION, NON_FICTION, POETRY, DRAMA, ROMANCE, MYSTERY_THRILLER, SCIENCE_FICTION, FANTASY, HORROR, ADVENTURE, CHILDRENS_YOUNG_ADULT,
-        HISTORICAL, BIOGRAPHY_AUTOBIOGRAPHY, HUMOR_SATIRE, DYSTOPIAN
+    public enum IsbnType {
+        ISBN_10, ISBN_13
     }
 
     public enum BookStatus {
-        WISHLISTED, BOUGHT, READING, READ, COMPLETED
+        WISHLIST, LIBRARY, ADDED, READING, COMPLETED
     }
 
     public enum UserSuggestionStatus {
@@ -35,7 +34,9 @@ public class BreezeConstants {
         SUBMITTED, UNDER_REVIEW, APPROVED, REJECTED
     }
 
-    public static final String USER_BOOK_APPROVAL_PREFIX = "UBA";
+    public static final String BOOK_DETAILS_PREFIX = "BKD";
+    public static final String USER_BOOK_PREFIX = "UBK";
+    public static final String USER_PREFIX = "UER";
     public static final Long MIN_PAGES = 0L;
     public static final Long MAX_PAGES = 10000L;
     public static final Date YOP_START_DATE =  Date.from(LocalDate.of(1900, 1, 1).atStartOfDay(ZoneId.systemDefault()).toInstant());

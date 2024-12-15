@@ -5,6 +5,7 @@ import com.breeze.model.AbstractModel;
 import com.breeze.util.LoggerWrapper;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
+import jakarta.transaction.Transactional;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Repository;
 import org.springframework.util.Assert;
@@ -27,6 +28,7 @@ public class GenericDaoImpl implements GenericDao {
     }
 
     @Override
+    @Transactional
     public <T extends AbstractModel> T create(T entity) {
         try {
             EntityManager currentEm = getEntityManager();
@@ -43,6 +45,7 @@ public class GenericDaoImpl implements GenericDao {
     }
 
     @Override
+    @Transactional
     public <T extends AbstractModel> T update(T entity) {
         try {
             EntityManager currentEm = getEntityManager();
@@ -60,6 +63,7 @@ public class GenericDaoImpl implements GenericDao {
     }
 
     @Override
+    @Transactional
     public <T extends AbstractModel> List<T> createAll(Iterable<T> entities) {
         Assert.notNull(entities, "Entity list must not be null!");
         List<T> result = new ArrayList<>();
@@ -70,6 +74,7 @@ public class GenericDaoImpl implements GenericDao {
     }
 
     @Override
+    @Transactional
     public <T extends AbstractModel> List<T> updateAll(Iterable<T> entities) {
         Assert.notNull(entities, "Entity list must not be null!");
         List<T> result = new ArrayList<>();

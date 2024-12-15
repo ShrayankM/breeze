@@ -1,84 +1,118 @@
 package com.breeze.util;
 
+import com.breeze.constant.BreezeDbConfigEnum;
 import com.breeze.model.BreezeBookDetails;
-import com.breeze.model.BreezeUserBookApproval;
-import com.breeze.response.BookApprovalList;
-import com.breeze.response.BookApprovalList.BookApprovalData;
+import com.breeze.model.BreezeUser;
+import com.breeze.model.BreezeUserBook;
+import com.breeze.response.BookDataResponse;
 import com.breeze.response.BookDetailsResponse;
-import com.breeze.response.BookListResponse;
-import com.breeze.response.BookListResponse.BookData;
-import com.fasterxml.jackson.core.JsonProcessingException;
+import com.breeze.response.UserBookResponse;
+import com.breeze.response.UserResponse;
+import com.breeze.service.BreezeConfigService;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.NoArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 @Component
+@NoArgsConstructor
 public class ModelToResponseConverter {
 
     private static final LoggerWrapper logger = LoggerWrapper.getLogger(ModelToResponseConverter.class);
 
     private static ObjectMapper objectMapper;
 
+    private static BreezeConfigService breezeConfigService;
+
     @Autowired
     @Lazy
-    private ModelToResponseConverter() {
+    private ModelToResponseConverter(BreezeConfigService breezeConfigService) {
         this.objectMapper = new ObjectMapper();
+        this.breezeConfigService = breezeConfigService;
     }
 
-    public static BookApprovalList getBookApprovalResponseFromModel(List<BreezeUserBookApproval> modelList) {
-
-        BookApprovalList response = new BookApprovalList();
-        List<BookApprovalData> bookApprovalDataList = new ArrayList<>();
-        for (BreezeUserBookApproval model : modelList) {
-
-            BookApprovalData bookApprovalData = new BookApprovalData();
-            try {
-                bookApprovalData = objectMapper.readValue(model.getData(), BookApprovalData.class);
-            } catch (JsonProcessingException e) {
-                logger.error("Error occurred when converting JSON string to object", e);
-            }
-            bookApprovalDataList.add(bookApprovalData);
-        }
-        response.setBookApprovalDataList(bookApprovalDataList);
-        return response;
-    }
-
-    public static BookListResponse getBookListResponseFromModel(List<BreezeBookDetails> modelList) {
-        BookListResponse response = new BookListResponse();
-        List<BookData> bookDetailsList = new ArrayList<>();
+    public static List<BookDataResponse> getBookListResponseFromModel(List<BreezeBookDetails> modelList) {
+        List<BookDataResponse> bookDetailsList = new ArrayList<>();
 
         for (BreezeBookDetails bookDetails : modelList) {
-            BookData bookDetailsData = new BookData();
+            BookDataResponse bookDetailsData = new BookDataResponse();
 
-            bookDetailsData.setBookName(bookDetails.getBookName());
-            bookDetailsData.setGenre(bookDetails.getBookGenre());
-            bookDetailsData.setIsbn(bookDetails.getIsbn());
-            bookDetailsData.setAuthorName(bookDetails.getAuthorName());
-            bookDetailsData.setS3ImageLink(bookDetails.getS3ImageLink());
+            bookDetailsData.setCode(bookDetails.getCode());
+            bookDetailsData.setName(bookDetails.getName());
+            bookDetailsData.setSubtitle(bookDetails.getSubtitle());
+            bookDetailsData.setCategory(bookDetails.getCategory());
+            bookDetailsData.setIsbnSmall(bookDetails.getIsbn10());
+            bookDetailsData.setIsbnLarge(bookDetails.getIsbn13());
+            bookDetailsData.setAuthor(bookDetails.getAuthor());
+//            bookDetailsData.setThumbnail(bookDetails.getThumbnail());
+
+            // creating thumbnail url (small) for list response
+            String thumbnailUrl = breezeConfigService.getStringValue(BreezeDbConfigEnum.GOOGLE_BOOK_IMAGE_BASE_URL) +
+                    bookDetails.getGoogleId() +
+                    breezeConfigService.getStringValue(BreezeDbConfigEnum.GOOGLE_BOOK_IMAGE_SMALL_URL);
+            bookDetailsData.setThumbnail(thumbnailUrl);
+
             bookDetailsList.add(bookDetailsData);
         }
-        response.setBookDetailsList(bookDetailsList);
-        response.setCount(response.getBookDetailsList().size());
-        return response;
+        return bookDetailsList;
     }
 
     public static BookDetailsResponse getBookDetailsResponseFromModel(BreezeBookDetails model) {
         BookDetailsResponse response = new BookDetailsResponse();
 
-        response.setBookName(model.getBookName());
-        response.setIsbn(model.getIsbn());
-        response.setAuthorName(model.getAuthorName());
-        response.setS3ImageLink(model.getS3ImageLink());
-        response.setYearPublished(model.getYearPublished());
-        response.setNoOfPages(model.getNoOfPages());
-        response.setBookGenre(model.getBookGenre());
+        response.setName(model.getName());
+        response.setSubtitle(model.getSubtitle());
+        response.setIsbnSmall(model.getIsbn10());
+        response.setIsbnLarge(model.getIsbn13());
+        response.setAuthor(model.getAuthor());
+//        response.setThumbnail(model.getThumbnail());
+
+        // creating thumbnail url (small) for list response
+        String thumbnailUrl = breezeConfigService.getStringValue(BreezeDbConfigEnum.GOOGLE_BOOK_IMAGE_BASE_URL) +
+                model.getGoogleId() +
+                breezeConfigService.getStringValue(BreezeDbConfigEnum.GOOGLE_BOOK_IMAGE_LARGE_URL);
+        response.setThumbnail(thumbnailUrl);
+
+        // formatting date
+        Date publishedDate = model.getPublishedDate();
+        SimpleDateFormat dateFormat = new SimpleDateFormat("dd MMM yyyy");
+
+        response.setPublishedDate(dateFormat.format(publishedDate));
+        response.setPages(model.getPages());
+        response.setCategory(model.getCategory());
         response.setUserRating(model.getUserRating());
         response.setDescription(model.getDescription());
 
+        return response;
+    }
+
+    public static UserBookResponse getUserBookFromModel(BreezeUserBook model) {
+        UserBookResponse response = new UserBookResponse();
+
+        response.setBookCode(model.getBookCode());
+        response.setUserCode(model.getUserCode());
+        response.setBookStatus(model.getBookStatus());
+        response.setCurrentPage(model.getCurrentPage());
+        response.setUserRating(model.getUserRating());
+        response.setIsDeleted(model.getIsDeleted());
+        response.setWishlist(model.getWishlist());
+        return response;
+    }
+
+    public static UserResponse getUserFromModel(BreezeUser model) {
+        UserResponse response = new UserResponse();
+
+        response.setCode(model.getCode());
+        response.setUserName(model.getUserName());
+//        response.setName(model.getName());
+        response.setEmailAddress(model.getEmailAddress());
+//        response.setPhoneNumber(model.getPhoneNumber());
         return response;
     }
 }

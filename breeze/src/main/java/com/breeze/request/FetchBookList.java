@@ -1,8 +1,8 @@
 package com.breeze.request;
 
 import com.breeze.constant.BreezeConstants;
-import com.breeze.constant.BreezeConstants.BookGenre;
 import com.breeze.constant.BreezeConstants.BookStatus;
+import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
 
@@ -12,16 +12,20 @@ import java.util.List;
 @Data
 public class FetchBookList {
 
-    @NotBlank
+    @NotBlank(message = "User-code cannot be null or empty in request")
     private String userCode;
 
-    private BookStatus bookStatus;
-
-    private List<BookGenre> genreList;
+    private List<BookStatus> bookStatusList;
 
     private YearOfPublishing yob;
 
     private NoOfPages pages;
+
+    @Min(value = 0)
+    private int offset;
+
+    @Min(value = 0)
+    private int limit;
 
     @Data
     public static class NoOfPages {

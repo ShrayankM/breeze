@@ -1,29 +1,36 @@
 package com.breeze.service.impl;
 
 import com.breeze.constant.BreezeConstants;
-import com.breeze.constant.BreezeConstants.BookGenre;
+import com.breeze.constant.BreezeErrorCodes;
 import com.breeze.dao.BookRepository;
 import com.breeze.dao.GenericDao;
+import com.breeze.exception.BreezeException;
+import com.breeze.exception.ResourceNotFoundException;
+import com.breeze.exception.ValidationException;
 import com.breeze.model.BreezeBookDetails;
 import com.breeze.model.BreezeUserBook;
 import com.breeze.request.FetchBookList;
 import com.breeze.request.FetchBookList.YearOfPublishing;
 import com.breeze.request.FetchBookList.NoOfPages;
 import com.breeze.request.UpdateBookRating;
+import com.breeze.response.BookDataResponse;
 import com.breeze.response.BookDetailsResponse;
-import com.breeze.response.BookListResponse;
+import com.breeze.response.GetListResponse;
 import com.breeze.service.BookService;
 import com.breeze.util.LoggerWrapper;
-import com.breeze.util.MiscUtils;
 import com.breeze.util.ModelToResponseConverter;
+import com.breeze.util.RequestValidator;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
+import org.springframework.util.StringUtils;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 @Service
 public class BookServiceImpl implements BookService {
@@ -36,139 +43,344 @@ public class BookServiceImpl implements BookService {
     @Autowired
     GenericDao genericDao;
 
+    @Autowired
+    RequestValidator requestValidator;
+
     @Override
-    public BookListResponse getBooks(FetchBookList request) {
-        BookListResponse bookListResponse;
+    public GetListResponse<BookDataResponse> getBooks(FetchBookList request) {
+        GetListResponse<BookDataResponse> bookListResponse = new GetListResponse<>();
+
+        // validate incoming request
+        requestValidator.validate(request);
 
         setBookListFilters(request);
 
-        List<BreezeBookDetails> breezeBookDetailsList = bookRepository.getListOfBooks(request.getGenreList(), request.getPages().getMinPages(),
-                request.getPages().getMaxPages(), request.getYob().getStartDate(), request.getYob().getEndDate());
+        List<BreezeBookDetails> breezeBookDetailsList = bookRepository.getListOfBooks(request);
 
-        bookListResponse = ModelToResponseConverter.getBookListResponseFromModel(breezeBookDetailsList);
+        if (CollectionUtils.isEmpty(breezeBookDetailsList)) {
+            bookListResponse.setList(new ArrayList<>());
+            bookListResponse.setTotalCount(0);
+            return bookListResponse;
+        }
+
+        List<BookDataResponse> responseList = ModelToResponseConverter.getBookListResponseFromModel(breezeBookDetailsList);
+        bookListResponse.setList(responseList);
+        bookListResponse.setTotalCount(responseList.size());
         return bookListResponse;
     }
 
     @Override
-    public BookListResponse getBooksForUser(FetchBookList request) {
-        BookListResponse bookListResponse = new BookListResponse();
+    public GetListResponse<BookDataResponse> getBooksForUser(FetchBookList request) throws BreezeException {
+        GetListResponse<BookDataResponse> bookDataResponseList = new GetListResponse<>();
 
-        if (request.getUserCode() == null) {
-            logger.error("User code cannot be null or empty");
-            return bookListResponse;
-        }
-
-        if (request.getBookStatus() == null) {
-            logger.error("Book status cannot be null or empty");
-            return bookListResponse;
+        if (Objects.isNull(request.getUserCode()) || !StringUtils.hasText(request.getUserCode())) {
+            logger.error("User code in request is null or empty");
+            throw new ValidationException(BreezeErrorCodes.INVALID_USER_CODE,
+                    BreezeErrorCodes.INVALID_USER_CODE_MSG);
         }
 
         setBookListFilters(request);
 
-        List<BreezeUserBook> breezeUserBookList = bookRepository.getListOfBooksForUser(request.getUserCode(), request.getBookStatus());
-        List<String> bookCodeList = breezeUserBookList.stream().map(BreezeUserBook::getCode).toList();
+        List<BreezeUserBook> breezeUserBookList = bookRepository.getListOfBooksForUser(request.getUserCode(),
+                request.getBookStatusList());
+        Map<String, BreezeUserBook> userBookMap = breezeUserBookList.stream().collect(Collectors.toMap(BreezeUserBook::getBookCode, x -> x));
 
-        List<BreezeBookDetails> breezeBookDetailsList = bookRepository.getListOfBooksUsingCodeList(bookCodeList, request.getGenreList(), request.getPages().getMinPages(),
+        if (CollectionUtils.isEmpty(breezeUserBookList)) {
+            logger.info("No books found for user: " + request.getUserCode());
+            bookDataResponseList.setList(new ArrayList<>());
+            bookDataResponseList.setTotalCount(0);
+            return bookDataResponseList;
+        }
+
+        List<String> bookCodeList = breezeUserBookList.stream().map(BreezeUserBook::getBookCode).toList();
+        List<BreezeBookDetails> breezeBookDetailsList = bookRepository.getListOfBooksUsingCodeList(bookCodeList, request.getPages().getMinPages(),
                 request.getPages().getMaxPages(), request.getYob().getStartDate(), request.getYob().getEndDate());
-        bookListResponse = ModelToResponseConverter.getBookListResponseFromModel(breezeBookDetailsList);
-        return bookListResponse;
+
+        if (CollectionUtils.isEmpty(breezeBookDetailsList)) {
+            logger.info("No books details found for books for user: " + request.getUserCode());
+            bookDataResponseList.setList(new ArrayList<>());
+            bookDataResponseList.setTotalCount(0);
+            return bookDataResponseList;
+        }
+
+        List<BookDataResponse> responseList = ModelToResponseConverter.getBookListResponseFromModel(breezeBookDetailsList);
+
+        for (BookDataResponse bookDataResponse : responseList) {
+            BreezeUserBook userBook = userBookMap.get(bookDataResponse.getCode());
+            if (Objects.nonNull(userBook)) {
+                bookDataResponse.setBookStatus(userBook.getBookStatus());
+            }
+        }
+        bookDataResponseList.setList(responseList);
+        bookDataResponseList.setTotalCount(responseList.size());
+        return bookDataResponseList;
     }
 
     @Override
-    public BookDetailsResponse getBookDetails(String bookCode) {
+    public GetListResponse<BookDataResponse> searchBooksByNameAndAuthor(String searchQuery) throws BreezeException {
+
+        GetListResponse<BookDataResponse> bookDataListResponse = new GetListResponse<>();
+
+        if (!StringUtils.hasText(searchQuery)) {
+            logger.error("Search Query in request cannot null or empty");
+            throw new ValidationException(BreezeErrorCodes.INVALID_SEARCH_QUERY_IN_REQUEST_CODE,
+                    BreezeErrorCodes.INVALID_SEARCH_QUERY_IN_REQUEST_MSG);
+        }
+
+        List<BreezeBookDetails> bookDetailsList = bookRepository.getBooksByNameAndAuthor(searchQuery);
+
+        if (CollectionUtils.isEmpty(bookDetailsList)) {
+            logger.info("No books with name or author: " + searchQuery  + " found in the DB");
+            bookDataListResponse.setList(new ArrayList<>());
+            bookDataListResponse.setTotalCount(0);
+            return bookDataListResponse;
+        }
+
+        List<BookDataResponse> responseList = ModelToResponseConverter.getBookListResponseFromModel(bookDetailsList);
+        bookDataListResponse.setList(responseList);
+        bookDataListResponse.setTotalCount(responseList.size());
+        return bookDataListResponse;
+    }
+
+    @Override
+    public BookDetailsResponse getBookDetails(String bookCode) throws BreezeException {
         BookDetailsResponse bookDetailsResponse = new BookDetailsResponse();
 
-        if (MiscUtils.isStringNullOrEmpty(bookCode)) {
-            logger.error(" Book code cannot be null or empty");
+        if (!StringUtils.hasText(bookCode)) {
+            logger.error("Book code in request cannot null or empty");
+            throw new ValidationException(BreezeErrorCodes.INVALID_BOOK_CODE_IN_REQUEST_CODE,
+                    BreezeErrorCodes.INVALID_BOOK_CODE_IN_REQUEST_CODE_MSG);
         }
 
         BreezeBookDetails bookDetails = bookRepository.getBookDetailsUsingCode(bookCode);
+
+        if (Objects.isNull(bookDetails)) {
+            logger.error("Book details not found for book code: " + bookCode);
+            throw new ResourceNotFoundException(BreezeErrorCodes.DATA_NOT_FOUND,
+                    BreezeErrorCodes.DATA_NOT_FOUND_MSG);
+        }
         bookDetailsResponse = ModelToResponseConverter.getBookDetailsResponseFromModel(bookDetails);
         return bookDetailsResponse;
     }
 
-    @Override
-    public BookListResponse getBooksByName(String bookName) {
-        BookListResponse bookListResponse = new BookListResponse();
+//    @Override
+//    public GetListResponse<BookDataResponse> getBooksByName(String bookName) throws BreezeException {
+//        GetListResponse<BookDataResponse> bookDataListResponse = new GetListResponse<>();
+//
+//        if (!StringUtils.hasText(bookName)) {
+//            logger.error("Book name in request cannot null or empty");
+//            throw new ValidationException(BreezeErrorCodes.INVALID_BOOK_NAME_IN_REQUEST_CODE,
+//                    BreezeErrorCodes.INVALID_BOOK_NAME_IN_REQUEST_MSG);
+//        }
+//
+//        List<BreezeBookDetails> bookDetailsList = bookRepository.getBooksByName(bookName);
+//
+//        if (CollectionUtils.isEmpty(bookDetailsList)) {
+//            logger.info("No books with name: " + bookName + " found in the DB");
+//            bookDataListResponse.setList(new ArrayList<>());
+//            bookDataListResponse.setTotalCount(0);
+//            return bookDataListResponse;
+//        }
+//
+//        List<BookDataResponse> responseList = ModelToResponseConverter.getBookListResponseFromModel(bookDetailsList);
+//        bookDataListResponse.setList(responseList);
+//        bookDataListResponse.setTotalCount(responseList.size());
+//        return bookDataListResponse;
+//    }
 
-        if (MiscUtils.isStringNullOrEmpty(bookName)) {
-            logger.error("Book name cannot be null or empty");
+//    @Override
+//    public GetListResponse<BookDataResponse> getBooksByAuthor(String authorName) throws BreezeException {
+//        GetListResponse<BookDataResponse> bookDataResponseList = new GetListResponse<>();
+//
+//        if (!StringUtils.hasText(authorName)) {
+//            logger.error("Author Name in request cannot null or empty");
+//            throw new ValidationException(BreezeErrorCodes.INVALID_AUTHOR_NAME_IN_REQUEST_CODE,
+//                    BreezeErrorCodes.INVALID_AUTHOR_NAME_IN_REQUEST_MSG);
+//        }
+//
+//        List<BreezeBookDetails> bookDetailsList = bookRepository.getBooksByAuthor(authorName);
+//
+//        if (CollectionUtils.isEmpty(bookDetailsList)) {
+//            logger.info("No books with author name: " + authorName + " found in the DB");
+//            bookDataResponseList.setList(new ArrayList<>());
+//            bookDataResponseList.setTotalCount(0);
+//            return bookDataResponseList;
+//        }
+//
+//        List<BookDataResponse> responseList = ModelToResponseConverter.getBookListResponseFromModel(bookDetailsList);
+//        bookDataResponseList.setList(responseList);
+//        bookDataResponseList.setTotalCount(responseList.size());
+//        return bookDataResponseList;
+//    }
+
+//    @Override
+//    public GetListResponse<BookDataResponse> getBooksByNameForUser(String bookName, String userCode) throws BreezeException {
+//        GetListResponse<BookDataResponse> bookDataResponseList = new GetListResponse<>();
+//
+//        if (!StringUtils.hasText(bookName)) {
+//            logger.error("Book name in request cannot null or empty");
+//            throw new ValidationException(BreezeErrorCodes.INVALID_BOOK_NAME_IN_REQUEST_CODE,
+//                    BreezeErrorCodes.INVALID_BOOK_NAME_IN_REQUEST_MSG);
+//        }
+//
+//        if (!StringUtils.hasText(userCode)) {
+//            logger.error("User code in request cannot null or empty");
+//            throw new ValidationException(BreezeErrorCodes.INVALID_USER_CODE_IN_REQUEST_CODE,
+//                    BreezeErrorCodes.INVALID_USER_CODE_IN_REQUEST_MSG);
+//        }
+//
+//        List<BreezeUserBook> breezeUserBookList = bookRepository.getListOfBookForUserUsingCode(userCode);
+//        if (CollectionUtils.isEmpty(breezeUserBookList)) {
+//            logger.info("No books found for user with code: " + userCode);
+//            bookDataResponseList.setList(new ArrayList<>());
+//            bookDataResponseList.setTotalCount(0);
+//            return bookDataResponseList;
+//        }
+//
+//        List<String> bookCodeList = breezeUserBookList.stream().map(BreezeUserBook::getCode).toList();
+//
+//        List<BreezeBookDetails> breezeBookDetailsList = bookRepository.getListOfBooksUsingCode(bookCodeList);
+//        if (CollectionUtils.isEmpty(breezeBookDetailsList)) {
+//            logger.info("No books details found for books for user: " + userCode);
+//            bookDataResponseList.setList(new ArrayList<>());
+//            bookDataResponseList.setTotalCount(0);
+//            return bookDataResponseList;
+//        }
+//
+//        List<BreezeBookDetails> filteredBookDetailsList = breezeBookDetailsList.stream().filter(book -> book.getName().contains(bookName)).toList();
+//        List<BookDataResponse> responseList = ModelToResponseConverter.getBookListResponseFromModel(filteredBookDetailsList);
+//
+//        bookDataResponseList.setList(responseList);
+//        bookDataResponseList.setTotalCount(responseList.size());
+//        return bookDataResponseList;
+//    }
+
+    @Override
+    public GetListResponse<BookDataResponse> searchBooksByNameAndAuthorForUser(String searchQuery, String userCode) throws BreezeException {
+
+        GetListResponse<BookDataResponse> bookDataResponseList = new GetListResponse<>();
+
+        if (!StringUtils.hasText(searchQuery)) {
+            logger.error("Search Query in request cannot null or empty");
+            throw new ValidationException(BreezeErrorCodes.INVALID_SEARCH_QUERY_IN_REQUEST_CODE,
+                    BreezeErrorCodes.INVALID_SEARCH_QUERY_IN_REQUEST_MSG);
         }
 
-        List<BreezeBookDetails> bookDetailsList = bookRepository.getBooksByName(bookName);
-        bookListResponse = ModelToResponseConverter.getBookListResponseFromModel(bookDetailsList);
-        return bookListResponse;
-    }
-
-    @Override
-    public BookListResponse getBooksByAuthor(String authorName) {
-        BookListResponse bookListResponse = new BookListResponse();
-
-        if (MiscUtils.isStringNullOrEmpty(authorName)) {
-            logger.error("Author Name cannot be null or empty");
-        }
-
-        List<BreezeBookDetails> bookDetailsList = bookRepository.getBooksByAuthor(authorName);
-        bookListResponse = ModelToResponseConverter.getBookListResponseFromModel(bookDetailsList);
-        return bookListResponse;
-
-    }
-
-    @Override
-    public BookListResponse getBooksByNameForUser(String bookName, String userCode) {
-        BookListResponse bookListResponse = new BookListResponse();
-
-        if (MiscUtils.isStringNullOrEmpty(bookName) || MiscUtils.isStringNullOrEmpty(userCode)) {
-            logger.error("Book Name or User code cannot be null or empty");
+        if (!StringUtils.hasText(userCode)) {
+            logger.error("User code in request cannot null or empty");
+            throw new ValidationException(BreezeErrorCodes.INVALID_USER_CODE_IN_REQUEST_CODE,
+                    BreezeErrorCodes.INVALID_USER_CODE_IN_REQUEST_MSG);
         }
 
         List<BreezeUserBook> breezeUserBookList = bookRepository.getListOfBookForUserUsingCode(userCode);
-        List<String> bookCodeList = breezeUserBookList.stream().map(BreezeUserBook::getCode).toList();
-
-        List<BreezeBookDetails> breezeBookDetailsList = bookRepository.getListOfBooksUsingCode(bookCodeList);
-        List<BreezeBookDetails> filteredBookDetailsList = breezeBookDetailsList.stream().filter(book -> book.getBookName().contains(bookName)).toList();
-        bookListResponse = ModelToResponseConverter.getBookListResponseFromModel(filteredBookDetailsList);
-        return bookListResponse;
-    }
-
-    @Override
-    public BookListResponse getBooksByAuthorForUser(String authorName, String userCode) {
-        BookListResponse bookListResponse = new BookListResponse();
-
-        if (MiscUtils.isStringNullOrEmpty(authorName) || MiscUtils.isStringNullOrEmpty(userCode)) {
-            logger.error("Author name or User code cannot be null or empty");
+        Map<String, BreezeUserBook> userBookMap = breezeUserBookList.stream().collect(Collectors.toMap(BreezeUserBook::getBookCode, Function.identity()));
+        if (CollectionUtils.isEmpty(breezeUserBookList)) {
+            logger.info("No books found for user with code: " + userCode);
+            bookDataResponseList.setList(new ArrayList<>());
+            bookDataResponseList.setTotalCount(0);
+            return bookDataResponseList;
         }
 
-        List<BreezeUserBook> breezeUserBookList = bookRepository.getListOfBookForUserUsingCode(userCode);
-        List<String> bookCodeList = breezeUserBookList.stream().map(BreezeUserBook::getCode).toList();
+        List<String> bookCodeList = breezeUserBookList.stream().map(BreezeUserBook::getBookCode).toList();
 
-        List<BreezeBookDetails> breezeBookDetailsList = bookRepository.getListOfBooksUsingCode(bookCodeList);
-        List<BreezeBookDetails> filteredBookDetailsList = breezeBookDetailsList.stream().filter(book -> book.getAuthorName().contains(authorName)).toList();
-        bookListResponse = ModelToResponseConverter.getBookListResponseFromModel(filteredBookDetailsList);
-        return bookListResponse;
+        List<BreezeBookDetails> breezeBookDetailsList = bookRepository.getListOfBooksUsingCodeAndNameOrAuthor(bookCodeList, searchQuery);
+        if (CollectionUtils.isEmpty(breezeBookDetailsList)) {
+            logger.info("No books details found for books for user: " + userCode);
+            bookDataResponseList.setList(new ArrayList<>());
+            bookDataResponseList.setTotalCount(0);
+            return bookDataResponseList;
+        }
+
+        List<BookDataResponse> responseList = ModelToResponseConverter.getBookListResponseFromModel(breezeBookDetailsList);
+        for (BookDataResponse bookDataResponse : responseList) {
+            BreezeUserBook breezeUserBook = userBookMap.get(bookDataResponse.getCode());
+            bookDataResponse.setBookStatus(breezeUserBook.getBookStatus());
+        }
+        bookDataResponseList.setList(responseList);
+        bookDataResponseList.setTotalCount(responseList.size());
+        return bookDataResponseList;
     }
+
+//    @Override
+//    public GetListResponse<BookDataResponse> getBooksByAuthorForUser(String authorName, String userCode) throws BreezeException {
+//        GetListResponse<BookDataResponse> bookDataResponseList = new GetListResponse<>();
+//
+//        if (!StringUtils.hasText(authorName)) {
+//            logger.error("Author name in request cannot null or empty");
+//            throw new ValidationException(BreezeErrorCodes.INVALID_AUTHOR_NAME_IN_REQUEST_CODE,
+//                    BreezeErrorCodes.INVALID_AUTHOR_NAME_IN_REQUEST_MSG);
+//        }
+//
+//        if (!StringUtils.hasText(userCode)) {
+//            logger.error("User code in request cannot null or empty");
+//            throw new ValidationException(BreezeErrorCodes.INVALID_USER_CODE_IN_REQUEST_CODE,
+//                    BreezeErrorCodes.INVALID_USER_CODE_IN_REQUEST_MSG);
+//        }
+//
+//        List<BreezeUserBook> breezeUserBookList = bookRepository.getListOfBookForUserUsingCode(userCode);
+//        if (CollectionUtils.isEmpty(breezeUserBookList)) {
+//            logger.info("No books found for user with code: " + userCode);
+//            bookDataResponseList.setList(new ArrayList<>());
+//            bookDataResponseList.setTotalCount(0);
+//            return bookDataResponseList;
+//        }
+//
+//        List<String> bookCodeList = breezeUserBookList.stream().map(BreezeUserBook::getCode).toList();
+//
+//        List<BreezeBookDetails> breezeBookDetailsList = bookRepository.getListOfBooksUsingCode(bookCodeList);
+//        if (CollectionUtils.isEmpty(breezeBookDetailsList)) {
+//            logger.info("No books details found for books for user: " + userCode);
+//            bookDataResponseList.setList(new ArrayList<>());
+//            bookDataResponseList.setTotalCount(0);
+//            return bookDataResponseList;
+//        }
+//
+//        List<BreezeBookDetails> filteredBookDetailsList = breezeBookDetailsList.stream().filter(book -> book.getAuthor().contains(authorName)).toList();
+//        List<BookDataResponse> responseList = ModelToResponseConverter.getBookListResponseFromModel(filteredBookDetailsList);
+//        bookDataResponseList.setList(responseList);
+//        bookDataResponseList.setTotalCount(responseList.size());
+//        return bookDataResponseList;
+//    }
 
     @Override
     @Transactional
-    public void updateBookRatingForUser(UpdateBookRating request) {
+    public void updateBookRatingForUser(UpdateBookRating request) throws BreezeException {
 
-        if (MiscUtils.isStringNullOrEmpty(request.getUserCode()) || MiscUtils.isStringNullOrEmpty(request.getBookCode())) {
-            logger.error("User code or book code cannot be null or empty");
+        if (!StringUtils.hasText(request.getUserCode())) {
+            logger.error("User code in request cannot be null or empty");
+            throw new ValidationException(BreezeErrorCodes.INVALID_USER_CODE,
+                    BreezeErrorCodes.INVALID_USER_CODE_MSG);
         }
 
-        if (request.getRating() == null || MiscUtils.isStringNullOrEmpty(request.getRating().toString())) {
-            logger.error("Rating cannot be null or empty");
+        if (!StringUtils.hasText(request.getBookCode())) {
+            logger.error("Book code in request cannot be null or empty");
+            throw new ValidationException(BreezeErrorCodes.INVALID_BOOK_CODE_IN_REQUEST_CODE,
+                    BreezeErrorCodes.INVALID_BOOK_CODE_IN_REQUEST_CODE_MSG);
         }
 
-        if (request.getRating() < 0 || request.getRating() > 5) {
-            logger.error("Rating should be greater than 0 and less than 5");
+        if (Objects.isNull(request.getRating()) || !StringUtils.hasText(request.getRating().toString())) {
+            logger.error("Rating sent in request cannot be null or empty");
+            throw new ValidationException(BreezeErrorCodes.INVALID_RATING_IN_REQUEST_CODE,
+                    BreezeErrorCodes.INVALID_RATING_IN_REQUEST_MSG);
         }
+
 
         BreezeUserBook breezeUserBook = bookRepository.getUserBookFromCode(request.getUserCode(), request.getBookCode());
+        if (Objects.isNull(breezeUserBook)) {
+            logger.error("No record found in DB for user: " + request.getUserCode() + " and book: " + request.getBookCode());
+            throw new ResourceNotFoundException(BreezeErrorCodes.DATA_NOT_FOUND,
+                    BreezeErrorCodes.DATA_NOT_FOUND_MSG);
+        }
+
         breezeUserBook.setUserRating(request.getRating());
         genericDao.update(breezeUserBook);
 
         BreezeBookDetails breezeBookDetails = bookRepository.getBookDetailsUsingCode(request.getBookCode());
+        if (Objects.isNull(breezeBookDetails)) {
+            logger.error("No record found in DB for book: " + request.getBookCode());
+            throw new ResourceNotFoundException(BreezeErrorCodes.DATA_NOT_FOUND,
+                    BreezeErrorCodes.DATA_NOT_FOUND_MSG);
+        }
 
         Long currentReviewCount = breezeBookDetails.getReviewCount();
         BigDecimal currentRating = breezeBookDetails.getUserRating();
@@ -179,12 +391,12 @@ public class BookServiceImpl implements BookService {
         genericDao.update(breezeBookDetails);
     }
 
-    private void setBookListFilters(FetchBookList request) {
+    @Override
+    public BreezeBookDetails getBookByCode(String bookCode) {
+        return bookRepository.getBookDetailsUsingCode(bookCode);
+    }
 
-        // Set default values if null
-        if (request.getGenreList() == null) {
-            request.setGenreList(Arrays.asList(BookGenre.values()));
-        }
+    private void setBookListFilters(FetchBookList request) {
         if (request.getPages() == null) {
             request.setPages(new NoOfPages(BreezeConstants.MIN_PAGES, BreezeConstants.MAX_PAGES));
         } else {
