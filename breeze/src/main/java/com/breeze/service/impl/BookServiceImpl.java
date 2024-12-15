@@ -4,10 +4,12 @@ import com.breeze.constant.BreezeConstants;
 import com.breeze.constant.BreezeErrorCodes;
 import com.breeze.dao.BookRepository;
 import com.breeze.dao.GenericDao;
+import com.breeze.dao.UserRepository;
 import com.breeze.exception.BreezeException;
 import com.breeze.exception.ResourceNotFoundException;
 import com.breeze.exception.ValidationException;
 import com.breeze.model.BreezeBookDetails;
+import com.breeze.model.BreezeUser;
 import com.breeze.model.BreezeUserBook;
 import com.breeze.request.FetchBookList;
 import com.breeze.request.FetchBookList.YearOfPublishing;
@@ -45,6 +47,9 @@ public class BookServiceImpl implements BookService {
 
     @Autowired
     RequestValidator requestValidator;
+
+    @Autowired
+    UserRepository userRepository;
 
     @Override
     public GetListResponse<BookDataResponse> getBooks(FetchBookList request) {
@@ -160,6 +165,49 @@ public class BookServiceImpl implements BookService {
                     BreezeErrorCodes.DATA_NOT_FOUND_MSG);
         }
         bookDetailsResponse = ModelToResponseConverter.getBookDetailsResponseFromModel(bookDetails);
+        return bookDetailsResponse;
+    }
+
+    @Override
+    public BookDetailsResponse getBookDetailsForUser(String bookCode, String userCode) throws BreezeException {
+        BookDetailsResponse bookDetailsResponse = new BookDetailsResponse();
+
+        if (Objects.isNull(bookCode) || !StringUtils.hasText(bookCode)) {
+            logger.error("Book code in request cannot null or empty");
+            throw new ValidationException(BreezeErrorCodes.INVALID_BOOK_CODE_IN_REQUEST_CODE,
+                    BreezeErrorCodes.INVALID_BOOK_CODE_IN_REQUEST_CODE_MSG);
+        }
+
+        if (Objects.isNull(userCode) || !StringUtils.hasText(userCode)) {
+            logger.error("User code in request is null or empty");
+            throw new ValidationException(BreezeErrorCodes.INVALID_USER_CODE,
+                    BreezeErrorCodes.INVALID_USER_CODE_MSG);
+        }
+
+        BreezeUser breezeUser = userRepository.getUserByCode(userCode);
+        if (breezeUser == null) {
+            logger.error("User not found with code {}", userCode);
+            throw new ResourceNotFoundException(BreezeErrorCodes.USER_NOT_FOUND_ERROR_CODE,
+                    BreezeErrorCodes.USER_NOT_FOUND_ERROR_MSG);
+        }
+
+        BreezeUserBook breezeUserBook = bookRepository.getUserBookFromCode(userCode, bookCode);
+        if (Objects.isNull(breezeUserBook)) {
+            logger.error("No record found in DB for user: " + userCode + " and book: " + bookCode);
+            throw new ResourceNotFoundException(BreezeErrorCodes.DATA_NOT_FOUND,
+                    BreezeErrorCodes.DATA_NOT_FOUND_MSG);
+        }
+
+        BreezeBookDetails bookDetails = bookRepository.getBookDetailsUsingCode(bookCode);
+        if (Objects.isNull(bookDetails)) {
+            logger.error("Book details not found for book code: " + bookCode);
+            throw new ResourceNotFoundException(BreezeErrorCodes.DATA_NOT_FOUND,
+                    BreezeErrorCodes.DATA_NOT_FOUND_MSG);
+        }
+
+        bookDetailsResponse = ModelToResponseConverter.getBookDetailsResponseFromModel(bookDetails);
+        bookDetailsResponse.setBookStatus(breezeUserBook.getBookStatus());
+        bookDetailsResponse.setUserRating(BigDecimal.valueOf(breezeUserBook.getUserRating()));
         return bookDetailsResponse;
     }
 
@@ -382,9 +430,20 @@ public class BookServiceImpl implements BookService {
                     BreezeErrorCodes.DATA_NOT_FOUND_MSG);
         }
 
-        Long currentReviewCount = breezeBookDetails.getReviewCount();
-        BigDecimal currentRating = breezeBookDetails.getUserRating();
-        BigDecimal updatedRating = currentRating.add(BigDecimal.valueOf(request.getRating())).divide(BigDecimal.valueOf(currentReviewCount + 1), 2, RoundingMode.HALF_UP);
+        List<BreezeUserBook> userBooksList = bookRepository.getListOfUserBooksUsingBookCode(request.getBookCode());
+        if (CollectionUtils.isEmpty(userBooksList)) {
+            logger.info("No user book records found for book code : " + request.getBookCode());
+            throw new ResourceNotFoundException(BreezeErrorCodes.DATA_NOT_FOUND,
+                    BreezeErrorCodes.DATA_NOT_FOUND_MSG);
+        }
+
+        userBooksList = userBooksList.stream().filter(ub -> ub.getUserRating() > 0).toList();
+
+        long currentReviewCount = userBooksList.size();
+        long currentRatingSum = userBooksList.stream().mapToLong(BreezeUserBook::getUserRating).sum();
+
+//        currentRatingSum = currentRatingSum + request.getRating();
+        BigDecimal updatedRating = BigDecimal.valueOf(currentRatingSum).divide(BigDecimal.valueOf(currentReviewCount), 2, RoundingMode.HALF_UP);
 
         breezeBookDetails.setUserRating(updatedRating);
         breezeBookDetails.setReviewCount(currentReviewCount + 1);

@@ -77,12 +77,10 @@ public class RequestToModelConverter {
         model.setCategory(item.getVolumeInfo().getCategories().get(0));
         model.setThumbnail(item.getVolumeInfo().getImageLinks().getThumbnail());
         model.setSmallThumbnail(item.getVolumeInfo().getImageLinks().getSmallThumbnail());
-
-//        if (item.getVolumeInfo().getDescription().length() > 255) {
-//            model.setDescription(item.getVolumeInfo().getDescription().substring(0, 255));
-//        } else {
         model.setDescription(item.getVolumeInfo().getDescription());
-//        }
+        if (item.getVolumeInfo().getLanguage() != null) {
+            model.setLanguage(item.getVolumeInfo().getLanguage().toUpperCase());
+        }
         return model;
     }
 
