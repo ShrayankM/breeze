@@ -23,15 +23,7 @@ public class BreezeConstants {
     }
 
     public enum BookStatus {
-        WISHLIST, LIBRARY, ADDED, READING, COMPLETED
-    }
-
-    public enum UserSuggestionStatus {
-        PENDING, SUBMITTED, CLOSED
-    }
-
-    public enum UserBookApprovalStatus {
-        SUBMITTED, UNDER_REVIEW, APPROVED, REJECTED
+        WISHLIST, LIBRARY, READING, COMPLETED
     }
 
     public static final String BOOK_DETAILS_PREFIX = "BKD";

@@ -16,28 +16,20 @@ import java.util.List;
 
 @Repository
 public class BookRepositoryImpl extends GenericDaoImpl implements BookRepository {
-
     private static final LoggerWrapper logger = LoggerWrapper.getLogger(BookRepositoryImpl.class);
+
     @Override
     public List<BreezeBookDetails> getListOfBooks(FetchBookList request) {
 
         StringBuilder queryBuilder = new StringBuilder().append(" ")
                 .append(" SELECT book FROM ")
-                .append(BreezeBookDetails.class.getSimpleName())
-                .append(" book ")
-                .append(" WHERE ( book.pages >= :minPages AND book.pages <= :maxPages ) ")
-                .append(" AND ( book.publishedDate >= :startDate AND book.publishedDate <= :endDate ) ");
+                .append(BreezeBookDetails.class.getSimpleName()).append(" book ");
 
         logger.debug("DB query = {}", queryBuilder.toString());
 
         EntityManager entityManager = getEntityManager();
 
         Query queryObject = entityManager.createQuery(queryBuilder.toString());
-        queryObject.setParameter("minPages", request.getPages().getMinPages());
-        queryObject.setParameter("maxPages", request.getPages().getMaxPages());
-        queryObject.setParameter("startDate", request.getYob().getStartDate());
-        queryObject.setParameter("endDate", request.getYob().getEndDate());
-
         if (request.getLimit() > 0) {
             queryObject.setMaxResults(request.getLimit());
         }
@@ -64,7 +56,6 @@ public class BookRepositoryImpl extends GenericDaoImpl implements BookRepository
         logger.debug("DB query = {}", queryBuilder.toString());
 
         EntityManager entityManager = getEntityManager();
-
         Query queryObject = entityManager.createQuery(queryBuilder.toString());
         queryObject.setParameter("userCode", userCode);
 
@@ -75,15 +66,13 @@ public class BookRepositoryImpl extends GenericDaoImpl implements BookRepository
     }
 
     @Override
-    public List<BreezeBookDetails> getListOfBooksUsingCodeList(List<String> bookCodeList , Long minPages, Long maxPages, Date startDate, Date endDate) {
+    public List<BreezeBookDetails> getListOfBooksUsingCodeList(List<String> bookCodeList) {
 
         StringBuilder queryBuilder = new StringBuilder().append(" ")
                 .append(" SELECT book FROM ")
                 .append(BreezeBookDetails.class.getSimpleName())
                 .append(" book ")
-                .append(" WHERE book.code IN ( :bookCodeList ) ")
-                .append(" AND ( book.pages >= :minPages AND book.pages <= :maxPages ) ")
-                .append(" AND ( book.publishedDate >= :startDate AND book.publishedDate <= :endDate ) ");
+                .append(" WHERE book.code IN ( :bookCodeList ) ");
 
         logger.debug("DB query = {}", queryBuilder.toString());
 
@@ -91,11 +80,6 @@ public class BookRepositoryImpl extends GenericDaoImpl implements BookRepository
 
         Query queryObject = entityManager.createQuery(queryBuilder.toString());
         queryObject.setParameter("bookCodeList", bookCodeList);
-        queryObject.setParameter("minPages", minPages);
-        queryObject.setParameter("maxPages", maxPages);
-        queryObject.setParameter("startDate", startDate);
-        queryObject.setParameter("endDate", endDate);
-
         return queryObject.getResultList();
     }
 
@@ -111,45 +95,11 @@ public class BookRepositoryImpl extends GenericDaoImpl implements BookRepository
         logger.debug("DB query = {}", queryBuilder.toString());
 
         EntityManager entityManager = getEntityManager();
-
         Query queryObject = entityManager.createQuery(queryBuilder.toString());
         queryObject.setParameter("bookCode", bookCode);
+
         return (BreezeBookDetails) queryObject.getSingleResult();
     }
-
-//    @Override
-//    public List<BreezeBookDetails> getBooksByName(String bookName) {
-//
-//        StringBuilder queryBuilder = new StringBuilder().append(" ")
-//                .append(" SELECT book FROM ")
-//                .append(BreezeBookDetails.class.getSimpleName())
-//                .append(" book ")
-//                .append(" WHERE book.name LIKE :bookName ");
-//
-//        logger.debug("DB query = {}", queryBuilder.toString());
-//
-//        EntityManager entityManager = getEntityManager();
-//        Query queryObject = entityManager.createQuery(queryBuilder.toString());
-//        queryObject.setParameter("bookName", "%" + bookName + "%");
-//        return queryObject.getResultList();
-//    }
-
-//    @Override
-//    public List<BreezeBookDetails> getBooksByAuthor(String authorName) {
-//
-//        StringBuilder queryBuilder = new StringBuilder().append(" ")
-//                .append(" SELECT book FROM ")
-//                .append(BreezeBookDetails.class.getSimpleName())
-//                .append(" book ")
-//                .append(" WHERE book.author LIKE :authorName ");
-//
-//        logger.debug("DB query = {}", queryBuilder.toString());
-//
-//        EntityManager entityManager = getEntityManager();
-//        Query queryObject = entityManager.createQuery(queryBuilder.toString());
-//        queryObject.setParameter("authorName", "%" + authorName + "%");
-//        return queryObject.getResultList();
-//    }
 
     @Override
     public List<BreezeUserBook> getListOfBookForUserUsingCode(String userCode, List<BreezeConstants.BookStatus> bookStatusList) {
@@ -171,26 +121,6 @@ public class BookRepositoryImpl extends GenericDaoImpl implements BookRepository
         return queryObject.getResultList();
     }
 
-//    @Override
-//    public List<BreezeUserBook> getWishlistedBookForUserUsingCode(String userCode) {
-//        StringBuilder queryBuilder = new StringBuilder().append(" ")
-//                .append(" SELECT book FROM ")
-//                .append(BreezeUserBook.class.getSimpleName())
-//                .append(" book ")
-//                .append(" WHERE book.userCode = :userCode ")
-//                .append(" AND book.bookStatus = :bookStatus ")
-//                .append(" AND book.isDeleted = false ");
-//
-//        logger.debug("DB query = {}", queryBuilder.toString());
-//
-//        EntityManager entityManager = getEntityManager();
-//
-//        Query queryObject = entityManager.createQuery(queryBuilder.toString());
-//        queryObject.setParameter("userCode", userCode);
-//        queryObject.setParameter("bookStatus", BreezeConstants.BookStatus.WISHLIST);
-//        return queryObject.getResultList();
-//    }
-
     @Override
     public List<BreezeUserBook> getListOfUserBooksUsingBookCode(String bookCode) {
         StringBuilder queryBuilder = new StringBuilder().append(" ")
@@ -207,24 +137,6 @@ public class BookRepositoryImpl extends GenericDaoImpl implements BookRepository
         queryObject.setParameter("bookCode", bookCode);
         return queryObject.getResultList();
     }
-
-//    @Override
-//    public List<BreezeBookDetails> getListOfBooksUsingCode(List<String> bookCodeList) {
-//
-//        StringBuilder queryBuilder = new StringBuilder().append(" ")
-//                .append(" SELECT book FROM ")
-//                .append(BreezeBookDetails.class.getSimpleName())
-//                .append(" book ")
-//                .append(" WHERE book.code IN ( :bookCodeList ) ");
-//
-//        logger.debug("DB query = {}", queryBuilder.toString());
-//
-//        EntityManager entityManager = getEntityManager();
-//
-//        Query queryObject = entityManager.createQuery(queryBuilder.toString());
-//        queryObject.setParameter("bookCodeList", bookCodeList);
-//        return queryObject.getResultList();
-//    }
 
     @Override
     public List<BreezeBookDetails> getListOfBooksUsingCodeAndNameOrAuthor(List<String> bookCodeList, String searchQuery) {
@@ -259,7 +171,6 @@ public class BookRepositoryImpl extends GenericDaoImpl implements BookRepository
         logger.debug("DB query = {}", queryBuilder.toString());
 
         EntityManager entityManager = getEntityManager();
-
         Query queryObject = entityManager.createQuery(queryBuilder.toString());
         queryObject.setParameter("userCode", userCode);
         queryObject.setParameter("bookCode", bookCode);
@@ -305,6 +216,7 @@ public class BookRepositoryImpl extends GenericDaoImpl implements BookRepository
         EntityManager entityManager = getEntityManager();
         Query queryObject = entityManager.createQuery(queryBuilder.toString());
         queryObject.setParameter("searchQuery", "%" + searchQuery + "%");
+
         return queryObject.getResultList();
     }
 }

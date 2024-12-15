@@ -16,6 +16,4 @@ public class CreateUpdateUserRequest {
 
     @NotBlank
     private String userId;
-
-    private Boolean isAdminUser;
 }

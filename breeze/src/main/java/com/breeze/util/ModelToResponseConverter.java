@@ -47,11 +47,7 @@ public class ModelToResponseConverter {
             bookDetailsData.setName(bookDetails.getName());
             bookDetailsData.setSubtitle(bookDetails.getSubtitle());
             bookDetailsData.setCategory(bookDetails.getCategory());
-            bookDetailsData.setIsbnSmall(bookDetails.getIsbn10());
-            bookDetailsData.setIsbnLarge(bookDetails.getIsbn13());
             bookDetailsData.setAuthor(bookDetails.getAuthor());
-            bookDetailsData.setLanguage(bookDetails.getLanguage());
-//            bookDetailsData.setThumbnail(bookDetails.getThumbnail());
 
             // creating thumbnail url (small) for list response
             String thumbnailUrl = breezeConfigService.getStringValue(BreezeDbConfigEnum.GOOGLE_BOOK_IMAGE_BASE_URL) +
@@ -68,16 +64,12 @@ public class ModelToResponseConverter {
         BookDetailsResponse response = new BookDetailsResponse();
 
         response.setName(model.getName());
-        response.setSubtitle(model.getSubtitle());
-        response.setIsbnSmall(model.getIsbn10());
-        response.setIsbnLarge(model.getIsbn13());
         response.setAuthor(model.getAuthor());
-//        response.setThumbnail(model.getThumbnail());
 
-        // creating thumbnail url (small) for list response
-        String thumbnailUrl = breezeConfigService.getStringValue(BreezeDbConfigEnum.GOOGLE_BOOK_IMAGE_BASE_URL) +
-                model.getGoogleId() +
-                breezeConfigService.getStringValue(BreezeDbConfigEnum.GOOGLE_BOOK_IMAGE_LARGE_URL);
+        // creating thumbnail url (large) for details response
+        String thumbnailUrl = breezeConfigService.getStringValue(BreezeDbConfigEnum.GOOGLE_BOOK_IMAGE_BASE_URL)
+                + model.getGoogleId()
+                + breezeConfigService.getStringValue(BreezeDbConfigEnum.GOOGLE_BOOK_IMAGE_LARGE_URL);
         response.setThumbnail(thumbnailUrl);
 
         // formatting date
@@ -112,9 +104,7 @@ public class ModelToResponseConverter {
 
         response.setCode(model.getCode());
         response.setUserName(model.getUserName());
-//        response.setName(model.getName());
         response.setEmailAddress(model.getEmailAddress());
-//        response.setPhoneNumber(model.getPhoneNumber());
         return response;
     }
 }

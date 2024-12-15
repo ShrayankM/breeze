@@ -14,17 +14,11 @@ public class BookDataResponse {
 
     private String subtitle;
 
-    private String isbnSmall;
-
-    private String isbnLarge;
-
     private String author;
 
     private String category;
 
     private String thumbnail;
-
-    private String language;
 
     private BreezeConstants.BookStatus bookStatus;
 }

@@ -70,12 +70,6 @@ public class UserServiceImpl implements UserService {
             throw new ResourceNotFoundException(BreezeErrorCodes.USER_NOT_FOUND_ERROR_CODE,
                     BreezeErrorCodes.USER_NOT_FOUND_ERROR_MSG);
         }
-
-//        if (!breezeUser.getPassword().equals(request.getPassword())) {
-//            logger.error("Password is incorrect for user {}", breezeUser.getEmailAddress());
-//            throw new ValidationException(BreezeErrorCodes.INVALID_PASSWORD_FOR_USER_ERROR_CODE,
-//                    BreezeErrorCodes.INVALID_PASSWORD_FOR_USER_ERROR_MSG);
-//        }
         return ModelToResponseConverter.getUserFromModel(breezeUser);
     }
 
