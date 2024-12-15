@@ -320,7 +320,58 @@ public class BookServiceImpl implements BookService {
                     BreezeErrorCodes.INVALID_USER_CODE_IN_REQUEST_MSG);
         }
 
-        List<BreezeUserBook> breezeUserBookList = bookRepository.getListOfBookForUserUsingCode(userCode);
+        List<BreezeConstants.BookStatus> bookStatusList = Arrays.asList(BreezeConstants.BookStatus.READING, BreezeConstants.BookStatus.COMPLETED,
+                BreezeConstants.BookStatus.LIBRARY);
+
+        List<BreezeUserBook> breezeUserBookList = bookRepository.getListOfBookForUserUsingCode(userCode, bookStatusList);
+        Map<String, BreezeUserBook> userBookMap = breezeUserBookList.stream().collect(Collectors.toMap(BreezeUserBook::getBookCode, Function.identity()));
+        if (CollectionUtils.isEmpty(breezeUserBookList)) {
+            logger.info("No books found for user with code: " + userCode);
+            bookDataResponseList.setList(new ArrayList<>());
+            bookDataResponseList.setTotalCount(0);
+            return bookDataResponseList;
+        }
+
+        List<String> bookCodeList = breezeUserBookList.stream().map(BreezeUserBook::getBookCode).toList();
+
+        List<BreezeBookDetails> breezeBookDetailsList = bookRepository.getListOfBooksUsingCodeAndNameOrAuthor(bookCodeList, searchQuery);
+        if (CollectionUtils.isEmpty(breezeBookDetailsList)) {
+            logger.info("No books details found for books for user: " + userCode);
+            bookDataResponseList.setList(new ArrayList<>());
+            bookDataResponseList.setTotalCount(0);
+            return bookDataResponseList;
+        }
+
+        List<BookDataResponse> responseList = ModelToResponseConverter.getBookListResponseFromModel(breezeBookDetailsList);
+        for (BookDataResponse bookDataResponse : responseList) {
+            BreezeUserBook breezeUserBook = userBookMap.get(bookDataResponse.getCode());
+            bookDataResponse.setBookStatus(breezeUserBook.getBookStatus());
+        }
+        bookDataResponseList.setList(responseList);
+        bookDataResponseList.setTotalCount(responseList.size());
+        return bookDataResponseList;
+    }
+
+    @Override
+    public GetListResponse<BookDataResponse> searchWishlistedBooksByNameAndAuthorForUser(String searchQuery, String userCode) throws BreezeException {
+
+        GetListResponse<BookDataResponse> bookDataResponseList = new GetListResponse<>();
+
+        if (!StringUtils.hasText(searchQuery)) {
+            logger.error("Search Query in request cannot null or empty");
+            throw new ValidationException(BreezeErrorCodes.INVALID_SEARCH_QUERY_IN_REQUEST_CODE,
+                    BreezeErrorCodes.INVALID_SEARCH_QUERY_IN_REQUEST_MSG);
+        }
+
+        if (!StringUtils.hasText(userCode)) {
+            logger.error("User code in request cannot null or empty");
+            throw new ValidationException(BreezeErrorCodes.INVALID_USER_CODE_IN_REQUEST_CODE,
+                    BreezeErrorCodes.INVALID_USER_CODE_IN_REQUEST_MSG);
+        }
+
+        List<BreezeConstants.BookStatus> bookStatusList = List.of(BreezeConstants.BookStatus.WISHLIST);
+
+        List<BreezeUserBook> breezeUserBookList = bookRepository.getListOfBookForUserUsingCode(userCode, bookStatusList);
         Map<String, BreezeUserBook> userBookMap = breezeUserBookList.stream().collect(Collectors.toMap(BreezeUserBook::getBookCode, Function.identity()));
         if (CollectionUtils.isEmpty(breezeUserBookList)) {
             logger.info("No books found for user with code: " + userCode);

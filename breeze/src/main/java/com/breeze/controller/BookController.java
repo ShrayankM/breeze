@@ -122,6 +122,16 @@ public class BookController {
         return new ResponseEntity<>(CommonResponseGenerator.okResponse(response), HttpStatus.OK);
     }
 
+    @GetMapping(
+            path = BreezeUrlConstants.SEARCH_WISHLISTED_BOOKS_BY_NAME_AND_AUTHOR_FOR_USER,
+            produces = MediaType.APPLICATION_JSON_VALUE
+    )
+    public ResponseEntity<CommonResponse<GetListResponse<BookDataResponse>>> searchWishlistedBooksByNameAndAuthorForUser(@PathVariable String searchQuery, @PathVariable String userCode) throws BreezeException {
+
+        GetListResponse<BookDataResponse> response = bookService.searchWishlistedBooksByNameAndAuthorForUser(searchQuery, userCode);
+        return new ResponseEntity<>(CommonResponseGenerator.okResponse(response), HttpStatus.OK);
+    }
+
     @PostMapping(
             path = BreezeUrlConstants.UPDATE_BOOK_RATING_FOR_USER,
             consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE

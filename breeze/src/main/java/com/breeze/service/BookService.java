@@ -29,6 +29,8 @@ public interface BookService {
 
     GetListResponse<BookDataResponse> searchBooksByNameAndAuthorForUser(String searchQuery, String userCode) throws BreezeException;
 
+    GetListResponse<BookDataResponse> searchWishlistedBooksByNameAndAuthorForUser(String searchQuery, String userCode) throws BreezeException;
+
 //    GetListResponse<BookDataResponse> getBooksByAuthorForUser(String authorName, String userCode) throws BreezeException;
 
     void updateBookRatingForUser(UpdateBookRating request) throws BreezeException;

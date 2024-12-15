@@ -24,7 +24,9 @@ public interface BookRepository {
 
 //    List<BreezeBookDetails> getBooksByAuthor(String authorName);
 
-    List<BreezeUserBook> getListOfBookForUserUsingCode(String userCode);
+    List<BreezeUserBook> getListOfBookForUserUsingCode(String userCode, List<BookStatus> bookStatusList);
+
+//    List<BreezeUserBook> getWishlistedBookForUserUsingCode(String userCode);
 
     List<BreezeUserBook> getListOfUserBooksUsingBookCode(String bookCode);
 

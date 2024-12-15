@@ -152,12 +152,14 @@ public class BookRepositoryImpl extends GenericDaoImpl implements BookRepository
 //    }
 
     @Override
-    public List<BreezeUserBook> getListOfBookForUserUsingCode(String userCode) {
+    public List<BreezeUserBook> getListOfBookForUserUsingCode(String userCode, List<BreezeConstants.BookStatus> bookStatusList) {
         StringBuilder queryBuilder = new StringBuilder().append(" ")
                 .append(" SELECT book FROM ")
                 .append(BreezeUserBook.class.getSimpleName())
                 .append(" book ")
-                .append(" WHERE book.userCode = :userCode ");
+                .append(" WHERE book.userCode = :userCode ")
+                .append(" AND book.bookStatus IN ( :bookStatusList ) ")
+                .append(" AND book.isDeleted = false ");
 
         logger.debug("DB query = {}", queryBuilder.toString());
 
@@ -165,8 +167,29 @@ public class BookRepositoryImpl extends GenericDaoImpl implements BookRepository
 
         Query queryObject = entityManager.createQuery(queryBuilder.toString());
         queryObject.setParameter("userCode", userCode);
+        queryObject.setParameter("bookStatusList", bookStatusList);
         return queryObject.getResultList();
     }
+
+//    @Override
+//    public List<BreezeUserBook> getWishlistedBookForUserUsingCode(String userCode) {
+//        StringBuilder queryBuilder = new StringBuilder().append(" ")
+//                .append(" SELECT book FROM ")
+//                .append(BreezeUserBook.class.getSimpleName())
+//                .append(" book ")
+//                .append(" WHERE book.userCode = :userCode ")
+//                .append(" AND book.bookStatus = :bookStatus ")
+//                .append(" AND book.isDeleted = false ");
+//
+//        logger.debug("DB query = {}", queryBuilder.toString());
+//
+//        EntityManager entityManager = getEntityManager();
+//
+//        Query queryObject = entityManager.createQuery(queryBuilder.toString());
+//        queryObject.setParameter("userCode", userCode);
+//        queryObject.setParameter("bookStatus", BreezeConstants.BookStatus.WISHLIST);
+//        return queryObject.getResultList();
+//    }
 
     @Override
     public List<BreezeUserBook> getListOfUserBooksUsingBookCode(String bookCode) {
