@@ -29,6 +29,7 @@ public class GoogleRestApiServiceImpl  implements GoogleRestApiService {
         UriComponents uri = UriComponentsBuilder
                 .fromHttpUrl(breezeConfigService.getStringValue(BreezeDbConfigEnum.GOOGLE_BOOKS_API_URL))
                 .queryParam("q", "isbn:" + isbn)
+                .queryParam("key", breezeConfigService.getStringValue(BreezeDbConfigEnum.GOOGLE_BOOKS_API_HEADER_VALUE))
                 .build();
 
         HttpHeaders headers = new HttpHeaders();

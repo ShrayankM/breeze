@@ -9,7 +9,7 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.breeze</groupId>
-	<artifactId>demo</artifactId>
+	<artifactId>breeze</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>demo</name>
 	<description>Breeze Book Application using SpringBoot</description>
