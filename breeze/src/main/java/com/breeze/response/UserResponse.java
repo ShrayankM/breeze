@@ -26,6 +26,8 @@ public class UserResponse {
 
     private Long totalBooksInLibrary;
 
+    private Long totalBooksInSystem;
+
     @Enumerated(EnumType.STRING)
     private BreezeConstants.UserType userType;
 }

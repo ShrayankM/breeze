@@ -113,6 +113,7 @@ public class UserServiceImpl implements UserService {
         userResponse.setCompletedBookCount(completedCount);
         userResponse.setWishlistedBookCount(wishListCount);
         userResponse.setTotalBooksInLibrary(libraryCount);
+        userResponse.setTotalBooksInSystem(bookRepository.getTotalCountOfBooks());
 
         return userResponse;
     }

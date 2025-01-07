@@ -30,4 +30,6 @@ public interface BookRepository {
 
     List<BreezeBookDetails> getListOfBooksUsingIsbn(List<String> isbnList, Boolean isIsbn10);
 
+    Long getTotalCountOfBooks();
+
 }

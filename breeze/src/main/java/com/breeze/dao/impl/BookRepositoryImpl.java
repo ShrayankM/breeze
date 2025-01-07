@@ -204,6 +204,20 @@ public class BookRepositoryImpl extends GenericDaoImpl implements BookRepository
     }
 
     @Override
+    public Long getTotalCountOfBooks() {
+        StringBuilder queryBuilder = new StringBuilder()
+                .append("SELECT COUNT(book) FROM ")
+                .append(BreezeBookDetails.class.getSimpleName()).append(" book");
+
+        logger.debug("DB query = {}", queryBuilder.toString());
+
+        EntityManager entityManager = getEntityManager();
+
+        Query queryObject = entityManager.createQuery(queryBuilder.toString());
+        return (Long) queryObject.getSingleResult();
+    }
+
+    @Override
     public List<BreezeBookDetails> getBooksByNameAndAuthor(String searchQuery) {
         StringBuilder queryBuilder = new StringBuilder().append(" ")
                 .append(" SELECT book FROM ")
