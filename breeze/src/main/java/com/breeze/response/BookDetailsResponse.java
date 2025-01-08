@@ -12,12 +12,6 @@ public class BookDetailsResponse {
 
     private String name;
 
-    private String subtitle;
-
-    private String isbnSmall;
-
-    private String isbnLarge;
-
     private String author;
 
     private String thumbnail;

@@ -27,9 +27,9 @@ public class UserRepositoryImpl  extends GenericDaoImpl implements UserRepositor
         logger.debug("DB query = {}", queryBuilder.toString());
 
         EntityManager entityManager = getEntityManager();
-
         Query queryObject = entityManager.createQuery(queryBuilder.toString());
         queryObject.setParameter("userCode", userCode);
+
         return (BreezeUser) queryObject.getSingleResult();
     }
 

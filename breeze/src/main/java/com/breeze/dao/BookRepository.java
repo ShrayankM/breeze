@@ -14,28 +14,22 @@ public interface BookRepository {
 
     List<BreezeUserBook> getListOfBooksForUser(String userCode, List<BookStatus> bookStatusList);
 
-    List<BreezeBookDetails> getListOfBooksUsingCodeList(List<String> bookCodeList, Long minPages, Long maxPages, Date startDate, Date endDate);
+    List<BreezeBookDetails> getListOfBooksUsingCodeList(List<String> bookCodeList);
 
     BreezeBookDetails getBookDetailsUsingCode(String bookCode);
 
-//    List<BreezeBookDetails> getBooksByName(String bookName);
-
     List<BreezeBookDetails> getBooksByNameAndAuthor(String searchQuery);
-
-//    List<BreezeBookDetails> getBooksByAuthor(String authorName);
 
     List<BreezeUserBook> getListOfBookForUserUsingCode(String userCode, List<BookStatus> bookStatusList);
 
-//    List<BreezeUserBook> getWishlistedBookForUserUsingCode(String userCode);
-
     List<BreezeUserBook> getListOfUserBooksUsingBookCode(String bookCode);
-
-//    List<BreezeBookDetails> getListOfBooksUsingCode(List<String> bookCodeList);
 
     List<BreezeBookDetails> getListOfBooksUsingCodeAndNameOrAuthor(List<String> bookCodeList, String searchQuery);
 
     BreezeUserBook getUserBookFromCode(String userCode, String bookCode);
 
     List<BreezeBookDetails> getListOfBooksUsingIsbn(List<String> isbnList, Boolean isIsbn10);
+
+    Long getTotalCountOfBooks();
 
 }

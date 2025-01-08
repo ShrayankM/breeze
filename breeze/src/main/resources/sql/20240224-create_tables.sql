@@ -48,27 +48,6 @@ CREATE TABLE `breeze_user_book` (
     PRIMARY KEY (`id`)
 );
 
-
-CREATE TABLE `breeze_user_suggestions` (
-    `id` bigint NOT NULL AUTO_INCREMENT,
-    `code` varchar(30) NOT NULL,
-    `user_code` varchar(30)  NOT NULL,
-    `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    `updated_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    `status` enum('pending','closed') NOT NULL,
-    `suggestion` varchar(255) NOT NULL,
-    PRIMARY KEY (`id`)
-);
-
-CREATE TABLE `breeze_user_notifications` (
-    `id` bigint NOT NULL AUTO_INCREMENT,
-    `code` varchar(30) NOT NULL,
-    `data` json NOT NULL,
-    `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    `updated_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    PRIMARY KEY (`id`)
-);
-
 CREATE TABLE `breeze_config` (
   `id` bigint NOT NULL AUTO_INCREMENT,
   `name` varchar(64)  DEFAULT NULL,

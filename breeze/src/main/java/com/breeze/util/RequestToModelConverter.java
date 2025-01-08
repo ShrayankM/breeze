@@ -96,7 +96,6 @@ public class RequestToModelConverter {
         );
         model.setBookCode(request.getBookCode());
         model.setUserCode(request.getUserCode());
-//        model.setBookStatus(BreezeConstants.BookStatus.LIBRARY);
         model.setBookStatus(request.getBookStatus());
         model.setIsDeleted(false);
         model.setWishlist(false);
@@ -117,20 +116,11 @@ public class RequestToModelConverter {
                 )
         );
 
-//        model.setName(request.getName());
         model.setUserName(request.getUserName());
         model.setEmailAddress(request.getEmailAddress());
         model.setUserId(request.getUserId());
-//        model.setPassword(request.getPassword());
-//        model.setPhoneNumber(request.getPhoneNumber());
         model.setIsEmailVerified(false);
         model.setIsPhoneVerified(false);
-
-        if (request.getIsAdminUser() == null || Boolean.FALSE.equals(request.getIsAdminUser())) {
-            model.setUserType(BreezeConstants.UserType.STANDARD);
-        } else {
-            model.setUserType(BreezeConstants.UserType.ADMIN);
-        }
         return model;
     }
 }

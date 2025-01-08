@@ -72,46 +72,6 @@ public class BookController {
         return new ResponseEntity<>(CommonResponseGenerator.okResponse(response), HttpStatus.OK);
     }
 
-//    @GetMapping(
-//            path = BreezeUrlConstants.GET_BOOKS_BY_NAME,
-//            produces = MediaType.APPLICATION_JSON_VALUE
-//    )
-//    public ResponseEntity<CommonResponse<GetListResponse<BookDataResponse>>> getBooksByName(@PathVariable String bookName) throws BreezeException {
-//
-//        GetListResponse<BookDataResponse> response = bookService.getBooksByName(bookName);
-//        return new ResponseEntity<>(CommonResponseGenerator.okResponse(response), HttpStatus.OK);
-//    }
-
-//    @GetMapping(
-//            path = BreezeUrlConstants.GET_BOOKS_BY_AUTHOR,
-//            produces = MediaType.APPLICATION_JSON_VALUE
-//    )
-//    public ResponseEntity<CommonResponse<GetListResponse<BookDataResponse>>> getBooksByAuthor(@PathVariable String authorName) throws BreezeException {
-//
-//        GetListResponse<BookDataResponse> response = bookService.getBooksByAuthor(authorName);
-//        return new ResponseEntity<>(CommonResponseGenerator.okResponse(response), HttpStatus.OK);
-//    }
-
-//    @GetMapping(
-//            path = BreezeUrlConstants.GET_BOOKS_BY_NAME_FOR_USER,
-//            produces = MediaType.APPLICATION_JSON_VALUE
-//    )
-//    public ResponseEntity<CommonResponse<GetListResponse<BookDataResponse>>> getBooksByNameForUser(@PathVariable String bookName, @PathVariable String userCode) throws BreezeException {
-//
-//        GetListResponse<BookDataResponse> response = bookService.getBooksByNameForUser(bookName, userCode);
-//        return new ResponseEntity<>(CommonResponseGenerator.okResponse(response), HttpStatus.OK);
-//    }
-
-//    @GetMapping(
-//            path = BreezeUrlConstants.GET_BOOKS_BY_AUTHOR_FOR_USER,
-//            produces = MediaType.APPLICATION_JSON_VALUE
-//    )
-//    public ResponseEntity<CommonResponse<GetListResponse<BookDataResponse>>> getBooksByAuthorForUser(@PathVariable String authorName, @PathVariable String userCode) throws BreezeException {
-//
-//        GetListResponse<BookDataResponse> response = bookService.getBooksByAuthorForUser(authorName, userCode);
-//        return new ResponseEntity<>(CommonResponseGenerator.okResponse(response), HttpStatus.OK);
-//    }
-
     @GetMapping(
             path = BreezeUrlConstants.SEARCH_BOOKS_BY_NAME_AND_AUTHOR_FOR_USER,
             produces = MediaType.APPLICATION_JSON_VALUE
