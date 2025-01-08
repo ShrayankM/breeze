@@ -63,7 +63,22 @@ public class BookServiceImpl implements BookService {
             return bookListResponse;
         }
 
+        List<BreezeUserBook> userBookList = bookRepository.getListOfBooksForUser(request.getUserCode(), null);
+        Map<String, BreezeUserBook> userBookMap = userBookList.stream().collect(Collectors.toMap(BreezeUserBook::getBookCode, x -> x));
+
         List<BookDataResponse> responseList = ModelToResponseConverter.getBookListResponseFromModel(breezeBookDetailsList);
+        for (BookDataResponse bookDataResponse : responseList) {
+            BreezeUserBook breezeUserBook = userBookMap.get(bookDataResponse.getCode());
+            if (Objects.nonNull(breezeUserBook)) {
+                // set isAddedToLibrary
+                bookDataResponse.setIsAddedToLibrary(BreezeConstants.BookStatus.LIBRARY.equals(breezeUserBook.getBookStatus())
+                        || BreezeConstants.BookStatus.READING.equals(breezeUserBook.getBookStatus())
+                        || BreezeConstants.BookStatus.COMPLETED.equals(breezeUserBook.getBookStatus()));
+
+                // set isAddedToWishlist
+                bookDataResponse.setIsAddedToWishlist(BreezeConstants.BookStatus.WISHLIST.equals(breezeUserBook.getBookStatus()));
+            }
+        }
         bookListResponse.setList(responseList);
         bookListResponse.setTotalCount(responseList.size());
         return bookListResponse;

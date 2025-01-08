@@ -1,5 +1,6 @@
 package com.breeze.service.impl;
 
+import com.breeze.constant.BreezeConstants;
 import com.breeze.constant.BreezeErrorCodes;
 import com.breeze.dao.BookRepository;
 import com.breeze.dao.GenericDao;
@@ -79,6 +80,11 @@ public class UserBookServiceImpl implements UserBookService {
         BreezeUserBook breezeUserBook = bookRepository.getUserBookFromCode(request.getUserCode(), request.getBookCode());
         if (!Objects.isNull(breezeUserBook)) {
             if (request.getBookStatus() != null) {
+                // logic to set completed count for user
+                if (BreezeConstants.BookStatus.COMPLETED.equals(request.getBookStatus())) {
+                    Long currentCompletedCount = breezeUserBook.getCompletedCount();
+                    breezeUserBook.setCompletedCount(currentCompletedCount + 1);
+                }
                 breezeUserBook.setBookStatus(request.getBookStatus());
             }
 

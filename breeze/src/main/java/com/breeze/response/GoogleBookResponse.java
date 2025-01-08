@@ -33,7 +33,7 @@ public class GoogleBookResponse {
         private String description;
         private List<IndustryIdentifier> industryIdentifiers;
         private ReadingModes readingModes;
-        private int pageCount;
+        private Integer pageCount;
         private String printType;
         private List<String> categories;
         private String maturityRating;
