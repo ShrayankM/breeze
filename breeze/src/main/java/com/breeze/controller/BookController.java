@@ -2,6 +2,7 @@ package com.breeze.controller;
 
 import com.breeze.constant.BreezeUrlConstants;
 import com.breeze.exception.BreezeException;
+import com.breeze.request.BookDetailsRequest;
 import com.breeze.request.FetchBookList;
 import com.breeze.request.UpdateBookRating;
 import com.breeze.response.BookDataResponse;
@@ -42,13 +43,13 @@ public class BookController {
         return new ResponseEntity<>(CommonResponseGenerator.okResponse(response), HttpStatus.OK);
     }
 
-    @GetMapping(
+    @PostMapping(
             path = BreezeUrlConstants.GET_BOOK_DETAILS,
             produces = MediaType.APPLICATION_JSON_VALUE
     )
-    public ResponseEntity<CommonResponse<BookDetailsResponse>> getBooksDetails(@PathVariable String bookCode) throws BreezeException {
+    public ResponseEntity<CommonResponse<BookDetailsResponse>> getBooksDetails(@RequestBody BookDetailsRequest request) throws BreezeException {
 
-        BookDetailsResponse response = bookService.getBookDetails(bookCode);
+        BookDetailsResponse response = bookService.getBookDetails(request.getBookCode(), request.getUserCode());
         return new ResponseEntity<>(CommonResponseGenerator.okResponse(response), HttpStatus.OK);
     }
 

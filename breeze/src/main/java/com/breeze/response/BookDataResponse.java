@@ -21,8 +21,4 @@ public class BookDataResponse {
     private String thumbnail;
 
     private BreezeConstants.BookStatus bookStatus;
-
-    private Boolean isAddedToLibrary;
-
-    private Boolean isAddedToWishlist;
 }
