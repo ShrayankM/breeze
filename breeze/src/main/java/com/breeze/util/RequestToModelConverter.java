@@ -151,6 +151,7 @@ public class RequestToModelConverter {
         model.setWishlist(false);
         model.setUserRating(0L);
         model.setCurrentPage(0L);
+        model.setCompletedCount(0L);
 
         return model;
     }
