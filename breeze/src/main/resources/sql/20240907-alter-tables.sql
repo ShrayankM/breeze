@@ -5,3 +5,5 @@ ALTER TABLE breeze_user_book MODIFY COLUMN book_status ENUM('ADDED', 'READING', 
 
 UPDATE UPDATE breeze_config  SET value = 'new-key' WHERE name = 'GOOGLE_BOOKS_API_HEADER_VALUE';
 UPDATE breeze_config  SET value = 'https://content-books.googleapis.com/books/v1/volumes' WHERE name = 'GOOGLE_BOOKS_API_URL';
+
+ALTER TABLE breeze_user_book ADD COLUMN completed_count BIGINT DEFAULT 0;

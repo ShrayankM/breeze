@@ -70,7 +70,7 @@ public class GoogleBookServiceImpl implements GoogleBookService {
 
         // if records exists for isbn in request filter them out
         if (!CollectionUtils.isEmpty(breezeBookDetailsList)) {
-            List<String> isbnList = new ArrayList<>();
+            List<String> isbnList;
             if (Boolean.TRUE.equals(request.getIsIsbn10())) {
                 isbnList = breezeBookDetailsList.stream().map(BreezeBookDetails::getIsbn10).toList();
             } else {
@@ -89,6 +89,10 @@ public class GoogleBookServiceImpl implements GoogleBookService {
             }
 
             BreezeBookDetails breezeBookDetails = RequestToModelConverter.getBookDetailsFromGoogleBookResponse(googleBookResponse);
+            if (Objects.isNull(breezeBookDetails)) {
+                logger.error("Breeze book details is null for isbn = {}", isbn);
+                continue;
+            }
             createList.add(breezeBookDetails);
         }
 

@@ -48,7 +48,7 @@ public class GoogleRestApiServiceImpl  implements GoogleRestApiService {
         } catch (Exception e) {
             logger.error("Error while reading from service = {}", uri);
             logger.error("Exception = {}", e);
+            return null;
         }
-        return null;
     }
 }
