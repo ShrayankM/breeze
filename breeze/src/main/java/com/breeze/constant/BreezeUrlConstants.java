@@ -8,7 +8,7 @@ public class BreezeUrlConstants {
 
     public static final String GET_BOOKS = URL_PREFIX + "book/get-books";
     public static final String GET_BOOKS_FOR_USER = URL_PREFIX + "book/get-books-user";
-    public static final String GET_BOOK_DETAILS = URL_PREFIX + "book/{bookCode}/get-book-details";
+    public static final String GET_BOOK_DETAILS = URL_PREFIX + "book/get-book-details";
     public static final String GET_BOOK_DETAILS_FOR_USER = URL_PREFIX + "book/{bookCode}/user/{userCode}/get-book-details-user";
     public static final String SEARCH_BOOKS_BY_NAME_AND_AUTHOR = URL_PREFIX + "book/{searchQuery}/search-books";
 

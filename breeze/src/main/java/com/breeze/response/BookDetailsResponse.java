@@ -31,4 +31,8 @@ public class BookDetailsResponse {
     private BreezeConstants.BookStatus bookStatus;
 
     private String language;
+
+    private Boolean isAddedToLibrary;
+
+    private Boolean isAddedToWishlist;
 }

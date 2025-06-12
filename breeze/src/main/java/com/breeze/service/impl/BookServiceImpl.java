@@ -11,6 +11,7 @@ import com.breeze.exception.ValidationException;
 import com.breeze.model.BreezeBookDetails;
 import com.breeze.model.BreezeUser;
 import com.breeze.model.BreezeUserBook;
+import com.breeze.request.BookDetailsRequest;
 import com.breeze.request.FetchBookList;
 import com.breeze.request.UpdateBookRating;
 import com.breeze.response.BookDataResponse;
@@ -63,22 +64,7 @@ public class BookServiceImpl implements BookService {
             return bookListResponse;
         }
 
-        List<BreezeUserBook> userBookList = bookRepository.getListOfBooksForUser(request.getUserCode(), null);
-        Map<String, BreezeUserBook> userBookMap = userBookList.stream().collect(Collectors.toMap(BreezeUserBook::getBookCode, x -> x));
-
         List<BookDataResponse> responseList = ModelToResponseConverter.getBookListResponseFromModel(breezeBookDetailsList);
-        for (BookDataResponse bookDataResponse : responseList) {
-            BreezeUserBook breezeUserBook = userBookMap.get(bookDataResponse.getCode());
-            if (Objects.nonNull(breezeUserBook)) {
-                // set isAddedToLibrary
-                bookDataResponse.setIsAddedToLibrary(BreezeConstants.BookStatus.LIBRARY.equals(breezeUserBook.getBookStatus())
-                        || BreezeConstants.BookStatus.READING.equals(breezeUserBook.getBookStatus())
-                        || BreezeConstants.BookStatus.COMPLETED.equals(breezeUserBook.getBookStatus()));
-
-                // set isAddedToWishlist
-                bookDataResponse.setIsAddedToWishlist(BreezeConstants.BookStatus.WISHLIST.equals(breezeUserBook.getBookStatus()));
-            }
-        }
         bookListResponse.setList(responseList);
         bookListResponse.setTotalCount(responseList.size());
         return bookListResponse;
@@ -154,7 +140,7 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
-    public BookDetailsResponse getBookDetails(String bookCode) throws BreezeException {
+    public BookDetailsResponse getBookDetails(String bookCode, String userCode) throws BreezeException {
         BookDetailsResponse bookDetailsResponse;
 
         if (Objects.isNull(bookCode) || !StringUtils.hasText(bookCode)) {
@@ -169,7 +155,16 @@ public class BookServiceImpl implements BookService {
             throw new ResourceNotFoundException(BreezeErrorCodes.DATA_NOT_FOUND,
                     BreezeErrorCodes.DATA_NOT_FOUND_MSG);
         }
+
         bookDetailsResponse = ModelToResponseConverter.getBookDetailsResponseFromModel(bookDetails);
+        BreezeUserBook breezeUserBook = bookRepository.getUserBookFromCode(userCode, bookCode);
+        if (!Objects.isNull(breezeUserBook)) {
+            bookDetailsResponse.setIsAddedToLibrary(BreezeConstants.BookStatus.LIBRARY.equals(breezeUserBook.getBookStatus())
+                    || BreezeConstants.BookStatus.READING.equals(breezeUserBook.getBookStatus())
+                    || BreezeConstants.BookStatus.COMPLETED.equals(breezeUserBook.getBookStatus()));
+
+            bookDetailsResponse.setIsAddedToWishlist(BreezeConstants.BookStatus.WISHLIST.equals(breezeUserBook.getBookStatus()));
+        }
         return bookDetailsResponse;
     }
 

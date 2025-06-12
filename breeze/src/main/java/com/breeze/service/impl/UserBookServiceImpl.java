@@ -66,7 +66,7 @@ public class UserBookServiceImpl implements UserBookService {
         }
 
         response = ModelToResponseConverter.getUserBookFromModel(breezeUserBook);
-        BookDetailsResponse bookDetailsResponse = bookService.getBookDetails(breezeUserBook.getBookCode());
+        BookDetailsResponse bookDetailsResponse = bookService.getBookDetails(breezeUserBook.getBookCode(), request.getUserCode());
         response.setBookDetailsResponse(bookDetailsResponse);
         return response;
     }
@@ -109,7 +109,7 @@ public class UserBookServiceImpl implements UserBookService {
         }
 
         response = ModelToResponseConverter.getUserBookFromModel(breezeUserBook);
-        BookDetailsResponse bookDetailsResponse = bookService.getBookDetails(breezeUserBook.getBookCode());
+        BookDetailsResponse bookDetailsResponse = bookService.getBookDetails(breezeUserBook.getBookCode(), request.getUserCode());
         response.setBookDetailsResponse(bookDetailsResponse);
         return response;
     }

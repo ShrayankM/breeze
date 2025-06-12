@@ -2,6 +2,7 @@ package com.breeze.service;
 
 import com.breeze.exception.BreezeException;
 import com.breeze.model.BreezeBookDetails;
+import com.breeze.request.BookDetailsRequest;
 import com.breeze.request.FetchBookList;
 import com.breeze.request.UpdateBookRating;
 import com.breeze.response.BookDataResponse;
@@ -16,7 +17,7 @@ public interface BookService {
 
     GetListResponse<BookDataResponse> searchBooksByNameAndAuthor(String searchQuery) throws BreezeException;
 
-    BookDetailsResponse getBookDetails(String bookCode) throws BreezeException;
+    BookDetailsResponse getBookDetails(String bookCode, String userCode) throws BreezeException;
 
     BookDetailsResponse getBookDetailsForUser(String bookCode, String userCode) throws BreezeException;
 
